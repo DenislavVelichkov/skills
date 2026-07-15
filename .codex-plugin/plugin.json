@@ -1,0 +1,33 @@
+{
+  "name": "mattpocock-codex",
+  "version": "1.1.0+codex.20260711220126",
+  "description": "Personal Matt Pockok's Codex skills and workflows.",
+  "author": {
+    "name": "Custom Plugin for Matt skills",
+    "url": "https://github.com/mattpocock"
+  },
+  "homepage": "https://github.com/mattpocock/skills",
+  "repository": "https://github.com/mattpocock/skills",
+  "keywords": [
+    "codex",
+    "skills",
+    "workflows"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "mattpocock Codex",
+    "shortDescription": "Personal Codex workflows and skills.",
+    "longDescription": "Packages the reusable mattpocock Codex Home skills and workflows.",
+    "developerName": "mattpocock",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use mattpocock Codex to choose and run the right workflow.",
+      "Use mattpocock Codex to review and improve this repository."
+    ],
+    "brandColor": "#2563EC"
+  }
+}
