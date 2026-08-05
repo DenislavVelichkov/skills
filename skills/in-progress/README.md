@@ -1,8 +1,6 @@
 # In Progress
 
-<<<<<<< HEAD
 - **[batch-grill-me](./batch-grill-me/SKILL.md)** — Relentless model- or user-invoked interview that walks the design tree in rounds instead of one question at a time — each round asks the whole frontier of decisions whose prerequisites are already settled, then recomputes from your answers.
-=======
 Beta. These skills are public on purpose — try them and tell me what breaks. They're excluded from the plugin and the top-level README until they graduate to a stable bucket, they get no docs pages, and they can change or disappear without warning.
 
 The plugin won't give you these. Install one directly:
@@ -17,4 +15,3 @@ npx skills@latest add mattpocock/skills --skill=<name>
 - **[writing-shape](./writing-shape/SKILL.md)** — Take a markdown file of raw material and shape it into an article paragraph by paragraph, arguing format choices at each step.
 - **[claude-handoff](./claude-handoff/SKILL.md)** — Hand the current conversation off to a fresh background agent that picks up the work immediately, seeded with a handoff summary via `claude --bg`. User-invoked.
 - **[setup-ts-deep-modules](./setup-ts-deep-modules/SKILL.md)** — Wire dependency-cruiser into a TypeScript repo so each package is a deep module — implementation hidden in subfolders, reachable only through its entry-point files, tests exercising it through those. User-invoked.
->>>>>>> origin/main
