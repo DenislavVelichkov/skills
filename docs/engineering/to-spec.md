@@ -33,6 +33,18 @@ Before it writes anything, `to-spec` sketches the **seams** where the feature wi
 
 Other skills use those agreed seams later. [tdd](https://aihero.dev/skills-tdd) works only at seams you agreed in advance. [code-review](https://aihero.dev/skills-code-review) reviews the diff against the spec, so a seam nobody agreed to shows up as a review finding. Both connections go through this document. That is why you should take the seam conversation seriously here, and not leave it for implementation.
 
+## Visual decisions stay executable
+
+When the upstream conversation or Wayfinder map selected a prototype, the
+spec links its visual-acceptance manifest instead of paraphrasing “match option
+C.” The manifest carries the exact routes, references, responsive evidence,
+and approval boundary into fresh implementation sessions. A missing manifest
+is missing planning input, not prose for the spec to invent.
+
+The spec records the distinction explicitly: the design is selected, while
+production acceptance remains pending until a human reviews the hashed
+candidate comparison.
+
 ## Common questions
 
 **Where did `/to-prd` go?**
@@ -64,11 +76,13 @@ A tracker issue may not return a very large spec in full, and there is no local 
 
 ## It's working if
 
-- It starts writing instead of asking you a new round of questions.
-- It shows you the seams before it writes, and proposes as few as it can.
-- It uses your project's nouns, not generic product-management boilerplate.
-- You remember making every decision in it. It invented nothing to fill a section.
-- The out-of-scope section lists real things. The things you refused are usually the most useful lines on the page.
+- It starts writing rather than asking you a fresh round of questions.
+- It puts the seams to you before it writes, and proposes as few as it can get away with.
+- It comes back in your project's nouns, not generic product-management boilerplate.
+- Every decision in it is one you can remember making. Nothing was invented to fill a section.
+- The out-of-scope section has real things in it: the things you refused are usually the most useful lines on the page.
+- A visual spec links a valid acceptance manifest and never treats prototype
+  selection as production approval.
 
 ## Where it fits
 

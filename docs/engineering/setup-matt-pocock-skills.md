@@ -1,6 +1,6 @@
 ## What it does
 
-`setup-matt-pocock-skills` answers three questions about one repo: where issues live, what the triage labels are called, and where the domain docs sit. It records the answers as markdown files under `docs/agents/`.
+`setup-matt-pocock-skills` answers three questions about one repo: where issues live, what the triage labels are called, and where the domain docs sit. It records the answers as markdown files under `docs/agents/`. It also installs the dormant visual-acceptance protocol, manifest template, and dependency-free validator used when a project later gains a visual manifest.
 
 Those files are the only thing that varies between repos. The skills themselves are identical everywhere. They read `docs/agents/issue-tracker.md` at run time and do what it says. That is why the set is not tied to GitHub, and why you never edit a skill file to point it at another tracker. Invoking it with "link the skills to a custom issue tracker" works with anything you can connect to programmatically, with no changes to the skills.
 
@@ -21,9 +21,12 @@ It writes into the repo you run it in:
 | `issue-tracker.md` | `docs/agents/` |
 | `domain.md` | `docs/agents/` |
 | `triage-labels.md` | `docs/agents/`, only when the `triage` skill is installed |
-| An `## Agent skills` block | whichever of `CLAUDE.md` or `AGENTS.md` already exists |
+| `visual-acceptance.md` | `docs/agents/` |
+| `visual-acceptance.template.json` | `docs/agents/` |
+| `validate-visual-acceptance.mjs` | `scripts/` |
+| An `## Agent skills` block | whichever of `CLAUDE.md` / `AGENTS.md` already exists |
 
-You commit all of it as markdown. There is no user-level or global mode. The config lives in the repo, so every repo gets its own copy.
+All outputs are committed in the repository. There is no user-level or global mode: the config lives in the repo, so every repo gets its own copy.
 
 ## The three decisions
 
@@ -44,7 +47,14 @@ The tracker options:
 | **Local markdown** | files under `.scratch/<feature>/` in this repo | nothing, not even a remote |
 | **Other** | wherever you say | one paragraph from you describing the workflow |
 
-The first three ship as templates in the skill and work out of the box. Local markdown is a full option, not a fallback. The skill supports a solo project with no remote. One caveat: don't use local markdown if you use GitHub. They are alternatives, so pick one.
+The first three ship as templates in the skill and work out of the box. Local markdown is a first-class option, not a fallback: a solo project with no remote is fully supported. One caveat is worth repeating: don't use local markdown if you're using GitHub. They are alternatives, not layers.
+
+Visual acceptance is not a fourth configuration choice. The installed pointer
+is dormant until `docs/visual-acceptance/*/manifest.json` exists; then it tells
+every agent reading the repository instructions that prototype selection,
+production comparison, human acceptance, and baseline promotion are separate
+states. The installed template starts each manifest, and the validator is its
+single executable contract.
 
 "Other" is a full option too. It is how Jira, Linear, Azure DevOps and Beads all work. You describe the workflow, the skill records your prose in `docs/agents/issue-tracker.md`, and the downstream skills follow the prose. Users have already built this: a Jira-over-[MCP](https://www.aihero.dev/ai-coding-dictionary/mcp) variant, a Gitea CLI shaped like `gh`, a hand-built local dashboard.
 
@@ -88,6 +98,9 @@ One long-standing complaint says yes, in these words: *"having a skill to set up
 - The tracker it proposed matches the remote you use, and the label strings match labels that exist in your tracker.
 - Afterwards, `/to-tickets` publishes without asking you where issues live, and `/triage` applies labels rather than inventing them.
 - Nothing in the skill files themselves changed. If setup edited a `SKILL.md`, something went wrong.
+- Repositories with a visual manifest expose the fail-closed rule through the
+  instruction file the active harness reads, and carry the template and
+  validator named by that rule.
 
 ## Where it fits
 

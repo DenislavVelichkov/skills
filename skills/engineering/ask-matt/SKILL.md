@@ -31,6 +31,12 @@ The route most work travels. You have an idea and want it built.
 
 4. **`/retro`** closes the loop. After a build, and especially one that went sideways, it looks back over the session and suggests changes to the agent's **environment**, not the code: navigation pointers, automated checks, the coding standards `/code-review` enforces, steering files, tooling. Mechanical mistakes become deterministic checks; judgement calls become coding standards. The next build then starts from a better environment.
 
+   Visual work has one extra fail-closed boundary. When Wayfinder selected a
+   prototype or composition, its visual-acceptance manifest follows the work
+   through `/to-spec` and `/to-tickets`. `/implement` ends the comparison turn
+   by asking the human to approve or reject the displayed candidate hash; only
+   that response permits baseline promotion or the next surface.
+
 ### Context hygiene
 
 Keep steps 1–3 in **one unbroken context window** (don't compact or clear until after `/to-tickets`) so the grilling, spec, and tickets all build on the same thinking. Each `/implement` then starts fresh, working from the ticket. Run `/retro` in the session it's looking back on, before you clear; after clearing, point it at that session's log instead.
