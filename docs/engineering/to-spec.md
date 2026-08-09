@@ -33,6 +33,18 @@ Before it writes a word, `to-spec` sketches the **seams** the feature will be te
 
 Those agreed seams then travel. [tdd](https://aihero.dev/skills-tdd) works only at pre-agreed seams, and [code-review](https://aihero.dev/skills-code-review) reviews the diff against the spec, so a seam nobody agreed to shows up as a review finding. The binding is indirect — it runs through this document — which is exactly why the seam conversation is worth taking seriously here rather than deferring it to implementation.
 
+## Visual decisions stay executable
+
+When the upstream conversation or Wayfinder map selected a prototype, the
+spec links its visual-acceptance manifest instead of paraphrasing “match option
+C.” The manifest carries the exact routes, references, responsive evidence,
+and approval boundary into fresh implementation sessions. A missing manifest
+is missing planning input, not prose for the spec to invent.
+
+The spec records the distinction explicitly: the design is selected, while
+production acceptance remains pending until a human reviews the hashed
+candidate comparison.
+
 ## Common questions
 
 **Where did `/to-prd` go?**
@@ -69,6 +81,8 @@ Very large specs can outgrow what a tracker issue will serve back cleanly, and t
 - It comes back in your project's nouns, not generic product-management boilerplate.
 - Every decision in it is one you can remember making. Nothing was invented to fill a section.
 - The out-of-scope section has real things in it — the things you refused are usually the most useful lines on the page.
+- A visual spec links a valid acceptance manifest and never treats prototype
+  selection as production approval.
 
 ## Where it fits
 

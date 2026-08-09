@@ -12,6 +12,12 @@ The issue tracker and triage label vocabulary should have been provided to you â
 
 1. Explore the repo to understand the current state of the codebase, if you haven't already. Use the project's domain glossary vocabulary throughout the spec, and respect any ADRs in the area you're touching.
 
+If the conversation, map, or source artifacts select a prototype or visual
+composition, read `docs/agents/visual-acceptance.md` completely.
+Locate and validate the initiative manifest. A selected visual design without
+a valid manifest is missing planning input; stop rather than converting it
+into vague prose.
+
 2. Sketch out the seams at which you're going to test the feature. Existing seams should be preferred to new ones. Use the highest seam possible. If new seams are needed, propose them at the highest point you can. The fewer seams across the codebase, the better - the ideal number is one.
 
 Check with the user that these seams match their expectations.
@@ -63,6 +69,13 @@ A list of testing decisions that were made. Include:
 - A description of what makes a good test (only test external behavior, not implementation details)
 - Which modules will be tested
 - Prior art for the tests (i.e. similar types of tests in the codebase)
+
+## Visual Acceptance Contract
+
+Include this section only when the shared protocol applies. Link the manifest,
+state that design selection is not production acceptance, name the required
+comparison and human-approval boundary, and carry its current five progress
+counters. Do not duplicate its route rows into prose.
 
 ## Out of Scope
 

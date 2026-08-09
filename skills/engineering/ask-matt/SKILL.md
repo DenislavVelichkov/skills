@@ -25,6 +25,12 @@ The route most work travels. You have an idea and want it built.
 
    Either way, **`/implement`** builds each issue by driving **`/tdd`** internally — one red-green slice at a time — then closes out by running **`/code-review`**, a two-axis review (Standards + Spec) of the diff, before committing. Reach for **`/tdd`** on its own when you just want to build a concrete behaviour test-first without a full spec, and **`/code-review`** on its own whenever you want to review a branch or PR against a fixed point.
 
+   Visual work has one extra fail-closed boundary. When Wayfinder selected a
+   prototype or composition, its visual-acceptance manifest follows the work
+   through `/to-spec` and `/to-tickets`. `/implement` ends the comparison turn
+   by asking the human to approve or reject the displayed candidate hash; only
+   that response permits baseline promotion or the next surface.
+
 ### Context hygiene
 
 Keep steps 1–3 in **one unbroken context window** — don't compact or clear until after `/to-tickets` — so the grilling, spec, and tickets all build on the same thinking. Each `/implement` then starts fresh, working from the ticket.

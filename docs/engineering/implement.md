@@ -40,6 +40,17 @@ A run is five beats, in order:
 
 One run covers one ticket. The tickets [to-tickets](https://aihero.dev/skills-to-tickets) produces are tracer-bullet vertical slices sized to fit a single fresh [context window](https://www.aihero.dev/ai-coding-dictionary/context-window), so the intended rhythm is: clear context, implement one ticket, commit, clear again. Each ticket is self-contained, which is what makes the previous ticket's context disposable.
 
+Visual tickets have a deliberate human boundary inside that run. The first
+invocation implements the real surface, captures every manifest candidate,
+and stops after producing the side-by-side comparison and candidate-set hash.
+No snapshot baseline moves. A later invocation may promote those exact bytes
+only when your approval names both the surface and hash.
+
+That pause is not unfinished automation; it is the point at which automation
+has reached the decision it cannot make. Code review can establish that the
+candidate is built correctly and follows the spec, but it cannot decide that
+the rendered result is the design you accept.
+
 ## Pre-agreed seams
 
 The idea the skill runs on is the **seam**: the public boundary you observe behaviour at, without reaching inside. Tests live at seams. Working at a seam agreed before any code is written is what keeps the tests durable, because the implementation underneath can be rewritten without the tests moving.
@@ -81,6 +92,11 @@ Probably the ticket is too big rather than the skill being misused. A run does c
 - Typechecks and single test files run repeatedly during the run, and the full suite runs once near the end.
 - The run reaches a commit on your current branch without you prompting it to carry on.
 - The diff is one ticket's worth of change: a vertical slice through every layer, not several tickets swept together.
+- A visual run reports Implemented, Compared, Approval requested, Member
+  accepted, and Baseline promoted separately.
+- Once comparison evidence is ready, the validator prints the exact approval
+  question and the implementation turn ends with it. Work cannot continue
+  until the human explicitly approves or rejects that candidate hash.
 
 ## Where it fits
 

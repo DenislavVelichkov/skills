@@ -11,6 +11,8 @@ Scaffold the per-repo configuration that the engineering skills assume:
 - **Issue tracker** — where issues live (GitHub by default; local markdown is also supported out of the box)
 - **Triage labels** — the strings used for the five canonical triage roles
 - **Domain docs** — where `CONTEXT.md` and ADRs live, and the consumer rules for reading them
+- **Visual acceptance** — the fail-closed rule used when a visual-acceptance
+  manifest exists
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
 
@@ -25,6 +27,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `CONTEXT.md` and `CONTEXT-MAP.md` at the repo root
 - `docs/adr/` and any `src/*/docs/adr/` directories
 - `docs/agents/` — does this skill's prior output already exist?
+- `docs/visual-acceptance/` — does this repo already carry a visual contract?
 - `.scratch/` — sign that a local-markdown issue tracker convention is already in use
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
 - Monorepo signals — a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. Present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
@@ -66,6 +69,8 @@ Show the user a draft of:
 
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
 - The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
+- The conditional visual-acceptance pointer and
+  `docs/agents/visual-acceptance.md`
 
 Let them edit before writing.
 
@@ -97,6 +102,12 @@ The block:
 ### Domain docs
 
 [one-line summary of layout — "single-context" or "multi-context"]. See `docs/agents/domain.md`.
+
+### Visual acceptance
+
+When `docs/visual-acceptance/*/manifest.json` exists, it is fail-closed: design
+selection is not production acceptance, and incomplete visual gates block
+baseline promotion and completion. See `docs/agents/visual-acceptance.md`.
 ```
 
 Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.md`, only when `triage` is installed and Section B ran. When it isn't, both are omitted.
@@ -108,6 +119,18 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [issue-tracker-local.md](./issue-tracker-local.md) — local-markdown issue tracker
 - [triage-labels.md](./triage-labels.md) — label mapping (only if `triage` is installed)
 - [domain.md](./domain.md) — domain doc consumer rules + layout
+
+Install the visual-acceptance assets in the target repository:
+
+- [visual-acceptance.md](./visual-acceptance.md) →
+  `docs/agents/visual-acceptance.md`
+- [visual-acceptance.template.json](./visual-acceptance.template.json) →
+  `docs/agents/visual-acceptance.template.json`
+- [validate-visual-acceptance.mjs](./validate-visual-acceptance.mjs) →
+  `scripts/validate-visual-acceptance.mjs`
+
+Copy the template and validator byte-for-byte from their bundled sources.
+Apply any user-approved prose edits only to the installed protocol.
 
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 

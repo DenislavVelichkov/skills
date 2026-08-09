@@ -45,6 +45,12 @@ A generic review skill that does not know your standards is the thing this desig
 
 The **smell baseline** is the floor underneath it: twelve Fowler code smells from _Refactoring_ ch.3 — Mysterious Name, Duplicated Code, Feature Envy, Data Clumps, Primitive Obsession, Repeated Switches, Shotgun Surgery, Divergent Change, Speculative Generality, Message Chains, Middle Man, Refused Bequest. Each is a labelled heuristic ("possible Feature Envy"), never a hard violation, and each is stated as *what it is* → *how to fix*, so a finding arrives with a move attached rather than a complaint. Anything your linter already enforces is skipped by both axes.
 
+Visual acceptance is reported beside those axes, not added as a third one.
+When a visual manifest applies, the review verifies its hashes, reads the
+recorded reference/candidate comparison, and reports the five delivery
+counters. It cannot advance a human gate. Standards pass plus Spec pass still
+means “implementation candidate” while production acceptance is pending.
+
 ## Common questions
 
 **It collides with Claude Code's own `/code-review`. What do I do?**
@@ -82,6 +88,8 @@ No. It diffs `<fixed-point>...HEAD`, three-dot, which is measured from the merge
 - Every Standards finding names either a rule in one of your repo's files or one of the twelve smells, with the hunk quoted; every Spec finding quotes a line of the spec.
 - The closing summary gives a worst issue per axis and declines to pick an overall winner.
 - With no spec available, the Spec block says so instead of listing requirements it inferred from the code.
+- With a visual manifest, the report preserves its exact state and never
+  converts a clean review into Member acceptance or baseline promotion.
 
 ## Where it fits
 

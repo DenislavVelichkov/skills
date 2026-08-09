@@ -10,6 +10,10 @@ Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 
 Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
+Visual acceptance, when applicable, is a separate delivery gate rather than a
+third review axis. A clean Standards and Spec report cannot grant human visual
+approval.
+
 The issue tracker should have been provided to you — run `/setup-matt-pocock-skills` if `docs/agents/issue-tracker.md` is missing.
 
 ## Process
@@ -55,7 +59,19 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 - **Middle Man** — a class or function that mostly just delegates onward. → cut it, call the real target direct.
 - **Refused Bequest** — a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
-### 4. Spawn both sub-agents in parallel
+### 4. Identify visual acceptance state
+
+If the spec or diff selects or cites a prototype, screenshot, design option,
+visual composition, or parity target, require a visual-acceptance manifest; a
+missing manifest is a delivery-gate finding. Read
+`docs/agents/visual-acceptance.md` completely.
+Locate the applicable manifest, run its validator, inspect the recorded
+reference/candidate comparison artifacts, and capture its five progress
+counters. Treat a missing or invalid manifest as a delivery-gate finding. A
+`compared` surface without a recorded approval request is also a delivery-gate
+finding: the implementation must ask the human before handoff.
+
+### 5. Spawn both sub-agents in parallel
 
 **Standards sub-agent prompt** — include:
 
@@ -71,11 +87,16 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 
-### 5. Aggregate
+### 6. Aggregate
 
 Present the two reports under `## Standards` and `## Spec` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings — the two axes are deliberately separate (see _Why two axes_).
 
-End with a one-line summary: total findings per axis, and the worst issue _within each axis_ (if any). Don't pick a single winner across axes — that's the reranking the separation exists to prevent.
+When visual acceptance applies, add `## Visual acceptance` with the validator
+result, the five counters, comparison evidence inspected, and any open human
+gate. Report `approval_requested` separately; do not rewrite it as accepted or
+`member_accepted` as baseline promoted.
+
+End with a one-line summary: total findings per axis, the worst issue _within each axis_ (if any), and the visual delivery state when applicable. Call the work an `implementation candidate` while any applicable surface is below `member_accepted`; never use a clean review as a completion claim. Don't pick a single winner across axes — that's the reranking the separation exists to prevent.
 
 ## Why two axes
 
