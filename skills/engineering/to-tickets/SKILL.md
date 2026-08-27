@@ -10,11 +10,15 @@ Break a plan, spec, or conversation into a set of **tickets**: tracer-bullet ver
 
 The issue tracker and triage label vocabulary should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
 
+This skill only produces the approved ticket set. A spec is planning input, not an implementation work order. Do not edit production code, invoke `/implement`, or continue into implementation during this skill.
+
 ## Process
 
 ### 1. Gather context
 
 Work from whatever is already in the conversation context. If the user passes a reference (a spec path, an issue number or URL) as an argument, fetch it and read its full body and comments.
+
+For a local spec at `.scratch/<feature-slug>/spec.md`, treat the output as a separate implementation effort rooted at `.scratch/<feature-slug>/implementation/`. Do not append implementation tickets to Wayfinder, research, or decision tickets already stored under the parent feature's `issues/` directory.
 
 When the source selects a prototype or visual composition, read
 `docs/agents/visual-acceptance.md` completely and validate the linked manifest
@@ -79,12 +83,14 @@ Iterate until the user approves the breakdown.
 
 Publish the approved tickets. **How** depends on the tracker `/setup-matt-pocock-skills` configured; the tickets are the same either way, only the shape of the blocking edges changes:
 
-- **Local files** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). Each file's "Blocked by" lists the numbers/titles it depends on. Use the per-ticket file template below: one ticket per file, never a single combined file.
+- **Local files from `.scratch/<feature-slug>/spec.md`** → write one file per ticket under `.scratch/<feature-slug>/implementation/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). This is a fresh implementation set. Never append it to the parent planning or decision sequence.
+- **Local files without a parent feature spec** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order.
+- In either local form, each file's "Blocked by" lists the numbers and titles it depends on. Use the per-ticket file template below, one ticket per file, never a combined file.
 - **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise; the tickets are agent-grabbable by construction.
 
-Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
+After publication, implementation may work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom. `to-tickets` stops before that work begins.
 
-Do NOT close or modify any parent issue.
+Do NOT close or modify any parent issue or spec.
 
 <local-ticket-template>
 
