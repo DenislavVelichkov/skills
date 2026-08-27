@@ -1,16 +1,23 @@
 ---
 name: implement
-description: "Implement a piece of work based on a spec or set of tickets."
+description: "Implement one approved ticket or a small plan retained in the current conversation. Never implement a published spec before to-tickets splits it."
 disable-model-invocation: true
 ---
 
-Implement the work described by the user in the spec or tickets.
+Implement one approved ticket, or one small piece of work whose entire plan remains in the current conversation.
+
+If the user passes a spec, plan, Wayfinder map, or `spec.md` path, do not edit production code. Check the configured tracker:
+
+- If no approved implementation ticket set exists, stop and tell the user to run `/to-tickets`.
+- If tickets exist, require one exact ticket path or tracker identity. Do not implement the whole spec or choose several tickets.
+
+One invocation handles one ticket or one small same-session change.
 
 Use /tdd where possible, at pre-agreed seams.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.
 
-If the ticket or spec selects or cites a prototype, screenshot, design option,
+If the ticket selects or cites a prototype, screenshot, design option,
 visual composition, or parity target, require a visual-acceptance manifest. A
 missing manifest blocks implementation. Read
 `docs/agents/visual-acceptance.md` completely before editing. Confirm the

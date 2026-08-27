@@ -22,7 +22,9 @@ into vague prose.
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Apply the `ready-for-agent` triage label - no need for additional triage.
+3. Write the spec using the template below, then publish it to the project issue tracker. Do not apply `ready-for-agent` or another execution label to the parent spec. For local markdown, do not add a `Status:` line to `spec.md`.
+
+The spec is ready for ticket splitting, not implementation. End after publishing it and tell the user to run `/to-tickets`. Never edit production code or invoke `/implement` from this skill.
 
 <spec-template>
 
