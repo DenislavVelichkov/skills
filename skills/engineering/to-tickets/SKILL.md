@@ -47,9 +47,8 @@ Give each ticket its **blocking edges**: the other tickets that must complete be
 
 For an applicable visual manifest:
 
-- Create an initial repository-gate slice when the project does not yet have a
-  repo-local validator, required CI check, and human ownership protection for
-  manifests, references, and baselines.
+- Create an initial validation-setup slice when the project does not yet have a
+  repo-local validator for manifests, references, and baselines.
 - Create one implementation-and-acceptance ticket per manifest surface. Keep
   the surface ticket open through candidate comparison, explicit human
   approval, and baseline promotion.
