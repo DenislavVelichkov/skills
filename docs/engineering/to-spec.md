@@ -25,7 +25,7 @@ Reach for it when the build is too big for one agent [session](https://www.aiher
 
 The spec exists because context windows end. You settled many things while [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling): the shape of the solution, the choices you argued through, and what you deliberately refused. All of that is in one conversation that you are about to clear. The spec keeps it.
 
-So the spec does not validate or decide anything. It records what you decided, in your project's own vocabulary, so a fresh session can pick up the work without you explaining it again. If the spec states something you never said, that is a defect.
+So the spec does not decide the feature or validate its implementation. It records what you decided, in your project's own vocabulary, so a fresh session can pick up the work without you explaining it again. It validates any visual-acceptance manifest that the feature requires, because that manifest is part of the planning record. If the spec states something you never said, that is a defect.
 
 ## Seams before prose
 
@@ -33,17 +33,30 @@ Before it writes anything, `to-spec` sketches the **seams** where the feature wi
 
 Other skills use those agreed seams later. [tdd](https://aihero.dev/skills-tdd) works only at seams you agreed in advance. [code-review](https://aihero.dev/skills-code-review) reviews the diff against the spec, so a seam nobody agreed to shows up as a review finding. Both connections go through this document. That is why you should take the seam conversation seriously here, and not leave it for implementation.
 
-## Visual decisions stay executable
+## Visual parity decisions stay executable
 
-When the upstream conversation or Wayfinder map selected a prototype, the
-spec links its visual-acceptance manifest instead of paraphrasing “match option
-C.” The manifest carries the exact routes, references, responsive evidence,
-and approval boundary into fresh implementation sessions. A missing manifest
-is missing planning input, not prose for the spec to invent.
+`to-spec` first checks for a visual parity action. The source must require a
+named production surface to be compared against a visual reference, require
+selecting and freezing that reference for the later comparison, or link an
+existing manifest that records either obligation. A UI change without that
+obligation gets no manifest and no Visual Acceptance Contract section.
 
-The spec records the distinction explicitly: the design is selected, while
-production acceptance remains pending until a human reviews the hashed
-candidate comparison.
+For a visual parity action, the spec links the manifest instead of
+paraphrasing “match option C.” If the manifest does not exist yet, `to-spec`
+creates the smallest valid one from the decisions already made, adds a
+`planned` row for every comparison surface, and validates it before publishing
+the spec. It records frozen references as `design_selected` only when the
+reference files and hashes actually exist.
+
+The manifest carries the exact routes, references, responsive evidence, and
+approval boundary into fresh implementation sessions. A valid `planned` row
+is enough to split the work into tickets, but not enough to edit production
+code. No missing artifact is turned into vague prose, and no reference or
+approval is invented to make the planning look further along than it is.
+
+The spec records the state explicitly. A pending choice remains `planned`. A
+selected design can be `design_selected`, while production acceptance remains
+pending until a human reviews the hashed candidate comparison.
 
 ## Common questions
 
@@ -52,6 +65,9 @@ It is this skill, renamed in v1.1. "Spec" is now the one term used throughout, a
 
 **Why doesn't the spec get the `ready-for-agent` label?**
 It is planning input, not a work order. `to-spec` leaves the parent spec unlabeled and stops. `to-tickets` proposes a split, quizzes you, and publishes only after you approve it. Those tickets receive `ready-for-agent`. `implement` must refuse a published spec that has not passed through that gate.
+
+**What happens when a visual parity action has no manifest yet?**
+`to-spec` creates it before publishing the spec. It starts from the installed template and records only what the conversation, map, or source artifacts establish. Unknown design choices remain `planned`; durable selected references may advance to `design_selected`. The validator has to pass before the workflow reaches `to-tickets`. Without a production-to-reference comparison obligation, this branch never runs.
 
 **Why not go straight from grilling to `/to-tickets` and skip the spec?**
 Often you should. The spec is worth its step only on multi-session work. Its value is that the tickets are disposable and the spec is not. Each ticket is sized for one fresh context window and then gets deleted or closed, while the spec stays as the one place that records the reasoning behind them. On a single-session change, that gives you nothing, and you pay for an extra synthesis step where the [model](https://www.aihero.dev/ai-coding-dictionary/model) can drift. Go from grilling to `/implement`.
@@ -81,8 +97,10 @@ A tracker issue may not return a very large spec in full, and there is no local 
 - It comes back in your project's nouns, not generic product-management boilerplate.
 - Every decision in it is one you can remember making. Nothing was invented to fill a section.
 - The out-of-scope section has real things in it: the things you refused are usually the most useful lines on the page.
-- A visual spec links a valid acceptance manifest and never treats prototype
-  selection as production approval.
+- A spec with a visual parity action links a valid acceptance manifest and
+  never treats reference selection as production approval.
+- A UI spec without a production-to-reference comparison has no manifest or
+  visual acceptance section.
 
 ## Where it fits
 

@@ -332,7 +332,7 @@ export const formatApprovalRequest = (surface, { root = process.cwd() } = {}) =>
     ? surface.deviations.map(({ description }) => description).join("; ")
     : "None";
   return [
-    `Approval required: ${surface.id} — ${surface.selection}`,
+    `Approval required: ${surface.id}: ${surface.selection}`,
     `Comparison: [Open comparison](<${comparison}>)`,
     `Candidate set: ${surface.approvalRequest.candidateSetSha256}`,
     `Deviations: ${deviations}`,

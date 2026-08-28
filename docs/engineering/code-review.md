@@ -46,10 +46,13 @@ This design exists to avoid a generic review skill that does not know your stand
 The **smell baseline** sits under the repo's standards. It is twelve code smells from chapter 3 of Fowler's _Refactoring_: Mysterious Name, Duplicated Code, Feature Envy, Data Clumps, Primitive Obsession, Repeated Switches, Shotgun Surgery, Divergent Change, Speculative Generality, Message Chains, Middle Man, Refused Bequest. Each is a labelled heuristic ("possible Feature Envy"), never a hard violation. Each states what the smell is and how to fix it, so a finding comes with a fix attached rather than only a complaint. Both axes skip anything your linter already enforces.
 
 Visual acceptance is reported beside those axes, not added as a third one.
-When a visual manifest applies, the review verifies its hashes, reads the
-recorded reference/candidate comparison, and reports the five delivery
-counters. It cannot advance a human gate. Standards pass plus Spec pass still
-means “implementation candidate” while production acceptance is pending.
+It applies only when the spec requires a production surface to be compared
+against a visual reference, requires selecting that reference for the later
+comparison, or links an existing manifest that records either obligation. A
+visual diff without that obligation gets no visual-acceptance block. For an
+applicable action, the review verifies hashes, reads the reference/candidate
+comparison, and reports the five delivery counters. It cannot advance a human
+gate.
 
 ## Common questions
 
@@ -93,8 +96,9 @@ No. It diffs `<fixed-point>...HEAD`. The three-dot form measures from the merge-
 - Every Standards finding names either a rule in one of your repo's files or one of the twelve smells, with the hunk quoted; every Spec finding quotes a line of the spec.
 - The closing summary gives a worst issue per axis and declines to pick an overall winner.
 - With no spec available, the Spec block says so instead of listing requirements it inferred from the code.
-- With a visual manifest, the report preserves its exact state and never
-  converts a clean review into Member acceptance or baseline promotion.
+- With a visual parity action, the report preserves the manifest's exact state
+  and never converts a clean review into Member acceptance or baseline
+  promotion.
 
 ## Where it fits
 

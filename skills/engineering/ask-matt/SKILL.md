@@ -31,11 +31,14 @@ The route most work travels. You have an idea and want it built.
 
 4. **`/retro`** closes the loop. After a build, and especially one that went sideways, it looks back over the session and suggests changes to the agent's **environment**, not the code: navigation pointers, automated checks, the coding standards `/code-review` enforces, steering files, tooling. Mechanical mistakes become deterministic checks; judgement calls become coding standards. The next build then starts from a better environment.
 
-   Visual work has one extra fail-closed boundary. When Wayfinder selected a
-   prototype or composition, its visual-acceptance manifest follows the work
-   through `/to-spec` and `/to-tickets`. `/implement` ends the comparison turn
-   by asking the human to approve or reject the displayed candidate hash; only
-   that response permits baseline promotion or the next surface.
+   A visual parity action adds one fail-closed boundary. It exists only when the
+   source requires a production surface to be compared against a visual
+   reference, requires selecting that reference for the later comparison, or
+   links an existing manifest that records either obligation. Its manifest
+   follows the work through `/to-spec` and `/to-tickets`.
+   `/implement` requires frozen references, then ends the comparison turn by
+   asking the human to approve or reject the displayed candidate hash. UI work
+   without that comparison uses the normal flow and no manifest.
 
 ### Context hygiene
 

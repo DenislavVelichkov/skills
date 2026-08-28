@@ -1,8 +1,22 @@
 # Visual Acceptance Protocol
 
-Use this protocol when work selects a visual reference, changes a user-facing
-composition, or claims parity with a prototype. It is fail-closed: automated
-correctness and visual acceptance are separate facts.
+## Applicability
+
+Use this protocol only for a **visual parity action**. The source must do at
+least one of these:
+
+- require `Compare <production surface> against <visual reference>`
+- require `Select and freeze <visual reference> so <production surface> can be
+  compared later`
+- link an existing visual-acceptance manifest that records that obligation
+
+Applicability must precede artifact creation. A proposed manifest path or a
+request to create a new manifest does not establish it.
+
+If the source cannot complete either sentence and links no manifest, use the
+normal workflow. A UI change, redesign, prototype, screenshot, or visual test
+without a production-to-reference comparison creates no manifest and adds no
+visual-acceptance gate.
 
 ## Invariant
 
@@ -27,6 +41,55 @@ before the design-selection ticket closes.
 
 Start from [the manifest template](visual-acceptance.template.json). Paths in
 a manifest are repository-relative and must not escape the repository root.
+
+## Planning prerequisite
+
+After a visual parity action establishes applicability, a valid manifest must
+exist before `to-tickets` drafts implementation tickets and before `implement`
+edits production code.
+If the manifest is missing or invalid, the skill running that preflight creates
+or repairs it before either phase begins. Absence is not a reason to defer the
+artifact to implementation.
+
+Create the smallest truthful planning manifest from decisions already present
+in the conversation, map, spec, or ticket:
+
+1. Copy the manifest template to
+   `docs/visual-acceptance/<initiative>/manifest.json`.
+2. Set the initiative and add one `planned` row per known visual surface.
+3. Record the route, current selection or `Pending design selection`, required
+   visible regions, and known interactions. Start references, candidates,
+   deviations, and baselines empty; set comparison, approval request, and
+   approval to `null`.
+4. Run the validator and repair the manifest until it passes.
+
+Use this exact shape for each new `planned` row, replacing every bracketed
+value with facts from the source:
+
+```json
+{
+  "id": "<stable-surface-id>",
+  "route": "<route-or-entry-point>",
+  "selection": "<known target or Pending design selection>",
+  "requiredRegions": ["<visible-region>"],
+  "requiredInteractions": [],
+  "state": "planned",
+  "references": [],
+  "candidates": [],
+  "comparison": null,
+  "deviations": [],
+  "approvalRequest": null,
+  "approval": null,
+  "baselines": []
+}
+```
+
+A valid `planned` row unlocks ticket drafting, not production implementation.
+Implementation of that surface starts only after durable reference files and
+their hashes advance it to `design_selected`. When the source already contains
+an explicit selection and durable references, record that evidence and advance
+the row. Never manufacture a reference, hash, state transition, approval
+request, or human approval to satisfy the validator.
 
 ## Surface states
 
@@ -78,7 +141,7 @@ source, and candidate-set SHA-256. The same turn must end with this block and
 no text after it:
 
 ```text
-Approval required: <surface id> — <selected option>
+Approval required: <surface id>: <selected option>
 Comparison: <clickable comparison path or URL>
 Candidate set: <sha256 digest>
 Deviations: <None or concise list>
@@ -151,17 +214,20 @@ before claiming completion.
 ## Workflow ownership
 
 - **Wayfinder** freezes selected references and creates the manifest.
-- **to-spec** carries the manifest path and acceptance boundary into the spec.
-- **to-tickets** creates one gated surface slice and its blocking edges per
-  manifest row, with local-validator setup first when needed.
-- **implement** produces candidates and pauses at the human boundary; it never
-  self-approves or promotes an unaccepted baseline.
+- **to-spec** creates or repairs a missing planning manifest, then carries its
+  path and acceptance boundary into the spec.
+- **to-tickets** repeats that preflight before drafting, then creates one gated
+  surface slice and its blocking edges per manifest row, with local-validator
+  setup first when needed.
+- **implement** performs the last creation preflight before editing code,
+  requires `design_selected`, produces candidates, and pauses at the human
+  boundary. It never self-approves or promotes an unaccepted baseline.
 - **code-review** reports Standards and Spec independently, then reports visual
   acceptance status without converting a clean code review into human
   acceptance.
 
 ## Terminal conditions
 
-A ticket or initiative with an applicable manifest remains open when any row
-is below its required state. Review loops, green tests, snapshot updates, and
-commits cannot substitute for the missing state transition.
+A ticket or initiative with a visual parity action remains open when any
+applicable row is below its required state. Review loops, green tests, snapshot
+updates, and commits cannot substitute for the missing state transition.
