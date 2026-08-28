@@ -11,8 +11,8 @@ Scaffold the per-repo configuration that the engineering skills assume:
 - **Issue tracker** — where issues live (GitHub by default; local markdown is also supported out of the box)
 - **Triage labels** — the strings used for the five canonical triage roles
 - **Domain docs** — where `CONTEXT.md` and ADRs live, and the consumer rules for reading them
-- **Visual acceptance** — the fail-closed rule used when a visual-acceptance
-  manifest exists
+- **Visual acceptance** — the fail-closed creation and approval rules used
+  only for a visual parity action
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
 
@@ -105,9 +105,13 @@ The block:
 
 ### Visual acceptance
 
-When `docs/visual-acceptance/*/manifest.json` exists, it is fail-closed: design
-selection is not production acceptance, and incomplete visual gates block
-baseline promotion and completion. See `docs/agents/visual-acceptance.md`.
+A visual parity action exists only when the source requires a named production
+surface to be compared against a visual reference, requires selecting and
+freezing that reference for the later comparison, or links an existing manifest
+that records either obligation. Only then create and validate an initiative
+manifest before drafting implementation tickets or editing production code. UI
+work without that comparison uses no manifest. See
+`docs/agents/visual-acceptance.md`.
 ```
 
 Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.md`, only when `triage` is installed and Section B ran. When it isn't, both are omitted.

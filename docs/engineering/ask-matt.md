@@ -31,8 +31,12 @@ The word the skill gives you to think with is **flow**: a path *through* the ski
 - **Standalones**, off every flow, reached for on their own terms — the prototype, the questionnaire, the merge conflict you are already sitting in.
 - **A vocabulary layer underneath**, the two references the other skills pull in when the words rather than the process are the problem.
 
-When the prototype detour selects a visual target, the route carries a
-visual-acceptance manifest through spec, tickets, implementation, and review.
+A visual parity action adds a manifest to the route. The source must require a
+production surface to be compared against a visual reference, require
+selecting that reference for the later comparison, or link an existing manifest
+that records either obligation. UI work without that obligation stays on the
+normal flow. For an applicable action, the manifest
+travels through spec, tickets, implementation, and review.
 The flow pauses after each production comparison; only your approval of the
 exact candidate hash unlocks baseline promotion and the next surface.
 The implementation turn must ask you directly with the validator-generated

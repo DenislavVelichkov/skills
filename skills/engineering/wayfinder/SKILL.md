@@ -100,13 +100,17 @@ Out-of-scope work never graduates — the frontier stops at the destination — 
 
 Ruling something out of scope is a scoping act, not a step on the route. When a ticket that already exists turns out to sit past the destination — mis-scoped in while charting, or exposed by a resolution — **close it** (a closed ticket is unambiguously off the frontier) and leave one line in the **Out of scope** section: the gist plus why it's out of scope, linking the closed ticket. It stays out of **Decisions so far**, which records the route actually walked — a scope boundary isn't a step on it.
 
-## Visual decisions
+## Visual parity decisions
 
-When the map selects a prototype, screenshot, design option, or user-facing
-composition, read `docs/agents/visual-acceptance.md` completely. Create
+A map has a visual parity action only when a ticket requires choosing and
+freezing a visual reference for a stated production comparison, commits a
+named production surface to an already selected reference, or links an existing
+manifest that records either obligation. Only then read
+`docs/agents/visual-acceptance.md` completely and create
 `docs/visual-acceptance/<initiative>/manifest.json` from
-`docs/agents/visual-acceptance.template.json` during charting, with one
-`planned` row per visible surface.
+`docs/agents/visual-acceptance.template.json`, with one `planned` row per
+surface that must be compared. Other prototype and UI decisions create no
+manifest.
 
 A prototype ticket closes only after the human selects the design, its
 references are copied out of temporary or disposable directories, their
@@ -114,9 +118,9 @@ hashes are recorded, and the affected rows validate as `design_selected`.
 That selection approves the target design only. Production acceptance remains
 empty until implementation produces and compares exact candidates.
 
-Do not clear a visual map for handoff while a selected surface is absent from
-the manifest, a selected reference is not durable, or the manifest validator
-fails.
+Do not clear a map with a visual parity action while a selected surface is
+absent from the manifest, a selected reference is not durable, or the manifest
+validator fails.
 
 ## Invocation
 
@@ -141,8 +145,8 @@ User invokes with a map (URL or number). A ticket is **optional** — without on
 2. Choose the ticket. If the user named one, use it. Otherwise take the first frontier ticket in order. **Claim it**: assign it to yourself before any work.
 3. Resolve it — **zoom as needed**: fetch the full body of any related or closed ticket on demand; call the Skill tool for whichever skills the `## Notes` block names. If in doubt, call the Skill tool twice, for "grilling" and "domain-modeling".
 4. Record the resolution: post the answer as a **resolution comment**, **close** the issue, and **append a context pointer** to the map's Decisions-so-far.
-   For a visual decision, update and validate the acceptance manifest before
-   closing the ticket.
+   For a visual parity action, update and validate the acceptance manifest
+   before closing the ticket.
 5. Add newly-surfaced tickets (create-then-wire); graduate any fog the answer has made specifiable, clearing each graduated patch from **Not yet specified** so it lives only as its new ticket. If the answer reveals a ticket — this one or another — sits beyond the destination, **rule it out of scope** rather than resolving it on the route. If the decision invalidates other parts of the map, update or delete those tickets.
 
 The user may run unblocked tickets in parallel, so expect other sessions to be editing the tracker concurrently.

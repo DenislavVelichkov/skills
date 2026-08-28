@@ -54,13 +54,18 @@ Every ticket carries a `wayfinder:<type>` label, and is either **[HITL](https://
 
 Research is the only exception to *one ticket per session*.
 
-## Visual maps freeze the target
+## Visual parity maps freeze the target
 
-When a prototype ticket selects a visual option, Wayfinder writes a durable
-visual-acceptance manifest before closing the ticket. The selected screenshots
-leave temporary prototype storage, gain immutable hashes, and become the
-production comparison target route by route, locale by locale, and viewport by
-viewport.
+Wayfinder writes a visual-acceptance manifest only when a ticket establishes a
+visual parity action. The ticket must require a named production surface to be
+compared against a selected visual reference, require selecting and freezing
+that reference for the later comparison, or link an existing manifest that
+records either obligation. Choosing how a UI should look without that
+comparison obligation creates no manifest.
+
+For an applicable ticket, the selected screenshots leave temporary prototype
+storage, gain immutable hashes, and become the production comparison target
+route by route, locale by locale, and viewport by viewport.
 
 This introduces two deliberately different approvals. Selecting option C says
 what production should become; it does not approve whatever production later
@@ -108,8 +113,8 @@ It is this skill, renamed to `wayfinder` in v1.1 and invoked as `/wayfinder`. "D
 - **Not yet specified** shrinks over time. A patch of fog that graduates into a ticket disappears from that section rather than living in both places.
 - When the opening breadth-first grill turns up no fog at all, the skill stops and tells you the effort is small enough to skip the map.
 - The session that finishes the map hands you toward a spec, not a pull request.
-- A visual map cannot clear while a selected surface lacks a durable, hashed
-  reference in its acceptance manifest.
+- A map with a visual parity action cannot clear while its comparison target
+  lacks a durable, hashed reference in the acceptance manifest.
 
 ## Where it fits
 

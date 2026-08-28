@@ -20,9 +20,21 @@ Work from whatever is already in the conversation context. If the user passes a 
 
 For a local spec at `.scratch/<feature-slug>/spec.md`, treat the output as a separate implementation effort rooted at `.scratch/<feature-slug>/implementation/`. Do not append implementation tickets to Wayfinder, research, or decision tickets already stored under the parent feature's `issues/` directory.
 
-When the source selects a prototype or visual composition, read
-`docs/agents/visual-acceptance.md` completely and validate the linked manifest
-before slicing the work.
+First decide whether the source contains a visual parity action. It does only
+when the source requires a named production surface to be compared against a
+visual reference, requires selecting and freezing that reference for the later
+comparison, or links an existing manifest that records either obligation. UI
+work without that obligation uses ordinary tracer-bullet ticketing and no
+manifest.
+
+For a visual parity action, read `docs/agents/visual-acceptance.md` completely.
+Before exploring, drafting, or quizzing the user about implementation tickets,
+locate the initiative manifest.
+If it is missing or invalid, create or repair it from the installed template
+and the source decisions, following the protocol's Planning prerequisite. Add
+one truthful `planned` row per in-scope surface and run the validator until it
+passes. Do not draft, quiz, or publish any tickets until the validator passes.
+Never invent references, hashes, state transitions, or approval.
 
 ### 2. Explore the codebase (optional)
 
@@ -45,10 +57,16 @@ Break the work into **tracer bullet** tickets.
 
 Give each ticket its **blocking edges** — the other tickets that must complete before it can start. A ticket with no blockers can start immediately.
 
-For an applicable visual manifest:
+For a visual parity action:
 
 - Create an initial validation-setup slice when the project does not yet have a
   repo-local validator for manifests, references, and baselines.
+- For every row still at `planned`, create a blocking design-selection ticket
+  that freezes durable references and advances the row to `design_selected`.
+  The corresponding implementation-and-acceptance ticket depends on it; the
+  implementation agent does not make that design decision. Use the configured
+  `ready-for-human` state when a human selection is still required; otherwise
+  the evidence-freezing work may be `ready-for-agent`.
 - Create one implementation-and-acceptance ticket per manifest surface. Keep
   the surface ticket open through candidate comparison, explicit human
   approval, and baseline promotion.
@@ -85,7 +103,8 @@ Publish the approved tickets. **How** depends on the tracker `/setup-matt-pocock
 - **Local files from `.scratch/<feature-slug>/spec.md`** → write one file per ticket under `.scratch/<feature-slug>/implementation/issues/<NN>-<slug>.md`, numbered from `01` in dependency order (blockers first). This is a fresh implementation set. Never append it to the parent planning or decision sequence.
 - **Local files without a parent feature spec** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order.
 - In either local form, each file's "Blocked by" lists the numbers and titles it depends on. Use the per-ticket file template below, one ticket per file, never a combined file.
-- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise — the tickets are agent-grabbable by construction.
+- In local files, change the template status to `ready-for-human` only for a visual design-selection blocker that still needs a human choice.
+- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise. A visual design-selection blocker that still requires a human uses `ready-for-human`; its downstream implementation ticket remains `ready-for-agent` but blocked.
 
 After publication, implementation may work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom. `to-tickets` stops before that work begins.
 

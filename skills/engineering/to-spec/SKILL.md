@@ -12,11 +12,20 @@ The issue tracker and triage label vocabulary should have been provided to you. 
 
 1. Explore the repo to understand the current state of the codebase, if you haven't already. Use the project's domain glossary vocabulary throughout the spec, and respect any ADRs in the area you're touching.
 
-If the conversation, map, or source artifacts select a prototype or visual
-composition, read `docs/agents/visual-acceptance.md` completely.
-Locate and validate the initiative manifest. A selected visual design without
-a valid manifest is missing planning input; stop rather than converting it
-into vague prose.
+First decide whether the source contains a visual parity action. It does only
+when the source requires a named production surface to be compared against a
+visual reference, requires selecting and freezing that reference for the later
+comparison, or links an existing manifest that records either obligation. UI
+work without that obligation uses the normal spec path and no manifest.
+
+For a visual parity action, read `docs/agents/visual-acceptance.md` completely.
+Before sketching seams or publishing the spec, locate the initiative manifest.
+If it is missing or invalid, create or repair it from the installed template
+and the source decisions, following the protocol's Planning prerequisite. Add
+one truthful `planned` row per in-scope surface, then run the validator until it
+passes. Do not stop merely because it is absent, and do not invent references,
+hashes, state transitions, or approval. Advance a row to `design_selected` only
+when the selected durable references and their hashes actually exist.
 
 2. Sketch out the seams at which you're going to test the feature. Existing seams should be preferred to new ones. Use the highest seam possible. If new seams are needed, propose them at the highest point you can. The fewer seams across the codebase, the better - the ideal number is one.
 
@@ -74,10 +83,11 @@ A list of testing decisions that were made. Include:
 
 ## Visual Acceptance Contract
 
-Include this section only when the shared protocol applies. Link the manifest,
+Include this section only for a visual parity action. Link the manifest,
 state that design selection is not production acceptance, name the required
 comparison and human-approval boundary, and carry its current five progress
-counters. Do not duplicate its route rows into prose.
+counters. A `planned` row is valid ticket-planning input but not permission to
+edit production code. Do not duplicate its route rows into prose.
 
 ## Out of Scope
 

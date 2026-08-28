@@ -76,6 +76,28 @@ test("accepts a frozen design selection and reports separate progress", () => {
   });
 });
 
+test("accepts a truthful planning surface before references are selected", () => {
+  const { root, surface } = fixture();
+  surface.selection = "Pending design selection";
+  surface.state = "planned";
+  surface.references = [];
+
+  const result = validateManifest(
+    { version: 1, initiative: "redesign", surfaces: [surface] },
+    { root },
+  );
+
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(result.progress, {
+    total: 1,
+    implemented: 0,
+    compared: 0,
+    approvalRequested: 0,
+    memberAccepted: 0,
+    baselinePromoted: 0,
+  });
+});
+
 test("rejects acceptance that is not bound to the candidate set", () => {
   const { root, surface, write } = fixture();
   const candidate = {

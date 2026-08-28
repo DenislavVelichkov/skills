@@ -61,10 +61,15 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 ### 4. Identify visual acceptance state
 
-If the spec or diff selects or cites a prototype, screenshot, design option,
-visual composition, or parity target, require a visual-acceptance manifest; a
-missing manifest is a delivery-gate finding. Read
-`docs/agents/visual-acceptance.md` completely.
+Determine whether the spec establishes a visual parity action. It does only
+when the spec requires a named production surface to be compared against a
+visual reference, requires selecting and freezing that reference for the later
+comparison, or links an existing manifest that records either obligation. A
+visual diff, prototype, or screenshot without that obligation creates no
+visual delivery gate.
+
+For a visual parity action, require a manifest; a missing manifest is a
+delivery-gate finding. Read `docs/agents/visual-acceptance.md` completely.
 Locate the applicable manifest, run its validator, inspect the recorded
 reference/candidate comparison artifacts, and capture its five progress
 counters. Treat a missing or invalid manifest as a delivery-gate finding. A
@@ -91,7 +96,7 @@ If the spec is missing, skip the Spec sub-agent and note this in the final repor
 
 Present the two reports under `## Standards` and `## Spec` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings — the two axes are deliberately separate (see _Why two axes_).
 
-When visual acceptance applies, add `## Visual acceptance` with the validator
+For a visual parity action, add `## Visual acceptance` with the validator
 result, the five counters, comparison evidence inspected, and any open human
 gate. Report `approval_requested` separately; do not rewrite it as accepted or
 `member_accepted` as baseline promoted.
