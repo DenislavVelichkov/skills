@@ -17,11 +17,26 @@ Use /tdd where possible, at pre-agreed seams.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.
 
-If the ticket selects or cites a prototype, screenshot, design option,
-visual composition, or parity target, require a visual-acceptance manifest. A
-missing manifest blocks implementation. Read
-`docs/agents/visual-acceptance.md` completely before editing. Confirm the
-ticket's surface id and state. Work only that surface.
+First decide whether the ticket or parent spec contains a visual parity action.
+It does only when either document requires a named production surface to be
+compared against a visual reference, requires selecting and freezing that
+reference for the later comparison, or links an existing manifest that records
+either obligation. UI work without that obligation uses the normal
+implementation path and no manifest.
+
+For a visual parity action, read `docs/agents/visual-acceptance.md` completely.
+Before editing production code, locate the manifest and the ticket's surface
+row. If either is missing or invalid, create or repair it from the installed
+template, the exact ticket, and its parent spec, following the protocol's
+Planning prerequisite.
+Run the validator until it passes. Never invent references, hashes, state
+transitions, or approval.
+
+A valid `planned` manifest permits ticket drafting, not implementation. Require
+the ticket's surface to be at least `design_selected`, with durable reference
+files and verified hashes, before editing production code. If it is still
+`planned`, leave the newly created or repaired manifest valid, report the exact
+design evidence still required, and stop. Work only the confirmed surface.
 
 If the surface is `approval_requested`, verify its candidates and request hash,
 run the validator with `--print-request=<surface-id>`, copy its stdout verbatim
@@ -50,7 +65,7 @@ candidate-changing edit, clear the request and return to `compared` before
 recapturing. Never infer approval from "continue", prototype selection, green
 tests, or a clean review.
 
-For work without an applicable manifest, once done use /code-review to review
+For work without a visual parity action, once done use /code-review to review
 the work.
 
 Commit your work to the current branch.

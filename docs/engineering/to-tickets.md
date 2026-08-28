@@ -16,11 +16,18 @@ You invoke this by typing `/to-tickets`. The [agent](https://www.aihero.dev/ai-c
 | Nothing is decided yet | [grill-with-docs](https://aihero.dev/skills-grill-with-docs), then [to-spec](https://aihero.dev/skills-to-spec) |
 | A [wayfinder](https://aihero.dev/skills-wayfinder) map has cleared | [to-spec](https://aihero.dev/skills-to-spec) first, to collapse the map, then `/to-tickets` |
 
-Tickets that `to-tickets` produced are agent-ready by construction. Don't run [triage](https://aihero.dev/skills-triage) over them. Triage is for work that arrived from someone else.
+Implementation tickets that `to-tickets` produces are agent-ready by construction. A visual design-selection blocker may instead be `ready-for-human` when the choice is still open. Don't run [triage](https://aihero.dev/skills-triage) over either kind; triage is for work that arrived from someone else.
 
 ## Prerequisites
 
 `to-tickets` publishes into a tracker, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) must have configured one for this repo, along with the triage-label vocabulary. Either kind works: a real tracker like GitHub or Linear, or local markdown files under `.scratch/`, which is supported out of the box.
+
+A visual parity action has one additional preflight. The source must require a
+production-to-reference comparison, require selecting the reference for that
+comparison, or link an existing manifest that records either obligation. Only
+then does `to-tickets` locate and validate the manifest before proposing a
+breakdown. UI work without that obligation uses ordinary tracer-bullet
+ticketing.
 
 ## Tracer bullets, not layers
 
@@ -41,12 +48,18 @@ The edges are the point of the artifact. They read two ways depending on the tra
 
 The edges live in the ticket either way. The medium only decides whether anything can act on them in parallel. `to-tickets` produces the artifact; running it (one session at a time, or a fleet) is your job, not the skill's.
 
-For visual work, the manifest defines one extra edge the tracker must show:
+For a visual parity action, the manifest defines one extra edge the tracker must show:
 the next surface stays blocked until the current one has been compared,
 explicitly accepted by a human, and promoted to regression baselines. The
 surface remains one tracer-bullet ticket through that whole path; splitting
 “build”, “review”, and “accept” into separate layer tickets would recreate the
 same integration gap tracer bullets are meant to prevent.
+
+A surface still at `planned` gets its own blocking design-selection ticket.
+That ticket freezes the durable references and advances the manifest to
+`design_selected`; the implementation ticket cannot start first. When a human
+choice is still open, the blocker is marked `ready-for-human`, not handed to an
+implementation agent to decide.
 
 If the repository has no machine-enforced manifest check yet, the first ticket
 installs that gate. Green tests remain evidence inside a surface ticket, never
@@ -81,6 +94,13 @@ Same class of problem, [reported in issue #513](https://github.com/mattpocock/sk
 **Where do local tickets from a spec go?**
 A spec at `.scratch/<feature-slug>/spec.md` produces a fresh set under `.scratch/<feature-slug>/implementation/issues/<NN>-<slug>.md`, numbered from `01` in dependency order. The parent `issues/` directory remains the planning and decision record. Plans without a parent feature spec still use `.scratch/<feature-slug>/issues/`.
 
+**What if a visual parity action has no manifest?**
+The skill creates and validates a planning manifest before it drafts the list
+you review. It does not guess reference hashes or human approval. A comparison
+surface without frozen design evidence stays `planned` and receives a blocker
+ahead of its implementation ticket. UI work with no comparison obligation
+skips this branch.
+
 **It kept truncating when it tried to read my spec.**
 A very large spec can outgrow what a tracker issue serves back cleanly, and there is no local copy to fall back on, so the agent then burns [tool calls](https://www.aihero.dev/ai-coding-dictionary/tool-call) re-fetching chunks and never reaches the end. Don't [clear](https://www.aihero.dev/ai-coding-dictionary/clearing) or [compact](https://www.aihero.dev/ai-coding-dictionary/compaction) between `/to-spec` and `/to-tickets`. Run them in the same context window and the spec never has to be fetched back at all.
 
@@ -100,6 +120,8 @@ The skill stops at the artifact, and there is no auto-dispatch mode. Dispatch is
 - Prefactoring, where it found any, is at the front of the order rather than mixed into feature tickets.
 - Every visual surface names its manifest row, and its successor remains
   blocked until the accepted candidate bytes become the baselines.
+- When a visual parity action exists, its manifest validates before the
+  proposed ticket breakdown appears.
 
 ## Where it fits
 

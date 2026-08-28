@@ -39,11 +39,23 @@ A run is five beats, in order:
 
 One run covers one ticket. The tickets [to-tickets](https://aihero.dev/skills-to-tickets) produces are tracer-bullet vertical slices sized to fit a single fresh [context window](https://www.aihero.dev/ai-coding-dictionary/context-window), so the intended rhythm is: clear context, implement one ticket, commit, clear again. Each ticket is self-contained, which is what makes the previous ticket's context disposable.
 
-Visual tickets have a deliberate human boundary inside that run. The first
-invocation implements the real surface, captures every manifest candidate,
-and stops after producing the side-by-side comparison and candidate-set hash.
-No snapshot baseline moves. A later invocation may promote those exact bytes
-only when your approval names both the surface and hash.
+A ticket has a visual parity action only when it requires a production surface
+to be compared against a visual reference, requires selecting the reference for
+that comparison, or links an existing manifest that records either obligation.
+UI work without that obligation uses the normal implementation path.
+
+Before implementing a visual parity action, `implement` validates the manifest
+and the ticket's comparison row. If either is missing, it creates or repairs the
+`planned` artifact from the ticket and parent spec. The comparison surface must
+have durable, hashed references and be at least `design_selected` before code
+changes begin.
+
+Once the target surface is `design_selected`, visual tickets have a deliberate
+human boundary inside the run. The first implementation invocation builds the
+real surface, captures every manifest candidate, and stops after producing the
+side-by-side comparison and candidate-set hash. No snapshot baseline moves. A
+later invocation may promote those exact bytes only when your approval names
+both the surface and hash.
 
 That pause is not unfinished automation; it is the point at which automation
 has reached the decision it cannot make. Code review can establish that the
@@ -76,6 +88,14 @@ Not built in. It commits straight to the current branch, which several people fi
 
 Separately, some people deliberately do not want the review inside the run at all, because an agent reviewing the code it just wrote is biased toward its own solution. Running [code-review](https://aihero.dev/skills-code-review) in a fresh session against a fixed point is a legitimate alternative, and is the same reason that skill runs its two axes in separate sub-agents.
 
+**What happens if a visual parity ticket points at no manifest?**
+
+The skill creates the missing planning artifact before it edits code. It does
+not treat that creation as design approval. If the ticket and parent spec do
+not provide frozen references, the new surface remains `planned` and the run
+stops with the missing evidence named explicitly. A UI ticket without a
+production-to-reference comparison needs no manifest.
+
 **One ticket burned 150k tokens. Am I using it wrong?**
 
 Probably the ticket is too big rather than the skill being misused. A run does codebase exploration, a red-green loop per seam, a full suite, and a review, so a non-trivial ticket exceeding 100k [tokens](https://www.aihero.dev/ai-coding-dictionary/token) is normal rather than a sign something broke. The lever is upstream: right-size the tickets in [to-tickets](https://aihero.dev/skills-to-tickets) so each fits one fresh window. If a single ticket keeps blowing out, split it rather than raising the [effort](https://www.aihero.dev/ai-coding-dictionary/effort) level.
@@ -91,7 +111,9 @@ Probably the ticket is too big rather than the skill being misused. A run does c
 - Typechecks and single test files run repeatedly during the run, and the full suite runs once near the end.
 - The run reaches a commit on your current branch without you prompting it to carry on.
 - The diff is one ticket's worth of change: a vertical slice through every layer, not several tickets swept together.
-- A visual run reports Implemented, Compared, Approval requested, Member
+- A manifest is created only for a visual parity action, and a `planned`
+  comparison surface still blocks implementation.
+- A visual parity run reports Implemented, Compared, Approval requested, Member
   accepted, and Baseline promoted separately.
 - Once comparison evidence is ready, the validator prints the exact approval
   question and the implementation turn ends with it. Work cannot continue
@@ -105,7 +127,7 @@ Probably the ticket is too big rather than the skill being misused. A run does c
 grill-with-docs → to-spec → to-tickets → implement → code-review
 ```
 
-Its neighbours are [to-tickets](https://aihero.dev/skills-to-tickets), which produces the tickets it consumes and declares the blocking edges that decide their order; [tdd](https://aihero.dev/skills-tdd), which it drives internally at each seam; and [code-review](https://aihero.dev/skills-code-review), which it runs before committing. It sits downstream of the planning skills and trusts them. It does not re-validate the shape of what it was handed, so a badly-structured map or a horizontally-layered ticket gets built as written.
+Its neighbours are [to-tickets](https://aihero.dev/skills-to-tickets), which produces the tickets it consumes and declares the blocking edges that decide their order; [tdd](https://aihero.dev/skills-tdd), which it drives internally at each seam; and [code-review](https://aihero.dev/skills-code-review), which it runs before committing. It sits downstream of the planning skills and trusts their implementation decisions. The visual-manifest preflight is the one fail-closed exception. It still does not redesign a badly structured map or horizontally layered ticket.
 
 That trust is why [wayfinder](https://aihero.dev/skills-wayfinder) merges onto the chain at [to-spec](https://aihero.dev/skills-to-spec) rather than looping its map straight into `implement`. `implement` must not build from a map or parent spec.
 
