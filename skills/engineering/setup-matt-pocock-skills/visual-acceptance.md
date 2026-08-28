@@ -111,9 +111,10 @@ Record:
 - every accepted deviation from the reference
 
 The validator checks structure and hashes; it cannot authenticate a human.
-For strong enforcement, protect manifests, references, and baselines with
-CODEOWNERS or an equivalent required human review. An unrestricted writer
-cannot independently prove its own approval.
+Treat approval as a human-owned process boundary. The implementation agent may
+present the request and record an explicit response, but it must never invent,
+infer, or self-author approval. Repository hosting controls are optional and
+sit outside this protocol.
 
 ## Reporting
 
@@ -131,7 +132,7 @@ Use `implementation candidate` while any applicable surface is below
 `member_accepted`. Use `complete` only when every applicable surface is
 `baseline_promoted` and all non-visual acceptance gates also pass.
 
-## Validation and CI
+## Validation
 
 Run the bundled dependency-free validator from the target repository root:
 
@@ -144,16 +145,15 @@ node scripts/validate-visual-acceptance.mjs \
 surface is exactly `approval_requested`.
 
 Use `--require-complete` only at the final completion gate. Setup installs the
-validator in the repository; make its command a required CI check. CI must
-reject baseline changes that are not represented by a `member_accepted`
-manifest row.
+validator in the repository. Run it locally before each state change and
+before claiming completion.
 
 ## Workflow ownership
 
 - **Wayfinder** freezes selected references and creates the manifest.
 - **to-spec** carries the manifest path and acceptance boundary into the spec.
 - **to-tickets** creates one gated surface slice and its blocking edges per
-  manifest row, with repository-gate setup first when needed.
+  manifest row, with local-validator setup first when needed.
 - **implement** produces candidates and pauses at the human boundary; it never
   self-approves or promotes an unaccepted baseline.
 - **code-review** reports Standards and Spec independently, then reports visual

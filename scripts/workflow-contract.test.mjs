@@ -32,3 +32,21 @@ test("published specs must pass through an approved ticket split", () => {
     /spec is input to ticket splitting, not an implementation work order/u,
   );
 });
+
+test("visual acceptance stays local and human-approved", () => {
+  const toTickets = read("skills/engineering/to-tickets/SKILL.md");
+  const visualAcceptance = read(
+    "skills/engineering/setup-matt-pocock-skills/visual-acceptance.md",
+  );
+
+  assert.match(toTickets, /repo-local validator/u);
+  assert.doesNotMatch(
+    `${toTickets}\n${visualAcceptance}`,
+    /required CI|CODEOWNERS|branch protection/u,
+  );
+  assert.match(
+    visualAcceptance,
+    /Run it locally before each state change and\nbefore claiming completion\./u,
+  );
+  assert.match(visualAcceptance, /it must never invent,\ninfer, or self-author approval/u);
+});
