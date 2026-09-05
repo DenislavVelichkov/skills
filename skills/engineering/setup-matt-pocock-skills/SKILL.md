@@ -14,7 +14,10 @@ Scaffold the per-repo configuration that the engineering skills assume:
 - **Visual acceptance**: the fail-closed creation and approval rules used
   only for a visual parity action
 
-This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
+Explore the repository and reuse choices already supplied by the user or
+recorded in its configuration. Ask about unresolved choices, then complete the
+authorized setup. Show a concrete draft before any still-required approval;
+do not request the same approval again for the same scope.
 
 ## Process
 
@@ -34,7 +37,9 @@ Look at the current repo to understand its starting state. Read whatever exists;
 
 ### 2. Present findings and ask
 
-Summarise what's present and what's missing. Then take the sections in order. One section, one answer, then the next.
+Summarise what's present and what's missing. Resolve each section from existing
+answers and repository conventions first. Ask one question at a time only for
+choices that remain unresolved, and continue independent preparation.
 
 Lead each section with the recommended answer so the user can accept it in a word. Give a one-line explainer only when the choice genuinely branches; skip the section entirely when exploration already settled it (Section B when `triage` isn't installed, Section C when there's no monorepo).
 
@@ -53,7 +58,8 @@ Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templ
 
 **Section B: Triage label vocabulary.** Skip this section entirely if the `triage` skill isn't installed (exploration told you), since an uninstalled skill needs no labels.
 
-If it is installed, ask exactly one question:
+If it is installed, reuse an existing label vocabulary or the user's prior
+choice. Otherwise ask exactly one question:
 
 > Do you want to keep the default triage labels? (recommended: **yes**)
 
@@ -63,7 +69,7 @@ The defaults are the five canonical roles, each label string equal to its name: 
 
 Offer **multi-context** (a root `CONTEXT-MAP.md` pointing to per-context `CONTEXT.md` files) only when exploration found monorepo signals. Then confirm which layout they want.
 
-### 3. Confirm and edit
+### 3. Prepare the changes
 
 Show the user a draft of:
 
@@ -72,7 +78,9 @@ Show the user a draft of:
 - The conditional visual-acceptance pointer and
   `docs/agents/visual-acceptance.md`
 
-Let them edit before writing.
+Use any corrections already supplied. When setup is authorized and the choices
+are settled, apply the draft. If approval for a remaining decision is required,
+show that concrete change and wait only on the dependent work.
 
 ### 4. Write
 

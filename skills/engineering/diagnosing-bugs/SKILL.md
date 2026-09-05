@@ -1,11 +1,20 @@
 ---
 name: diagnosing-bugs
-description: Diagnosis loop for hard bugs and performance regressions. Use when the user says "diagnose"/"debug this", or reports something broken/throwing/failing/slow.
+description: Diagnose hard, recurring, or unclear bugs and performance regressions. Use for explicit diagnosis/debugging requests or when a focused inspection and existing check do not establish the cause.
 ---
 
 # Diagnosing Bugs
 
-A discipline for hard bugs. Skip phases only when explicitly justified.
+A discipline for hard bugs. Start with the supplied error, relevant code, and
+the smallest existing check. If that evidence establishes a straightforward
+cause, make the requested fix, verify the reported symptom, and explain the
+cause. A question about an error can end with an evidence-backed explanation.
+
+Use the full loop below when the cause remains uncertain, the bug recurs, or
+performance needs measurement. Reuse an existing reproduction before creating
+one. Add a regression test when it protects behavior, not merely to repeat the
+fix; explicit test-first requests retain their TDD workflow. Within the full
+loop, skip phases only when explicitly justified.
 
 When exploring the codebase, read `CONTEXT.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 
