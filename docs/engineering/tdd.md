@@ -6,6 +6,10 @@ It writes no test at a seam you have not agreed to first. Before any test exists
 
 ## When to reach for it
 
+The red-green loop runs the focused test. Broader checks follow the affected
+behavior and the project's final gates, so small edits do not repeatedly run
+the whole suite. Runtime and visual evidence keep their own requirements.
+
 Type `/tdd`, or the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) reaches for it automatically when a task fits: building a feature or fixing a bug test-first, or when you say "red-green-refactor".
 
 Reach for it when there is a concrete behaviour to build, with an input and an observable output, and you want tests that survive a refactor.

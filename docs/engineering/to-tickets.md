@@ -6,6 +6,11 @@ Every ticket is a **tracer bullet**: a narrow but complete path through every la
 
 ## When to reach for it
 
+Each ticket also names its focused checks and final evidence requirements.
+Shared fixes are scheduled before consumers' expensive captures, reducing
+repeated verification. A different dependency order is proposed for approval
+when an existing serial chain would otherwise hold up independent work.
+
 You invoke this by typing `/to-tickets`. The [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own.
 
 | Where you are | What to run |

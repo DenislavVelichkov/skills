@@ -15,7 +15,10 @@ One invocation handles one ticket or one small same-session change.
 
 Use /tdd where possible, at pre-agreed seams.
 
-Run typechecking regularly, single test files regularly, and the full test suite once at the end.
+Use [proportionate verification](VERIFICATION.md) to choose checks and reuse
+evidence. Run the smallest relevant check after a meaningful change. Run the
+required final suite once on the stable candidate; repeat only checks affected
+by later changes or required by the project contract.
 
 First decide whether the ticket or parent spec contains a visual parity action.
 It does only when either document requires a named production surface to be
@@ -49,8 +52,10 @@ For a surface below `approval_requested`:
    baselines; set the surface to `implemented`.
 2. Commit the implementation candidate and use /code-review. Fix accepted
    findings before capturing final candidates.
-3. Capture every required candidate, record its hash and side-by-side
-   comparison, set `compared`, and run the manifest validator.
+3. Supply every required candidate and side-by-side comparison. Reuse existing
+   evidence only through project-supported validation of its applicability to
+   the current candidate; capture missing or invalidated evidence. Record the
+   hashes, set `compared`, and run the manifest validator.
 4. Record the approval request with its candidate-set hash, set
    `approval_requested`, and validate again.
 5. Report all five progress counters. End the final response with the
