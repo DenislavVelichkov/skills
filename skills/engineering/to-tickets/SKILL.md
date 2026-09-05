@@ -57,6 +57,20 @@ Break the work into **tracer bullet** tickets.
 
 Give each ticket its **blocking edges**: the other tickets that must complete before it can start. A ticket with no blockers can start immediately.
 
+Plan verification alongside these edges. Put shared primitive or contract
+repairs before consumers' final evidence, and give each ticket a short
+validation note: affected behavior, focused checks, reusable evidence inputs,
+and required final gates. Use existing ticket fields rather than a new ledger.
+Group related shared fixes into a bounded checkpoint so each affected consumer
+needs expensive evidence only once per stable candidate. Separate evidence
+refresh work from feature dependencies where the approved workflow permits;
+all affected acceptance claims still need current proof before closure.
+
+If an existing serial acceptance chain prevents independent work, show the
+alternative dependency order during the approval step. Preserve that chain
+until the user explicitly approves the amendment. This skill does not change
+an active project's order or authorize parallel implementation.
+
 For a visual parity action:
 
 - Create an initial validation-setup slice when the project does not yet have a

@@ -6,6 +6,11 @@ The two axes are never merged and never re-ranked. The report ends with a worst 
 
 ## When to reach for it
 
+The first review covers the complete requested diff on a frozen candidate.
+Follow-up reviews cover accepted fixes and their affected behavior, retaining
+the original review coverage. Once both axes and required checks pass, an
+unchanged scope does not need another review round.
+
 Type `/code-review`, or the agent reaches for it automatically when you ask to review a branch, a PR, work in progress, or anything "since X".
 
 | Your situation | Reach for |

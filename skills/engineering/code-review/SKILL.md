@@ -26,6 +26,18 @@ Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so th
 
 Before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here, not inside two parallel sub-agents.
 
+Freeze the candidate revision as well as the fixed point; use that revision
+in the diff and log commands so concurrent edits cannot move the review scope.
+The first review covers the full requested diff. After accepted fixes, review
+the delta from the last reviewed candidate plus affected callers, contracts,
+and regression risks. Retain the original baseline and prior coverage; a
+delta review alone cannot stand in for a missing initial review. Give both
+axes the same scope and record which requirements remain covered by prior
+results. Broaden when changed shared behavior or uncertain impact requires it.
+After required checks and both axes pass, stop reviewing that unchanged scope.
+Report-only edits or a new commit identity do not justify another full review;
+follow stricter project requirements where they apply.
+
 ### 2. Identify the spec source
 
 Look for the originating spec, in this order:

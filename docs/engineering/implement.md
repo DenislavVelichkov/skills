@@ -6,6 +6,12 @@ It never reopens the plan. There is no interview, no clarifying round, no propos
 
 ## When to reach for it
 
+Verification follows the change: focused checks during implementation, required
+final checks on the stable candidate, and expensive evidence capture only for
+missing or affected claims. Reuse depends on the project's verifier proving
+that the relevant inputs still match. Existing acceptance and approval gates
+continue to apply.
+
 You invoke this by typing `/implement` yourself: the agent won't reach for it on its own. It ships with `disable-model-invocation: true`, so no other skill can call it either. Wherever [ask-matt](https://aihero.dev/skills-ask-matt) or [to-tickets](https://aihero.dev/skills-to-tickets) says "then `/implement` per ticket", that is an instruction to you, not something the agent will do unprompted.
 
 Where the work currently lives decides whether this is the right skill:
