@@ -7,6 +7,39 @@ import assert from "node:assert/strict";
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const read = (path) => readFileSync(join(root, path), "utf8");
 
+test("an unrelated test edit cannot authorize visual evidence reuse", () => {
+  const implement = read("skills/engineering/implement/SKILL.md");
+  assert.match(implement, /\[proportionate verification\]\(VERIFICATION.md\)/u);
+  const policy = read("skills/engineering/implement/VERIFICATION.md");
+  assert.match(policy, /only when the project verifier supports it and proves/u);
+  assert.match(policy, /direct\nand transitive source dependencies/u);
+  assert.match(policy, /Unknown dependencies require conservative revalidation/u);
+  assert.match(policy, /Never relabel an old capture as a new run/u);
+  assert.match(policy, /respect the existing validator/u);
+});
+
+test("shared fixes precede consumer evidence without changing approved order", () => {
+  const ticketing = read("skills/engineering/to-tickets/SKILL.md");
+  assert.match(ticketing, /repairs before consumers' final evidence/u);
+  assert.match(ticketing, /affected behavior, focused checks, reusable evidence inputs/u);
+  assert.match(ticketing, /where the approved workflow permits/u);
+  assert.match(ticketing, /Preserve that chain\nuntil the user explicitly approves/u);
+  assert.match(ticketing, /does not change\nan active project's order or authorize parallel implementation/u);
+});
+
+test("a stable fix ends verification while retaining full initial review coverage", () => {
+  const tdd = read("skills/engineering/tdd/SKILL.md");
+  const review = read("skills/engineering/code-review/SKILL.md");
+  assert.match(tdd, /Run the focused test during red-green/u);
+  assert.match(tdd, /required final suite on the stable candidate/u);
+  assert.match(tdd, /failures, uncertain impact, and project gates/u);
+  assert.match(review, /first review covers the full requested diff/u);
+  assert.match(review, /affected callers, contracts,/u);
+  assert.match(review, /delta review alone cannot stand in for a missing initial review/u);
+  assert.match(review, /After required checks and both axes pass, stop reviewing that unchanged scope/u);
+  assert.match(review, /follow stricter project requirements/u);
+});
+
 test("published specs must pass through an approved ticket split", () => {
   const toSpec = read("skills/engineering/to-spec/SKILL.md");
   const toTickets = read("skills/engineering/to-tickets/SKILL.md");
