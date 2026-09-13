@@ -4,10 +4,10 @@
   "description": "Personal Matt Pocock Codex skills and workflows.",
   "author": {
     "name": "Custom Plugin for Matt skills",
-    "url": "https://github.com/mattpocock"
+    "url": "https://github.com/DenislavVelichkov/skills"
   },
-  "homepage": "https://github.com/mattpocock/skills",
-  "repository": "https://github.com/mattpocock/skills",
+  "homepage": "https://github.com/DenislavVelichkov/skills",
+  "repository": "https://github.com/DenislavVelichkov/skills",
   "keywords": [
     "engineering",
     "skills",
