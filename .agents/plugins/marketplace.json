@@ -1,7 +1,7 @@
 {
   "name": "mattpocock-codex",
   "interface": {
-    "displayName": "Matt Pocock's skills for real engineering, as an installable Claude Code plugin."
+    "displayName": "Matt Pocock's skills for real engineering."
   },
   "plugins": [
     {
