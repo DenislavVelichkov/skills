@@ -1,0 +1,21 @@
+{
+  "name": "mattpocock-codex",
+  "interface": {
+    "displayName": "Matt Pocock's skills for real engineering, as an installable Claude Code plugin."
+  },
+  "plugins": [
+    {
+      "name": "mattpocock-codex",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/DenislavVelichkov/skills.git",
+        "ref": "dv8/main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
