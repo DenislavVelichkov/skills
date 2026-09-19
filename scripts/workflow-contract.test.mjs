@@ -151,3 +151,18 @@ test("applicable missing manifests are created before ticketing or implementatio
     /A valid `planned` manifest permits ticket drafting, not implementation/u,
   );
 });
+
+// These assertions check instruction contracts, not observed agent behavior.
+test("validation selects desktop behavior, native exceptions, and complete final proof", () => {
+  const policy = read("skills/engineering/implement/VERIFICATION.md");
+  for (const text of ["focused desktop tests", "exposes production behavior",
+    "only at established test boundaries", "cannot otherwise reach it",
+    "extract the minimum needed", "focused native", "native-only case",
+    "cannot certify native behavior", "after its desktop regression passes",
+    "Run all required final checks on the final candidate"]) {
+    assert.ok(policy.includes(text), text);
+  }
+  for (const name of ["tdd", "diagnosing-bugs", "to-tickets"]) {
+    assert.match(read(`skills/engineering/${name}/SKILL.md`), /\(\.\.\/implement\/VERIFICATION.md\)/u);
+  }
+});

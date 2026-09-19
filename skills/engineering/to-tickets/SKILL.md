@@ -4,6 +4,10 @@ description: Break a plan, spec, or the current conversation into a set of trace
 disable-model-invocation: true
 ---
 
+For desktop versus focused native checks, minimum extraction, and complete final
+proof, read [proportionate verification](../implement/VERIFICATION.md) before
+selecting validation.
+
 # To Tickets
 
 Break a plan, spec, or conversation into a set of **tickets**: tracer-bullet vertical slices, each declaring the tickets that **block** it.
