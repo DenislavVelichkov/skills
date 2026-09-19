@@ -4,6 +4,10 @@
 
 It writes no test at a seam you have not agreed to first. Before any test exists, it names the public boundaries it intends to test at and stops for your confirmation, because testing effort is finite and this is where you spend it on the critical paths instead of on every edge case. The other thing to know is that `tdd` is a **reference**, not a driver. It holds the rules of the loop, and something else (you, or [implement](https://aihero.dev/skills-implement)) runs the [session](https://www.aihero.dev/ai-coding-dictionary/session) that applies them.
 
+Validation follows the behavior being changed. Existing desktop tests provide
+feedback during editing; platform-owned behavior needs focused native checks.
+Required final proof still runs on the stable candidate.
+
 ## When to reach for it
 
 The red-green loop runs the focused test. Broader checks follow the affected

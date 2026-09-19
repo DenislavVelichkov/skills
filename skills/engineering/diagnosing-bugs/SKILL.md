@@ -3,6 +3,10 @@ name: diagnosing-bugs
 description: Diagnose hard, recurring, or unclear bugs and performance regressions. Use for explicit diagnosis/debugging requests or when a focused inspection and existing check do not establish the cause.
 ---
 
+For desktop versus focused native checks, minimum extraction, and complete final
+proof, read [proportionate verification](../implement/VERIFICATION.md) before
+selecting validation.
+
 # Diagnosing Bugs
 
 A discipline for hard bugs. Start with the supplied error, relevant code, and

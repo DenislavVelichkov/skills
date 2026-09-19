@@ -9,6 +9,17 @@ changed input and the evidence it can invalidate.
 - Record the changed behavior, affected dependencies, smallest useful check,
   and required final checks in the existing ticket or progress record. Use the
   current test runner and proof controller; add no separate tracking system.
+- During editing, prefer focused desktop tests through the highest existing
+  component, service, or controller boundary that exposes production behavior.
+  Replace external systems only at established test boundaries. Extract embedded
+  business logic only when a meaningful behavior test cannot otherwise reach it;
+  extract the minimum needed, without creating a parallel test model.
+- For native UI rendering, font metrics, wrapping, scroll reachability, gestures, rotation,
+  lifecycle, platform dialogs, and accessibility focus, select a focused native
+  check on the affected profile. Record why a native-only case has no useful
+  desktop check. Browser rendering, component mocks, and captured hierarchy
+  replay support diagnosis but cannot certify native behavior. Confirm a native
+  interaction fix on the affected profile after its desktop regression passes.
 - During implementation, run focused behavior tests and relevant type checks.
   Add regression coverage for a real defect at the agreed public boundary.
   Avoid tests that merely repeat implementation details or add no useful
