@@ -8,6 +8,11 @@ Validation follows the behavior being changed. Existing desktop tests provide
 feedback during editing; platform-owned behavior needs focused native checks.
 Required final proof still runs on the stable candidate.
 
+Audits and reviews inspect retained evidence without starting live scenarios.
+Explicit validation shares verified assessments within the project's supported
+operation, expires them after relevant changes, and records failed work as well
+as successful reuse. Existing native and human acceptance gates still apply.
+
 ## When to reach for it
 
 Verification follows the change: focused checks during implementation, required

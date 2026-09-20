@@ -61,6 +61,31 @@ For each rerun, name the changed input, affected claim, and selected check.
 When developing a controller, cache repeated reads and hashes only within an
 immutable candidate or with reliable content invalidation.
 
+## Separate reports from execution
+
+- Keep audits, refresh plans and visual reviews passive. They inspect retained
+  evidence and report missing or stale proof; only an explicit validation
+  operation starts live interactions. A passive report cannot grant acceptance.
+- Within one supported operation, execute each required expensive scenario once
+  per profile and relevant input state. Let prerequisite checks and finalization
+  consume the same verified assessment through the project's existing controller.
+  Check source, contract, receipt and observer compatibility before native work
+  or rate-limit waits. Unsupported proof remains a named verification gap.
+- Reuse requires fresh checks of the relevant build, environment, fixture and
+  native state. Mutation, drift, failure, interruption or a review pause expires
+  affected live assessments. Restoring bytes or holding a lease alone cannot
+  revive them. Retain valid captures and reviews across operations; obtain only
+  the fresh proof required by the verifier. Never add an ad hoc acceptance cache.
+- For shared fixtures, distinguish an old client projection before ordinary
+  entry from a failed fresh observation. Establish the expected state through
+  the existing entry path, verify the resulting server and native state, and
+  reject later drift before reuse. Preserve fixture cleanup and serialization.
+- On failure, diagnose the failed stage and run its smallest supported check
+  before another broad run. Record actual scenario executions, assessment reuse,
+  invalidations and failures, including failed operations. Measure prerequisite,
+  capture, validation, recovery and human waiting separately; screenshot reuse
+  alone does not demonstrate less end-to-end work or a ticket speedup.
+
 ## Schedule without repeated work
 
 Plan shared primitives and contract repairs before their consumers' final
