@@ -175,3 +175,18 @@ test("reports stay passive and live reuse expires at real operation boundaries",
   assert.match(review, /\.\.\/implement\/VERIFICATION.md/u);
   assert.match(review, /Review does not authorize runtime execution/u);
 });
+
+// Instruction-contract coverage; this does not certify agent behavior.
+test("feature verification bounds shared-tooling repairs and debugging effort", () => {
+  const policy = read("skills/engineering/implement/VERIFICATION.md");
+  for (const text of ["exact required check it cannot run", "smallest repair and its completion criterion",
+    "report tooling work separately from feature completion", "Once that check works, return to the feature",
+    "Generalization for future packages", "does not waive evidence, security, accessibility"]) {
+    assert.ok(policy.includes(text), text);
+  }
+  const diagnosis = read("skills/engineering/diagnosing-bugs/SKILL.md");
+  assert.ok(diagnosis.includes("Stop improving it"));
+  assert.ok(diagnosis.includes("Choose a bounded trial count"));
+  assert.ok(diagnosis.includes("Native or external-service checks may take minutes"));
+  assert.doesNotMatch(diagnosis, /Spend disproportionate effort|Treat the loop as a product|seconds, not minutes/u);
+});

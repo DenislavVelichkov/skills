@@ -85,6 +85,14 @@ The "pre-agreed" part matters, and it is also the skill's weakest point. Nothing
 
 ## Common questions
 
+**Does each ticket need new verification tooling?**
+
+A ticket adds its own fixtures, assertions and registration to the existing
+runner. Shared-tooling repairs must name the blocked check and stop when that
+check works. General infrastructure improvements stay separate from feature
+delivery unless requested. Required acceptance checks still apply.
+
+
 **It finished, but my ticket is still open and the acceptance criteria are still unchecked.**
 
 Correct, and expected. `implement` has no completion step. It ends at the commit and never touches the work item. This is the same on GitHub Issues and on the local markdown tracker, so it is not a tracker integration problem. It also does not act on the findings `code-review` produced, and does not tick the `- [ ]` boxes on the originating issue. Close the ticket and reconcile the criteria yourself. This matters most on a dependency chain, because `to-tickets` defines the frontier as tickets whose blockers are all closed. If nothing gets closed, nothing ever becomes visibly unblocked.

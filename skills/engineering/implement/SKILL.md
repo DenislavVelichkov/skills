@@ -16,7 +16,7 @@ One invocation handles one ticket or one small same-session change.
 Use /tdd where possible, at pre-agreed seams.
 
 Read [proportionate verification](VERIFICATION.md) before choosing checks,
-reusing evidence, or starting live validation. Keep reports passive and share
+reusing evidence, changing verification tooling, or starting live validation. Keep reports passive and share
 verified assessments through the existing controller. Run the smallest relevant check after a meaningful change. Run the
 required final suite once on the stable candidate; repeat only checks affected
 by later changes or required by the project contract.

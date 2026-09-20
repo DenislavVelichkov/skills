@@ -32,7 +32,10 @@ If the redacted output is not enough to diagnose the bug, say so and ask the use
 
 **This is the skill.** Everything else is mechanical. If you have a **tight** pass/fail signal for the bug (one that goes red on _this_ bug), you will find the cause; bisection, hypothesis-testing, and instrumentation all just consume it. If you don't have one, no amount of staring at code will save you.
 
-Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give up.**
+Use the smallest existing check that can distinguish the failure from success.
+Follow the shared verification tooling boundary before adding or repairing a
+runner. Phase 1 ends when that check exposes the actual failure; further loop
+optimization needs a measured obstacle to diagnosing this bug.
 
 ### Ways to construct one, in roughly this order
 
@@ -47,21 +50,23 @@ Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give
 9. **Differential loop.** Run the same input through old-version vs new-version (or two configs) and diff outputs.
 10. **HITL bash script.** Last resort. If a human must click, drive _them_ with `scripts/hitl-loop.template.sh` so the loop is still structured. Captured output feeds back to you.
 
-Build the right feedback loop, and the bug is 90% fixed.
+Keep the reproduction scoped to the reported failure.
 
 ### Tighten the loop
 
-Treat the loop as a product. Once you have _a_ loop, **tighten** it:
-
-- Can I make it faster? (Cache setup, skip unrelated init, narrow the test scope.)
-- Can I make the signal sharper? (Assert on the specific symptom, not "didn't crash".)
-- Can I make it more deterministic? (Pin time, seed RNG, isolate filesystem, freeze network.)
-
-A 30-second flaky loop is barely better than no loop; a 2-second deterministic one is tight, a debugging superpower.
+Improve the loop only when its cost, ambiguity or flakiness prevents the next
+diagnostic step. Reuse supported filters and fixtures first. Stop improving it
+when the next hypothesis can be tested reliably; broader runner improvements
+are separate work. Native or external-service checks may take minutes. Keep
+those checks when the platform owns the behavior rather than replacing them
+with a faster simulation that cannot prove it.
 
 ### Non-deterministic bugs
 
-The goal is not a clean repro but a **higher reproduction rate**. Loop the trigger 100×, parallelise, add stress, narrow timing windows, inject sleeps. A 50%-flake bug is debuggable; 1% is not, so keep raising the rate until it's debuggable.
+Choose a bounded trial count and vary one suspected condition at a time. Record
+failures and elapsed time, then reassess the evidence before another batch.
+Stress and concurrency require authorized, isolated resources. Stop increasing
+the reproduction rate once it can distinguish the candidate explanations.
 
 ### When you genuinely cannot build a loop
 
@@ -73,10 +78,12 @@ Phase 1 is done when the loop is **tight** and **red-capable**: you can name **o
 
 - [ ] **Red-capable**: it drives the actual bug code path and asserts the **user's exact symptom**, so it can go red on this bug and green once fixed. Not "runs without erroring"; it must be able to _catch this specific bug_.
 - [ ] **Deterministic**: same verdict every run (flaky bugs: a pinned, high reproduction rate, per above).
-- [ ] **Fast**: seconds, not minutes.
+- [ ] **Proportionate**: the smallest supported check of the actual behavior; record why a slower native or external-service check is necessary.
 - [ ] **Agent-runnable**: you can run it unattended; a human in the loop only via `scripts/hitl-loop.template.sh`.
 
-If you catch yourself reading code to build a theory before this command exists, **stop: jumping straight to a hypothesis is the exact failure this skill prevents.** No red-capable command, no Phase 2.
+Read the owning code to select the check. Keep suspected causes provisional
+until the check provides evidence; a new harness is unnecessary when an existing
+check already exposes the failure.
 
 ## Phase 2: Reproduce + minimise
 
@@ -94,7 +101,9 @@ Once it's red, shrink the repro to the **smallest scenario that still goes red**
 
 Why bother: a minimal repro shrinks the hypothesis space in Phase 3 (fewer moving parts left to suspect) and becomes the clean regression test in Phase 5.
 
-Done when **every remaining element is load-bearing**: removing any one of them makes the loop go green.
+Done when the smallest supported reproduction isolates the behavior enough to
+test competing causes. Preserve necessary platform and integration dependencies;
+rebuilding them solely to shrink the reproduction is separate tooling work.
 
 Do not proceed until you have reproduced **and** minimised.
 
