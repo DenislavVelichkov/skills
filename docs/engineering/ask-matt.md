@@ -16,6 +16,10 @@ You invoke this by typing `/ask-matt`; the agent won't reach for it on its own.
 | A long session and a decision about the [context](https://www.aihero.dev/ai-coding-dictionary/context) | The ordered tree over the five options at a phase boundary |
 | A skill you have already picked | Nothing useful. Invoke that skill directly. |
 
+For a known failure, the debugging route starts with an existing check. The full
+diagnostic loop is for unresolved causes; feature delivery does not automatically
+expand into shared verification-tool development.
+
 ## Prerequisites
 
 The router names skills; it does not install them. Everything it points at has to be installed for the recommendation to be actionable, and it only knows the promoted skills in this repo.

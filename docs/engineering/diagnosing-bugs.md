@@ -2,7 +2,11 @@
 
 `diagnosing-bugs` runs a six-phase diagnosis on a hard bug or a performance regression: build a repro, minimise it, rank hypotheses, instrument, fix with a regression test, clean up.
 
-It will not let the agent form a theory until a **tight** feedback loop exists: one named command, already run once, that goes red on *this* bug and green when it is fixed. The default behaviour of a coding agent handed a bug report is to read code and guess; this skill blocks that. If no red-capable command exists, there is no Phase 2. That single gate is what the skill is for. Everything after it (bisection, hypothesis-testing, instrumentation) is mechanical once the signal exists.
+Start with the supplied error, owning code and smallest existing check. If these
+establish the cause, fix and verify it directly. Use the six-phase loop when the
+cause remains uncertain or the failure recurs. A **tight** loop exposes the actual
+failure and lets the agent test causes; constructing a new runner is unnecessary
+when an existing reproduction does that.
 
 Validation follows the behavior being changed. Existing desktop tests provide
 feedback during editing; platform-owned behavior needs focused native checks.
@@ -26,7 +30,7 @@ Reach for it on the hard ones: a bug that resists a first look, an intermittent 
 
 ## The tight loop is the skill
 
-Phase 1 gets disproportionate effort because it is the only phase that is hard. The skill gives a ladder of ways to construct the loop, roughly in order of preference:
+Reuse an existing reproduction first. When none exposes the failure, choose the smallest applicable check from this ladder:
 
 1. A failing test at whatever seam reaches the bug.
 2. A curl or HTTP script against a running dev server.
@@ -39,7 +43,10 @@ Phase 1 gets disproportionate effort because it is the only phase that is hard. 
 9. A differential loop: same input, old version against new.
 10. A [human-in-the-loop](https://www.aihero.dev/ai-coding-dictionary/human-in-the-loop) bash script, last resort. The skill ships `scripts/hitl-loop.template.sh` for this: the agent runs the script, you follow prompts in your terminal, and your answers come back as parseable output.
 
-*A* loop is not the goal. **Tight** is: fast (seconds), deterministic (same verdict every run), sharp (asserts your exact symptom, not "didn't crash"), and agent-runnable unattended. A 30-second flaky loop is barely better than none. For a bug that only shows up sometimes, the target is not a clean repro but a **higher reproduction rate**: loop the trigger, parallelise, add stress, inject sleeps, until the flake rate is high enough to debug against.
+Stop improving the loop once it distinguishes the candidate causes reliably.
+Native and external-service checks can take minutes when those systems own the
+behavior. For intermittent failures, use bounded trials and reassess the evidence
+before running another batch. General runner improvements remain separate work.
 
 When it genuinely cannot build one, it is instructed to stop and say so, list what it tried, and ask you for [environment](https://www.aihero.dev/ai-coding-dictionary/environment) access, a captured artifact, or permission to add temporary instrumentation. It should not proceed to hypothesise anyway.
 
@@ -50,7 +57,7 @@ The phases are gates, not a checklist. Each one refuses to open until something 
 | Gate | What has to be true |
 | --- | --- |
 | Into Phase 2 | A named command, already run and pasted with its output, that can go red on this bug |
-| Into Phase 3 | The repro is reproduced *and* minimised: every remaining element is load-bearing |
+| Into Phase 3 | The smallest supported reproduction isolates the behavior enough to test competing causes |
 | Into Phase 4 | 3–5 ranked, falsifiable hypotheses exist, each stating its prediction, shown to you before any is tested |
 | Into Phase 5 | Probes map to a specific prediction, one variable at a time, every debug log tagged `[DEBUG-a4f2]`-style so cleanup is one grep |
 | Done | Original repro no longer reproduces, instrumentation gone, and the hypothesis that turned out correct is written into the commit message |
@@ -60,7 +67,10 @@ Phase 5 has an escape hatch worth knowing about. The regression test is written 
 ## Common questions
 
 **It fires on quick questions where I just wanted a direct answer.**
-This is the most-reported problem with the skill, and it is real. On GPT-5.6-Sol especially, users report it triggering on a plain description of a problem: "the model triggers the rather formal diagnosing-bugs skill instead. It then goes on to construct a reproduction scenario (often building a mock scenario with limited value) before giving me a response or suggestion. This results in considerable reply delays." Four separate people reported the same shape on [issue #578](https://github.com/mattpocock/skills/issues/578). The accepted fix is to start with a lighter approach and graduate to the heavier one only where the problem warrants it, but that change has not landed. The skill is calibrated against Claude Code's invocation behaviour; a [model](https://www.aihero.dev/ai-coding-dictionary/model) with a lower activation threshold over-fires it. Until it is graduated, the practical fix is to say what you want ("just answer this, don't diagnose") or to disable model invocation for it in your [harness](https://www.aihero.dev/ai-coding-dictionary/harness).
+This fork starts with the error, relevant code and an existing check. A clear
+cause can receive a direct fix or explanation; the full loop is reserved for
+uncertain, recurring or measured performance failures. It should not build a
+mock reproduction merely to answer a straightforward question.
 
 **Can I point it at a codebase and ask where the performance problems are?**
 No. It diagnoses one failure you can already name. Its performance branch is for a regression with a symptom (establish a baseline measurement, then bisect, measure first and fix second), not for a proactive sweep. A skill for the proactive version was [proposed and closed](https://github.com/mattpocock/skills/issues/431); there is currently no skill for it.

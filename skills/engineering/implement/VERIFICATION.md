@@ -4,6 +4,27 @@ Evidence supports a particular claim under particular inputs. A new commit
 does not by itself change every claim. Before repeating work, identify the
 changed input and the evidence it can invalidate.
 
+## Bound verification tooling work
+
+Feature tickets own their fixtures, assertions and registration in the existing
+verification tools. Shared runners, capture systems and evidence policy belong
+to shared tooling. Reuse that machinery across tickets and projects where it
+fits; a new feature does not by itself require a new framework.
+
+Before changing shared tooling, name the exact required check it cannot run,
+the existing path inspected, the smallest repair and its completion criterion
+in the ticket's existing validation notes. Make necessary bounded repairs within
+the authorized scope; report tooling work separately from feature completion.
+Once that check works, return to the feature. Generalization for future packages
+or projects belongs in separate work unless explicitly requested. If a broader
+repair is necessary, expose that dependency and its scope before expanding work;
+continue authorized independent work where project order allows it.
+
+A missing observer permits the minimum feature-specific observation needed to
+prove the requirement. It does not waive evidence, security, accessibility or
+human acceptance gates. An unsupported check remains an explicit verification
+gap until its required proof exists.
+
 ## Choose the check
 
 - Record the changed behavior, affected dependencies, smallest useful check,
