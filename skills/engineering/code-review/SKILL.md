@@ -13,6 +13,10 @@ review and subagent tools are available, give each axis one bounded read-only
 reviewer. Announce the delegation and prohibit further delegation of that
 review. Keep the two results separate in either execution mode.
 
+For evidence-heavy reviews, read [proportionate verification](../implement/VERIFICATION.md).
+Inspect retained results passively; identify missing proof without launching another
+live scenario. Review does not authorize runtime execution.
+
 Visual acceptance, when applicable, is a separate delivery gate rather than a
 third review axis. A clean Standards and Spec report cannot grant human visual
 approval.

@@ -4,6 +4,11 @@
 
 The skill never merges or re-ranks the two axes. The report ends with a worst issue *per axis* and declines to name a single winner across them. A change can pass one axis and fail the other. Code that follows every convention but implements the wrong thing passes Standards and fails Spec. Code that does exactly what the [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) asked but breaks the repo's conventions does the reverse. A blended verdict lets the passing axis hide the failing one.
 
+Audits and reviews inspect retained evidence without starting live scenarios.
+Explicit validation shares verified assessments within the project's supported
+operation, expires them after relevant changes, and records failed work as well
+as successful reuse. Existing native and human acceptance gates still apply.
+
 ## When to reach for it
 
 The first review covers the complete requested diff on a frozen candidate.

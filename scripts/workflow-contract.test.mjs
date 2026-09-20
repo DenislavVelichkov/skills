@@ -166,3 +166,12 @@ test("validation selects desktop behavior, native exceptions, and complete final
     assert.match(read(`skills/engineering/${name}/SKILL.md`), /\(\.\.\/implement\/VERIFICATION.md\)/u);
   }
 });
+
+
+test("reports stay passive and live reuse expires at real operation boundaries", () => {
+  const policy = read("skills/engineering/implement/VERIFICATION.md");
+  for (const text of ["Keep audits, refresh plans and visual reviews passive", "per profile and relevant input state", "before native work", "review pause expires", "holding a lease alone", "old client projection before ordinary", "reject later drift", "including failed operations", "human waiting separately"]) assert.ok(policy.includes(text), text);
+  const review = read("skills/engineering/code-review/SKILL.md");
+  assert.match(review, /\.\.\/implement\/VERIFICATION.md/u);
+  assert.match(review, /Review does not authorize runtime execution/u);
+});
