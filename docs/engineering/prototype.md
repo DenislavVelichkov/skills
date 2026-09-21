@@ -2,7 +2,12 @@
 
 `prototype` writes **throwaway code that answers a question**: does this state model feel right, or what should this screen look like. The question comes first and decides the shape of everything that follows; a prototype that answers the wrong question is pure waste, however good it looks.
 
-Throwaway is a constraint on how the code is *written*, not a promise to destroy it. No tests, no error handling beyond what makes it run, no abstractions, no persistence, because none of that helps you learn the one thing you're trying to learn. What survives is the answer, folded into the real code, and the prototype itself, parked on a branch out of main as the evidence the answer came from.
+Throwaway is a constraint on how the code is *written*, not a promise to destroy it. No tests, no error handling beyond what makes it run, no abstractions, no persistence, because none of that helps you learn the one thing you're trying to learn. What survives is the answer, retained for the authorized implementation ticket, and the prototype itself, parked on a branch out of main as the evidence the answer came from.
+
+Reuse selected designs within their approved scope. Prototype only a material
+unresolved question. Record its answer for the owning implementation ticket;
+a prototype selection neither authorizes production implementation nor grants
+exact production acceptance.
 
 ## When to reach for it
 
@@ -25,7 +30,7 @@ Both keep state in memory, start with no thinking required, and show you the ful
 
 A finished prototype leaves two things, and they go to different places.
 
-The **answer** (the verdict plus the question it settled) is captured durably: a commit message, an ADR, the implementation issue. That is what the main branch keeps, folded into the real code.
+The **answer** (the verdict plus the question it settled) is captured durably: a commit message, an ADR, the implementation issue. The owning ticket applies that answer during authorized implementation.
 
 The **prototype** is the runnable evidence the answer came from, and it is not deleted. It doesn't belong in main either: there is nothing there to maintain and it rots fast. So it is committed to a throwaway `prototype/<name>` branch out of main, never merged, with a [context pointer](https://www.aihero.dev/ai-coding-dictionary/context-pointer) to that branch left on the implementation issue. Main stays clean; the exploration stays findable and re-runnable by whoever picks the work up next.
 

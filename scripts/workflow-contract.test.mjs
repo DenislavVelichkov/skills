@@ -190,3 +190,49 @@ test("feature verification bounds shared-tooling repairs and debugging effort", 
   assert.ok(diagnosis.includes("Native or external-service checks may take minutes"));
   assert.doesNotMatch(diagnosis, /Spend disproportionate effort|Treat the loop as a product|seconds, not minutes/u);
 });
+
+// Expected next actions in installed instructions, not measured agent execution.
+for (const [situation, file, action] of [
+  ["hidden dependency", "implement/VERIFICATION.md", "Name missing dependencies and their existing owners before substantial component work"],
+  ["missing ordinary entry", "implement/VERIFICATION.md", "If components have no ordinary entry, make connecting that path the next authorized batch"],
+  ["settled authorization", "implement/VERIFICATION.md", "Carry confirmed scope, authorization, decisions and test boundaries forward"],
+  ["inferable review baseline", "code-review/SKILL.md", "use the recorded task-start commit"],
+  ["unresolved design", "implement/VERIFICATION.md", "Ask only for consequential unresolved decisions"],
+  ["delta review", "code-review/SKILL.md", "review the delta from the last reviewed candidate plus affected callers"],
+  ["disconnected progress", "implement/VERIFICATION.md", "Component completion cannot close a ticket whose required user path remains disconnected"],
+]) {
+  test(`${situation}: prescribed next action is ${action}`, () => {
+    const instructions = read(`skills/engineering/${file}`).replace(/\s+/gu, " ");
+    assert.ok(instructions.includes(action), action);
+  });
+}
+
+test("connected batches retain scope and route through shared guidance", () => {
+  const policy = read("skills/engineering/implement/VERIFICATION.md").replace(/\s+/gu, " ");
+  for (const action of ["ordinary entry, demonstrable behavior and the existing check",
+    "real authorization, validated contracts and persistence",
+    "security, data integrity and essential accessibility",
+    "timer or context-window cutoff", "remaining requirements and their existing owners",
+    "design selection does not grant exact production acceptance"]) assert.ok(policy.includes(action), action);
+  for (const skill of ["implement", "to-tickets", "tdd", "code-review"]) {
+    assert.match(read(`skills/engineering/${skill}/SKILL.md`), /VERIFICATION.md/u);
+  }
+  assert.doesNotMatch(read("skills/engineering/to-tickets/SKILL.md"), /sized to fit in a single fresh context window/u);
+  assert.doesNotMatch(read("skills/engineering/tdd/SKILL.md"), /Before writing any test.*confirm them with the user/u);
+  assert.doesNotMatch(read("skills/engineering/code-review/SKILL.md"), /If they didn't specify one, ask for it/u);
+});
+
+
+test("public workflow docs retain connected delivery and settled decisions", () => {
+  for (const [file, expected] of [
+    ["implement", "Commit the integrated candidate before review"],
+    ["to-tickets", "Size it by behavior and dependencies"],
+    ["tdd", "Reuse boundaries confirmed in the ticket, spec or conversation"],
+    ["code-review", "recorded task-start commit"],
+    ["prototype", "neither authorizes production implementation"],
+    ["ask-matt", "reviews committed integrated candidates"],
+  ]) assert.ok(read(`docs/engineering/${file}.md`).replace(/\s+/gu, " ").includes(expected), file);
+  assert.ok(read("docs/productivity/grilling.md").includes("Only consequential unresolved decisions"));
+  assert.ok(read("skills/productivity/grilling/SKILL.md").includes("A prior answer"));
+  assert.ok(read("skills/engineering/prototype/SKILL.md").includes("Reuse settled design answers"));
+});

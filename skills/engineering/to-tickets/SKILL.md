@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 For desktop versus focused native checks, minimum extraction, and complete final
 proof, read [proportionate verification](../implement/VERIFICATION.md) before
-selecting validation.
+drafting connected batches or selecting validation.
 
 # To Tickets
 
@@ -40,9 +40,9 @@ one truthful `planned` row per in-scope surface and run the validator until it
 passes. Do not draft, quiz, or publish any tickets until the validator passes.
 Never invent references, hashes, state transitions, or approval.
 
-### 2. Explore the codebase (optional)
+### 2. Trace the current path
 
-If you have not already explored the codebase, do so to understand the current state of the code. Ticket titles and descriptions should use the project's domain glossary vocabulary, and respect ADRs in the area you're touching.
+Reuse current exploration where available; trace the ordinary entry and hidden dependencies before drafting tickets. Ticket titles and descriptions should use the project's domain glossary vocabulary, and respect ADRs in the area you're touching.
 
 Look for opportunities to prefactor the code to make the implementation easier. "Make the change easy, then make the easy change."
 
@@ -54,7 +54,7 @@ Break the work into **tracer bullet** tickets.
 
 - Each slice cuts a narrow but COMPLETE path through every layer (schema, API, UI, tests): vertical, NOT a horizontal slice of one layer
 - A completed slice is demoable or verifiable on its own
-- Each slice is sized to fit in a single fresh context window
+- Each slice names its ordinary entry, demonstrable behavior and existing check. Size it by coherent behavior; context limits require a handoff, not reduced scope.
 - Any prefactoring should be done first
 
 </vertical-slice-rules>

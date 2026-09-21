@@ -13,9 +13,11 @@ If the user passes a spec, plan, Wayfinder map, or `spec.md` path, do not edit p
 
 One invocation handles one ticket or one small same-session change.
 
-Use /tdd where possible, at pre-agreed seams.
+Record the current branch and task-start commit before editing, preserving
+unrelated changes. Use /tdd where possible, at pre-agreed seams.
 
-Read [proportionate verification](VERIFICATION.md) before choosing checks,
+Read [proportionate verification](VERIFICATION.md), including its connected-delivery
+procedure, before planning batches, choosing checks,
 reusing evidence, changing verification tooling, or starting live validation. Keep reports passive and share
 verified assessments through the existing controller. Run the smallest relevant check after a meaningful change. Run the
 required final suite once on the stable candidate; repeat only checks affected
@@ -71,7 +73,9 @@ candidate-changing edit, clear the request and return to `compared` before
 recapturing. Never infer approval from "continue", prototype selection, green
 tests, or a clean review.
 
-For work without a visual parity action, once done use /code-review to review
-the work.
+For work without a visual parity action, commit the integrated candidate before
+using /code-review so the full change is visible. Supply the task-start commit
+and ticket scope. Batch accepted fixes, validate them, commit and review their
+delta plus affected callers, retaining the original review coverage.
 
 Commit your work to the current branch.

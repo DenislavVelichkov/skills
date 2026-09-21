@@ -2,7 +2,7 @@
 
 `to-tickets` takes a plan, a [spec](https://www.aihero.dev/ai-coding-dictionary/spec), or the conversation you are in, and breaks it into a set of **[tickets](https://www.aihero.dev/ai-coding-dictionary/ticket)** on your issue tracker. Each ticket declares its **blocking edges**: the other tickets that have to finish before it can start.
 
-Every ticket is a **tracer bullet**: a narrow but complete path through every layer of the change (schema, API, UI, tests) that can be demoed on its own the moment it lands. That is the constraint that makes it behave differently from the obvious way to split work, which is to cut one layer at a time and integrate at the end. It also sizes each ticket to fit in a single fresh [context window](https://www.aihero.dev/ai-coding-dictionary/context-window), because the thing that will pick the ticket up is a [session](https://www.aihero.dev/ai-coding-dictionary/session) that has never seen your spec.
+Every ticket is a **tracer bullet**: a narrow complete user path through the required layers. Before drafting, inspect its ordinary entry and hidden dependencies, reusing current exploration. Each ticket names a demonstrable behavior and an existing check that can expose a broken path. Size it by behavior and dependencies; retain scope across compaction.
 
 Validation follows the behavior being changed. Existing desktop tests provide
 feedback during editing; platform-owned behavior needs focused native checks.
@@ -21,7 +21,7 @@ You invoke this by typing `/to-tickets`. The [agent](https://www.aihero.dev/ai-c
 | --- | --- |
 | You have a spec issue and the build spans several sessions | `/to-tickets`, or `/to-tickets #<spec_issue>` |
 | The plan is only in the conversation, never written up | `/to-tickets` reads the thread directly, no spec needed |
-| The whole change fits in one context window | [implement](https://aihero.dev/skills-implement), skip the tickets |
+| A small unpublished plan remains in the current conversation | [implement](https://aihero.dev/skills-implement), skip the tickets |
 | Nothing is decided yet | [grill-with-docs](https://aihero.dev/skills-grill-with-docs), then [to-spec](https://aihero.dev/skills-to-spec) |
 | A [wayfinder](https://aihero.dev/skills-wayfinder) map has cleared | [to-spec](https://aihero.dev/skills-to-spec) first, to collapse the map, then `/to-tickets` |
 
@@ -89,7 +89,7 @@ Where even the batches can't stay green alone, they share an integration branch 
 ## Common questions
 
 **It produced twelve tickets for a three-line change.**
-Over-decomposition is the most reported friction on this skill, and it is consistent across practitioners: the [model](https://www.aihero.dev/ai-coding-dictionary/model) defaults to atomic units and loses the grouping that would make them meaningful. The quiz step exists for exactly this: ask it to merge, and it will. The deeper answer is that the tickets have a floor: if the whole change fits in one context window, you don't need this skill at all. Go straight to [implement](https://aihero.dev/skills-implement).
+Group work by demonstrable behavior instead of one ticket per helper, test or UI state. A small unpublished plan retained in the conversation can go directly to implementation. Published specs still require an approved ticket split.
 
 **The tickets came out one per layer: all the schema in one, all the API in another.**
 This is the failure the vertical-slice rule is written against, and the skill still produces it sometimes. Catch it at the quiz step by asking one question per ticket: what can I demo when this is done? A ticket with no answer is a horizontal slice. Some people add a "demo path" line to each ticket for this reason, and report it nudges the model toward vertical decomposition.
