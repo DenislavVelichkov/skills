@@ -236,3 +236,11 @@ test("public workflow docs retain connected delivery and settled decisions", () 
   assert.ok(read("skills/productivity/grilling/SKILL.md").includes("A prior answer"));
   assert.ok(read("skills/engineering/prototype/SKILL.md").includes("Reuse settled design answers"));
 });
+
+
+test("planning and design selection cannot reopen or expand execution authority", () => {
+  assert.match(read("skills/engineering/implement/VERIFICATION.md"), /Publishing a plan does not authorize implementation/u);
+  assert.match(read("skills/engineering/prototype/UI.md"), /explicit implementation authorization/u);
+  assert.doesNotMatch(read("docs/engineering/tdd.md"), /Before any test exists/u);
+  assert.match(read("skills/engineering/ask-matt/SKILL.md"), /A published spec always goes through/u);
+});
