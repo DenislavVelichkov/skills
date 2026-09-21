@@ -27,8 +27,8 @@ Ask only for consequential unresolved decisions, grouped with recommendations;
 continue independent authorized work while answers are pending. Reuse selected
 designs and component conventions within their approved scope. New material
 design decisions remain human-owned; design selection does not grant exact
-production acceptance. Planning publication still requires an explicit
-implementation request, and publication or deployment retains its own authority.
+production acceptance. Publishing a plan does not authorize implementation;
+that requires an explicit request. Publication or deployment retains its own authority.
 
 Keep edit-and-test cycles inside behavior-based batches. Commit an integrated
 candidate at a useful checkpoint, review its full scope, then batch related
