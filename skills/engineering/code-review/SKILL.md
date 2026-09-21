@@ -3,7 +3,7 @@ name: code-review
 description: "Review changes since a commit, branch, tag, or merge-base against repository standards and the originating spec. Report both axes separately. Use for a branch, PR, work-in-progress review, or \"review since X\"."
 ---
 
-Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
+Two-axis review of the diff between `HEAD` and a fixed point supplied by the user or derived from task evidence:
 
 - **Standards**: does the code conform to this repo's documented coding standards?
 - **Spec**: does the code faithfully implement the originating issue / spec?
@@ -13,7 +13,7 @@ review and subagent tools are available, give each axis one bounded read-only
 reviewer. Announce the delegation and prohibit further delegation of that
 review. Keep the two results separate in either execution mode.
 
-For evidence-heavy reviews, read [proportionate verification](../implement/VERIFICATION.md).
+Before reviewing an integrated candidate, read [proportionate verification](../implement/VERIFICATION.md), including connected delivery.
 Inspect retained results passively; identify missing proof without launching another
 live scenario. Review does not authorize runtime execution.
 
@@ -29,7 +29,10 @@ tracker setup alone does not block a read-only review.
 
 ### 1. Pin the fixed point
 
-Whatever the user said is the fixed point (a commit SHA, branch name, tag, `main`, `HEAD~5`, etc.). If they didn't specify one, ask for it.
+Use the user's fixed point when supplied. Otherwise use the recorded task-start
+commit, an established PR base, or the branch's verified upstream merge-base,
+in that order. State the derivation. Ask only when these are unavailable or
+conflicting; never choose a recent commit that omits part of the requested work.
 
 Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
 
@@ -101,6 +104,10 @@ counters. Treat a missing or invalid manifest as a delivery-gate finding. A
 finding: the implementation must ask the human before handoff.
 
 ### 5. Run both review axes
+
+Check the ordinary entry and full authorized behavior across changed layers.
+Passing component checks cannot establish a connected user path. Preserve all
+remaining requirements and their owners, including gates outside this diff.
 
 Use the following briefs locally, or assign them to the authorized reviewers
 described above. A reviewer already assigned one axis completes only that axis

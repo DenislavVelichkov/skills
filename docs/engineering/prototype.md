@@ -4,6 +4,11 @@
 
 Throwaway is a constraint on how the code is *written*, not a promise to destroy it. No tests, no error handling beyond what makes it run, no abstractions, no persistence, because none of that helps you learn the one thing you're trying to learn. Two things survive. The answer goes into the real code, and the prototype goes onto a branch out of main as evidence for the answer.
 
+Reuse selected designs within their approved scope. Prototype only a material
+unresolved question. Record its answer for the owning implementation ticket;
+a prototype selection neither authorizes production implementation nor grants
+exact production acceptance.
+
 ## When to reach for it
 
 Type `/prototype`, or the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) reaches for it automatically when a task fits.
@@ -25,7 +30,7 @@ Both keep state in memory, start with no setup, and show you the full state afte
 
 A finished prototype leaves two things, and they go to different places.
 
-You record the **answer** (the verdict plus the question it settled) somewhere permanent: a commit message, an ADR, the implementation issue. Main keeps the answer, in the real code.
+You record the **answer** (the verdict plus the question it settled) somewhere permanent: a commit message, an ADR, the implementation issue. The owning ticket applies that answer during authorized implementation.
 
 The **prototype** is the runnable evidence the answer came from, and you do not delete it. It doesn't belong in main either, because nobody maintains it and it goes stale fast. So you commit it to a throwaway `prototype/<name>` branch out of main, never merge it, and leave a [context pointer](https://www.aihero.dev/ai-coding-dictionary/context-pointer) to that branch on the implementation issue. Main stays clean, and whoever picks the work up next can find and re-run the prototype.
 

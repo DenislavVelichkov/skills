@@ -4,6 +4,49 @@ Evidence supports a particular claim under particular inputs. A new commit
 does not by itself change every claim. Before repeating work, identify the
 changed input and the evidence it can invalidate.
 
+## Connected delivery
+
+Before substantial implementation or ticket drafting, trace the real user path
+through its ordinary entry, authorization, contracts, persistence and consumers.
+Reuse current readiness findings until a relevant input changes; identify the
+next executable path rather than auditing future work. Reuse existing components and checks. Name missing dependencies and their
+existing owners before substantial component work. Separate functional blockers
+from evidence refresh and historical ordering; respect the project's active
+scheduling authority and keep dependent work blocked on real prerequisites.
+
+In the existing ticket, name each batch's ordinary entry, demonstrable behavior
+and the existing check that can expose a broken path. If components have no
+ordinary entry, make connecting that path the next authorized batch. Establish
+real authorization, validated contracts and persistence before secondary polish,
+with security, data integrity and essential accessibility in that first path.
+Complete required recovery and secondary states against it. For tooling or
+non-UI work, use its real invocation and observable result as the entry and behavior.
+
+Carry confirmed scope, authorization, decisions and test boundaries forward.
+Ask only for consequential unresolved decisions, grouped with recommendations;
+continue independent authorized work while answers are pending. Reuse selected
+designs and component conventions within their approved scope. New material
+design decisions remain human-owned; design selection does not grant exact
+production acceptance. Planning publication still requires an explicit
+implementation request, and publication or deployment retains its own authority.
+
+Keep edit-and-test cycles inside behavior-based batches. Commit an integrated
+candidate at a useful checkpoint, review its full scope, then batch related
+accepted fixes and review their delta and affected callers. Record the current
+state, changed inputs, unresolved requirements, decisions, evidence applicability
+and next action in the existing ticket; no separate review-documentation commit is
+required after every edit. Use the verification and reuse rules below for
+focused feedback and all required final checks on the stable candidate.
+
+Preserve remaining requirements and their existing owners when splitting work.
+Component completion cannot close a ticket whose required user path remains
+disconnected. A working initial path is intermediate progress until every
+required gate passes. There is no timer or context-window cutoff for the
+authorized objective; retain a concise handoff across compaction and continue.
+If work stays disconnected, reassess the missing path and dependency before
+adding more isolated components. Keep instruction availability, observed use
+and measured speedup separate in the existing records.
+
 ## Bound verification tooling work
 
 Feature tickets own their fixtures, assertions and registration in the existing
