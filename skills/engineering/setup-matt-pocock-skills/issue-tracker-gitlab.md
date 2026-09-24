@@ -14,6 +14,10 @@ Issues and specs for this repo live as GitLab issues. Use the [`glab`](https://g
 
 Infer the repo from `git remote -v`; `glab` does this automatically when run inside a clone.
 
+## Implementation progress
+
+When completing or pausing work on an existing issue, add a note with the commit or MR, checks run and their results, acceptance criteria met, and any remaining work or blockers. Update its labels or checklist when the project's conventions use them. Close it only after its required gates pass on the intended integration branch; otherwise leave it open and say what remains. A `#<number>` commit reference does not record this progress.
+
 ## Merge requests as a triage surface
 
 **MRs as a request surface: no.** _(Set to `yes` if this repo treats external merge requests as feature requests; `/triage` reads this flag.)_

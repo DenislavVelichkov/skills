@@ -86,11 +86,12 @@ show that concrete change and wait only on the dependent work.
 
 **Pick the file to edit:**
 
-- If `CLAUDE.md` exists, edit it.
-- Else if `AGENTS.md` exists, edit it.
-- If neither exists, ask the user which one to create; don't pick for them.
+- In Codex, edit `AGENTS.md` when it exists.
+- In Claude Code, edit `CLAUDE.md` when it exists.
+- If the active agent's file is absent but the other file exists, ask whether to update that file or create the active agent's file.
+- If neither exists, ask the user which one to create.
 
-Never create `AGENTS.md` when `CLAUDE.md` already exists (or vice versa); always edit the one that's already there.
+When both files exist independently, preserve the other agent's file. If one is a symlink to the other, edit the shared target once.
 
 If an `## Agent skills` block already exists in the chosen file, update its contents in-place rather than appending a duplicate. Don't overwrite user edits to the surrounding sections.
 
@@ -101,7 +102,7 @@ The block:
 
 ### Issue tracker
 
-[one-line summary of where issues are tracked]. See `docs/agents/issue-tracker.md`.
+[one-line summary of where issues are tracked]. For work on an existing issue, follow the progress and closure rules in `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
@@ -122,9 +123,9 @@ work without that comparison uses no manifest. See
 `docs/agents/visual-acceptance.md`.
 ```
 
-Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.md`, only when `triage` is installed and Section B ran. When it isn't, both are omitted.
+Include the `### Triage labels` sub-block only when `triage` is installed and Section B ran. Reuse an existing triage-label mapping file and its pointer; otherwise write `docs/agents/triage-labels.md`. When `triage` isn't installed, omit both.
 
-Then write the docs files using the seed templates in this skill folder as a starting point:
+Then write the docs files using the seed templates in this skill folder as a starting point. On a rerun, update existing files in place: preserve the project's tracker, labels, PR or MR policy, and other local guidance. Add missing conventions without replacing an equivalent existing section. Ensure the tracker document tells agents how to record implementation progress and when an issue can close.
 
 - [issue-tracker-github.md](./issue-tracker-github.md): GitHub issue tracker
 - [issue-tracker-gitlab.md](./issue-tracker-gitlab.md): GitLab issue tracker
