@@ -14,6 +14,10 @@ Issues and specs for this repo live as markdown files in `.scratch/`.
 - Triage state is recorded as a `Status:` line near the top of each issue file (see `triage-labels.md` for the role strings)
 - Comments and conversation history append to the bottom of the file under a `## Comments` heading
 
+## Implementation progress
+
+When completing or pausing work on an existing ticket, record the commit, checks run and their results, acceptance criteria met, and any remaining work or blockers in that ticket. Update its `Status:` only when the project's completion rules are met; otherwise state what remains in the ticket.
+
 ## When a skill says "publish to the issue tracker"
 
 - Publish planning artifacts and the spec under `.scratch/<feature-slug>/`.

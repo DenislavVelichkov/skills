@@ -4,6 +4,8 @@
 
 Those files are the only thing that varies between repos. The skills themselves are identical everywhere; they read `docs/agents/issue-tracker.md` at run time and do what it says. That is why the set is not tied to GitHub, and why no skill file ever needs editing to point it somewhere else. Invoking it with "link the skills to a custom issue tracker" works with anything you can connect to programmatically, with zero changes to the skills.
 
+The tracker file also tells agents to record implementation results in the existing issue or ticket, including verification and work still open. A commit reference alone does not update that record. Re-running setup adds missing conventions while preserving the repo's tracker choices and local guidance.
+
 It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, your existing `CLAUDE.md`, your existing `CONTEXT.md`, proposes what it found, and waits for you to confirm before writing anything.
 
 ## When to reach for it
@@ -24,7 +26,7 @@ It writes into the repo you run it in:
 | `visual-acceptance.md` | `docs/agents/` |
 | `visual-acceptance.template.json` | `docs/agents/` |
 | `validate-visual-acceptance.mjs` | `scripts/` |
-| An `## Agent skills` block | whichever of `CLAUDE.md` / `AGENTS.md` already exists |
+| An `## Agent skills` block | `AGENTS.md` for Codex or `CLAUDE.md` for Claude Code, when present |
 
 All outputs are committed in the repository. There is no user-level or global mode: the config lives in the repo, so every repo gets its own copy.
 
@@ -72,7 +74,7 @@ Asked directly after v1.1, Matt said yes. The skill's own closing message is sof
 
 **It wrote to `CLAUDE.md`, but I'm on Codex.**
 
-Known gap, still open. The file-selection rule is "edit `CLAUDE.md` if it exists, else `AGENTS.md`": it checks which file exists, not which [harness](https://www.aihero.dev/ai-coding-dictionary/harness) is running. A repo with a `CLAUDE.md` left over from Claude Code will get its `## Agent skills` block somewhere Codex never reads. Two workarounds are in circulation: move the block to `AGENTS.md` by hand, or keep `AGENTS.md` canonical and make `CLAUDE.md` a one-line pointer at it. If neither file exists, the skill asks you which to create rather than picking, which has confused people who expected it to just decide.
+Setup now selects `AGENTS.md` for Codex and `CLAUDE.md` for Claude Code when both exist. If the active agent's file is missing, it asks which file to use. Earlier runs may have put the block only in `CLAUDE.md`; re-run setup in Codex to put it where Codex reads it.
 
 **It didn't create my triage labels.**
 
