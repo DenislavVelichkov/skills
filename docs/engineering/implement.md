@@ -7,6 +7,8 @@ It carries settled scope, decisions and test boundaries forward. Only consequent
 Validation follows the behavior being changed. Existing desktop tests provide
 feedback during editing; platform-owned behavior needs focused native checks.
 Required final proof still runs on the stable candidate.
+Expensive captures run only for missing or affected claims. Reuse requires the
+project verifier to prove that all relevant inputs still match.
 
 Audits and reviews inspect retained evidence without starting live scenarios.
 Explicit validation shares verified assessments within the project's supported
@@ -14,12 +16,6 @@ operation, expires them after relevant changes, and records failed work as well
 as successful reuse. Existing native and human acceptance gates still apply.
 
 ## When to reach for it
-
-Verification follows the change: focused checks during implementation, required
-final checks on the stable candidate, and expensive evidence capture only for
-missing or affected claims. Reuse depends on the project's verifier proving
-that the relevant inputs still match. Existing acceptance and approval gates
-continue to apply.
 
 You invoke this by typing `/implement` yourself, and the agent won't reach for it on its own. It ships with `disable-model-invocation: true`, so no other skill can call it either. Wherever [ask-matt](https://aihero.dev/skills-ask-matt) or [to-tickets](https://aihero.dev/skills-to-tickets) says "then `/implement` per ticket", that is an instruction to you, not something the agent will do unprompted.
 
@@ -44,7 +40,12 @@ If the tickets came from [to-tickets](https://aihero.dev/skills-to-tickets), [se
 
 ## What one run does
 
-A run traces the ordinary entry and dependencies, connects the real path, completes required behavior, validates a stable candidate, and reviews its committed diff.
+A run reads the exact ticket and its requirements, states its identity and scope,
+and checks authorization and blockers before editing. Bare numbers resolve only
+against the configured tracker. It then traces the ordinary entry and
+dependencies, connects the real path, completes required behavior, validates a
+stable candidate, and reviews its committed diff. For a small unpublished plan
+in the conversation, it restates the agreed scope without requiring a ticket.
 
 Each batch names an ordinary entry, demonstrable behavior and an existing check
 that can expose a broken path. Real authorization, validated contracts,
@@ -71,10 +72,16 @@ changes begin.
 
 Once the target surface is `design_selected`, visual tickets have a deliberate
 human boundary inside the run. The first implementation invocation builds the
-real surface, captures every manifest candidate, and stops after producing the
-side-by-side comparison and candidate-set hash. No snapshot baseline moves. A
-later invocation may promote those exact bytes only when your approval names
-both the surface and hash.
+real surface, captures every candidate required for that surface, and stops after producing the
+side-by-side comparison and candidate-set hash. No snapshot baseline moves.
+An immediate `Approve` reply binds to the displayed surface and hash without
+requiring you to repeat the digest. Later invocations resume from validated state:
+
+| Surface state | What happens next |
+| --- | --- |
+| `approval_requested` | A bound approval or rejection is handled first; otherwise the exact request is shown again. |
+| `member_accepted` | The approved candidate bytes are verified and promoted, then visual checks run. |
+| `baseline_promoted` | Retained evidence and completion gates are checked without rebuilding or asking for the same approval. |
 
 That pause is not unfinished automation; it is the point at which automation
 has reached the decision it cannot make. Code review can establish that the
@@ -129,15 +136,19 @@ Retain a concise current-state handoff and continue the authorized objective. Sp
 
 **`/implement #2` in a fresh session worked on something completely unrelated.**
 
-The agent resolves `#2` against whatever numbered list it can see. In a fresh session that may be a todo file, a checklist, or another work list rather than the configured tracker. The agent does not stop when the match is uncertain, so the mistake is not obvious until the work has started. Pass the full reference, the issue URL or `owner/repo#2`, and ask it to confirm the title back before it begins.
+Bare numbers resolve only against the configured tracker, and the run states
+the fetched ticket's identity and title before editing. If the reference cannot
+be resolved unambiguously, it asks for the missing input. Pass an issue URL,
+`owner/repo#2`, or the exact local ticket path to make the intended scope clear.
 
 ## It's working if
 
 - The session opens by reading the exact ticket or retained same-session plan and restating what it will build, rather than asking you what to build.
-- You can see an actual `/tdd` invocation in the trace, not just tests appearing in the diff.
+- You can see the `tdd` skill loaded through the host's supported mechanism and followed at the agreed seams.
 - Typechecks and single test files run repeatedly during the run, and the full suite runs once near the end.
 - The run reaches a commit on your current branch without you prompting it to carry on.
 - The diff is one ticket's worth of change: a vertical slice through every layer, not several tickets swept together.
+- Completion records the checks, review outcomes and acceptance evidence in the ticket; unmet gates remain open.
 - A manifest is created only for a visual parity action, and a `planned`
   comparison surface still blocks implementation.
 - A visual parity run reports Implemented, Compared, Approval requested, Member
