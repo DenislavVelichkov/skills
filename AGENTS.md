@@ -1,6 +1,6 @@
 # Matt Pocock fork for Codex
 
-This is the `DenislavVelichkov/skills` fork. Maintain the Codex adaptation on `dv8/main`; check the branch and existing changes before editing. `AGENTS.md` owns Codex repository instructions. `CLAUDE.md` remains the separate Claude instruction file.
+This is the `DenislavVelichkov/skills` fork. Maintain the Codex adaptation on `dv8/main-codex` and the Claude adaptation on `dv8/main-claude`; check the branch and existing changes before editing. `AGENTS.md` owns Codex repository instructions. `CLAUDE.md` remains the separate Claude instruction file.
 
 ## Skill organization
 
@@ -19,7 +19,7 @@ This is the `DenislavVelichkov/skills` fork. Maintain the Codex adaptation on `d
 
 ## Installation and verification
 
-- Codex installs this root plugin through `dv8-marketplace`, maintained in `DenislavVelichkov/dv8-codex`, with the fork ref `dv8/main`. Keep changes in the source checkout rather than installed caches.
+- Codex installs this root plugin through `dv8-marketplace`, maintained in `DenislavVelichkov/dv8-codex`, with the fork ref `dv8/main-codex`. Keep changes in the source checkout rather than installed caches.
 - `scripts/link-skills.sh` is an upstream development helper that writes to global skill directories. Run it only when the user specifically requests that installation method; marketplace installation does not need those symlinks.
 - Validate changed JSON with `jq` and check that selected Codex skill directories contain `SKILL.md`. For skill changes, run the smallest relevant repository check and verify documentation and invocation metadata remain consistent.
 - Run `claude plugin validate . --strict` when changing a Claude plugin or marketplace manifest. That check is not required for a Codex-only guidance edit.
