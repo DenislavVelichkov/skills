@@ -108,11 +108,11 @@ It is this skill. v1.1 renamed it to `wayfinder`, and you invoke it as `/wayfind
 
 - The destination is written down and agreed before a single ticket exists.
 - Every open ticket reads as a question. Any ticket that reads "build the X" is either mis-typed or belongs downstream of the map.
-- You can look at your tracker and see which tickets are takeable without opening the map, since that is the frontier rendering itself through native blocking.
-- A session resolves one ticket, posts the answer as a resolution comment, closes it, and leaves one line on the map's *Decisions so far*. Then it stops.
-- **Not yet specified** shrinks over time. A patch of fog that graduates into a ticket disappears from that section rather than living in both places.
-- When the opening breadth-first grill turns up no fog at all, the skill stops and tells you the effort is small enough to skip the map.
-- The session that finishes the map hands you toward a spec, not a pull request.
+- You can look at your tracker and see which tickets are takeable without opening the map, because native blocking shows the frontier.
+- A session resolves one ticket, posts the answer as a resolution comment, closes it, and adds one line to the map's *Decisions so far*. Then it stops.
+- **Not yet specified** shrinks over time. When fog graduates into a ticket, it leaves that section and does not appear in both places.
+- When the opening breadth-first grill finds no fog at all, the skill stops and tells you the effort is small enough to skip the map.
+- The session that finishes the map points you toward a spec, not a pull request.
 - A map with a visual parity action cannot clear while its comparison target
   lacks a durable, hashed reference in the acceptance manifest.
 

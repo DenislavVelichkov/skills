@@ -92,11 +92,11 @@ A tracker issue may not return a very large spec in full, and there is no local 
 
 ## It's working if
 
-- It starts writing rather than asking you a fresh round of questions.
-- It puts the seams to you before it writes, and proposes as few as it can get away with.
-- It comes back in your project's nouns, not generic product-management boilerplate.
-- Every decision in it is one you can remember making. Nothing was invented to fill a section.
-- The out-of-scope section has real things in it: the things you refused are usually the most useful lines on the page.
+- It starts writing instead of asking you a new round of questions.
+- It shows you the seams before it writes, and proposes as few as it can.
+- It uses your project's nouns, not generic product-management boilerplate.
+- You remember making every decision in it. It invented nothing to fill a section.
+- The out-of-scope section lists real things. The things you refused are usually the most useful lines on the page.
 - A spec with a visual parity action links a valid acceptance manifest and
   never treats reference selection as production approval.
 - A UI spec without a production-to-reference comparison has no manifest or

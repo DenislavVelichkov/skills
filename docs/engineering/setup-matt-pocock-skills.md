@@ -6,7 +6,7 @@ Those files are the only thing that varies between repos. The skills themselves 
 
 The tracker file also tells agents to record implementation results in the existing issue or ticket, including verification and work still open. A commit reference alone does not update that record. Re-running setup adds missing conventions while preserving the repo's tracker choices and local guidance.
 
-It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, `CLAUDE.md` and `GLOSSARY.md`, proposes what it found, and waits for you to confirm before it writes anything.
+It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, existing `AGENTS.md` and `CLAUDE.md`, and `GLOSSARY.md`, proposes what it found, and waits for you to confirm before it writes anything.
 
 ## When to reach for it
 
