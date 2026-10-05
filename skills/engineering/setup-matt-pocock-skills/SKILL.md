@@ -9,7 +9,7 @@ disable-model-invocation: true
 Scaffold the per-repo configuration that the engineering skills assume:
 
 - **Issue tracker**: where issues live (GitHub by default; local markdown is also supported out of the box)
-- **Triage labels**: the strings used for the five canonical triage roles
+- **Triage labels**: the strings used for two category roles and five state roles
 - **Domain docs**: where `GLOSSARY.md` and ADRs live, and the consumer rules for reading them
 - **Visual acceptance**: the fail-closed creation and approval rules used
   only for a visual parity action
@@ -63,7 +63,7 @@ choice. Otherwise ask exactly one question:
 
 > Do you want to keep the default triage labels? (recommended: **yes**)
 
-The defaults are the five canonical roles, each label string equal to its name: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. On **yes**, write them as-is. Only if the user says no, usually because their tracker already uses other names (e.g. `bug:triage` for `needs-triage`), collect the overrides so `triage` applies existing labels instead of creating duplicates.
+The defaults map category roles `bug` and `enhancement`, and state roles `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`, each to its own name. On **yes**, write them as-is. Only if the user says no, usually because their tracker already uses other names (e.g. `bug:triage` for `needs-triage`), collect the overrides so `triage` applies existing labels instead of creating duplicates.
 
 **Section C: Domain docs.** Default to **single-context** (one `GLOSSARY.md` + `docs/adr/` at the repo root). This fits almost every repo; write it without asking.
 
@@ -125,7 +125,7 @@ work without that comparison uses no manifest. See
 
 Include the `### Triage labels` sub-block only when `triage` is installed and Section B ran. Reuse an existing triage-label mapping file and its pointer; otherwise write `docs/agents/triage-labels.md`. When `triage` isn't installed, omit both.
 
-Then write the docs files using the seed templates in this skill folder as a starting point. On a rerun, update existing files in place: preserve the project's tracker, labels, PR or MR policy, and other local guidance. Add missing conventions without replacing an equivalent existing section. Ensure the tracker document tells agents how to record implementation progress and when an issue can close.
+Then write the docs files using the seed templates in this skill folder as a starting point. Validate tracker commands against the installed CLI's help before relying on version-specific flags; report a missing required capability. On a rerun, update existing files in place: preserve the project's tracker, labels, PR or MR policy, and other local guidance. Add missing conventions without replacing an equivalent existing section. Ensure the tracker document tells agents how to record implementation progress and when an issue can close.
 
 - [issue-tracker-github.md](./issue-tracker-github.md): GitHub issue tracker
 - [issue-tracker-gitlab.md](./issue-tracker-gitlab.md): GitLab issue tracker

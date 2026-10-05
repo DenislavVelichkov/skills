@@ -33,6 +33,12 @@ The document carries the live thread (what's in flight, why, and what's next) pl
 
 It deliberately does not carry anything already written down. The document references specs, plans, ADRs, issues, commits and diffs by path or URL, and never copies them. That keeps the file small, and it keeps the settled detail in one place instead of two copies that drift apart.
 
+The document carries the objective, authorization, decisions and reasons,
+completed work, remaining requirements, blockers and next action. Repository
+handoffs also identify the checkout and revision. Pending approvals and
+uncertain external writes remain visible so the next session can check their
+state before continuing. Suggested explicit-only skills remain choices for you.
+
 ## Common questions
 
 **Handoff or compact?**
@@ -42,7 +48,7 @@ It deliberately does not carry anything already written down. The document refer
 Each one preserves something different. `/compact` compresses this context and continues in a fresh window, so your intent survives. `/clear` empties the window and starts from nothing. That is correct when everything behind you is disposable, and you cannot undo it if it isn't. `/handoff` writes a portable file, so the work survives the move to somewhere else. All three turn a **[primary source](https://www.aihero.dev/ai-coding-dictionary/primary-source)** (the conversation as it happened) into a **[secondary source](https://www.aihero.dev/ai-coding-dictionary/secondary-source)** (a summary of it). Continuing is the only option that doesn't, which is why you rule it out first.
 
 **Where did my handoff file go?**
-It goes to the temp directory, which is the most-reported problem with the skill. The paths are long, they differ per OS, and on Windows agents sometimes take several attempts to find the right one. Ask for the path back and keep it before you move on. Temp is deliberate, because a handoff is a document in transit, not an artifact you maintain. Temp is also not durable, as the next question explains.
+It goes to the temp directory, which is the most-reported problem with the skill. The paths are long, they differ per OS, and on Windows agents sometimes take several attempts to find the right one. The skill reports the absolute saved path; keep it before you move on. Temp is deliberate, because a handoff is a document in transit, not an artifact you maintain. Temp is also not durable, as the next question explains.
 
 **My handoff vanished between sessions.**
 Some environments clear temp between sessions (Codex is the reported case), and a reboot empties `/private/tmp`. If the next session isn't starting within the hour, or is starting under a different harness, copy the file somewhere durable yourself as soon as it's written. The same applies to anything the document *points at*: if a dispatch references other files in temp, the next agent can't follow it.
@@ -60,7 +66,7 @@ Ask whether it's true next month. `CLAUDE.md` is standing context about the proj
 This is a fair criticism, and people raise it often. Two things help. Pass the argument (tell it what the next session is for), so the skill keeps the reasoning that bears on *that* rather than flattening it. And watch for confident claims the session never verified, such as "X isn't built" or "Y is done". The next agent trusts the document and does not re-check it, so a belief written as a fact becomes a false premise for everything that follows. Read the document before you hand it over, and downgrade anything you only assumed.
 
 **Why is it a skill rather than a slash command?**
-Both work; they suit different situations. As a skill, it ships and updates through the same install path as everything else here, which makes it shareable. Its frontmatter, not the mechanism, is what stops the agent from firing it on its own.
+Both work; they suit different situations. As a skill, it ships and updates through the same install path as everything else here, which makes it shareable. Its invocation policy stops the agent from firing it on its own: Claude frontmatter and Codex `agents/openai.yaml` carry that setting.
 
 ## It's working if
 

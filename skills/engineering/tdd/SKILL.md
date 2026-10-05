@@ -30,7 +30,10 @@ unresolved, recommend the public interface that exposes the required behavior,
 explain what it catches and misses, and ask for that decision before writing
 its tests. Continue work at already-confirmed boundaries.
 
-When the shape of that interface is itself in question (how deep the module is, where the seam belongs, what the interface should expose), call the Skill tool with "codebase-design" for the vocabulary. It is the shared source of the module, interface, depth, seam, adapter, leverage and locality terms, and it is a reference to consult, not a session to run.
+When the shape of that interface is itself in question (how deep the module is, where the seam belongs, what the interface should expose), load the available `codebase-design` skill for the vocabulary. It is the shared source of the module, interface, depth, seam, adapter, leverage and locality terms, and it is a reference to consult, not a session to run.
+
+Use the host's skill tool when exposed; otherwise read its discovered
+`SKILL.md`. Report a missing dependency instead of claiming it was loaded.
 
 ## Anti-patterns
 

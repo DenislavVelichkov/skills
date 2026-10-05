@@ -1,6 +1,6 @@
 ## What it does
 
-`writing-for-agents` is the reference for writing agent-facing documents: a skill, an `AGENTS.md` or `CLAUDE.md`, a [spec](https://www.aihero.dev/ai-coding-dictionary/spec), a runtime prompt, a README, any doc an [agent](https://www.aihero.dev/ai-coding-dictionary/agent) reads. The format differs, but the writing does not. The same levers make each one predictable, so the agent follows the same *process* on every run (not necessarily to the same output).
+`writing-for-agents` is the reference for writing agent-facing documents: a skill, an `AGENTS.md` or `CLAUDE.md`, a [spec](https://www.aihero.dev/ai-coding-dictionary/spec), a runtime prompt, a README, any doc an [agent](https://www.aihero.dev/ai-coding-dictionary/agent) reads. The format differs, but the writing does not. The techniques aim for a consistent process with observable completion criteria. Their effect depends on the model and runtime.
 
 Its default fix is to delete, not to explain. Ask an agent to write instructions for another agent and it spends most of its words explaining what the [model](https://www.aihero.dev/ai-coding-dictionary/model) already knows. Each of those lines is a **no-op**: it costs [context](https://www.aihero.dev/ai-coding-dictionary/context) and changes no behaviour. This reference helps you find them, so it is as useful on a document you already have as on a blank file.
 
@@ -26,8 +26,14 @@ Once you think in these two loads, most authoring decisions (split or don't, inl
 - **[Context pointers](https://www.aihero.dev/ai-coding-dictionary/context-pointer)**: the reference held in context that names out-of-context material and encodes when to reach it. A skill description and an `AGENTS.md` line naming a doc are the same thing. The pointer's *wording*, not its target, decides how reliably the agent follows it.
 - **Information hierarchy**: the ladder from in-file step, to in-file reference, to disclosed reference behind a pointer. **[Progressive disclosure](https://www.aihero.dev/ai-coding-dictionary/progressive-disclosure)** is moving material down that ladder so the top stays easy to read.
 - **Completion criteria**: how clear and demanding each step's done-condition is, and the **legwork** that demand causes. They are the defence against **premature completion**.
-- **Leading words**: a compact concept already in the model's pretraining (*tight*, *red*, *tracer bullet*) that the agent thinks with while running the document. It works in two places. In the body it guides execution, and in the pointer it triggers invocation.
+- **Leading words**: a compact name for a defined task concept (*tight*, *red*, *tracer bullet*). The same term names the desired behaviour in the body and supplies a discovery cue in the pointer.
 - **Pruning**: single source of truth, relevance, and the no-op test applied sentence by sentence, against **duplication**, **sediment** and **sprawl**.
+
+Skill mechanics distinguish Claude frontmatter from Codex picker metadata and
+invocation policy. Both explicit and implicit skills retain descriptions. Shared
+reference files can remain under an explicit-only skill without invoking it.
+For context pointers, verify the path and loading capability before strengthening
+wording. Keep required scope and permission constraints when pruning prose.
 
 ## Common questions
 

@@ -22,9 +22,16 @@ It's in Claude Code's official marketplace, so there's nothing to add first, and
 
 </canonical-block>
 
-## Codex, and other agents: skills.sh
+## Codex fork
 
-The plugin is Claude Code only. Everywhere else, [skills.sh](https://skills.sh/mattpocock/skills) copies editable skill files into the project. Use the whole-set form on `README.md`:
+This fork exposes the native `mattpocock-codex` plugin through `dv8-marketplace`.
+Its selected set is defined by the root `.codex-plugin/plugin.json`. Use the
+configured marketplace installation, preserving local invocation preferences.
+The upstream routes below remain alternatives; do not install duplicate skills.
+
+## Other agents and editable copies: skills.sh
+
+The upstream managed plugin is for Claude Code. As an editable-copy alternative, [skills.sh](https://skills.sh/mattpocock/skills) copies editable skill files into the project. Use the whole-set form on `README.md`:
 
 <canonical-block name="skills-sh-whole-set">
 

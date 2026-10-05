@@ -54,8 +54,8 @@ Before editing production code, locate the manifest and the ticket's surface
 row. If either is missing or invalid, create or repair it from the installed
 template, the exact ticket, and its parent spec, following the protocol's
 Planning prerequisite.
-Run the validator and repair source-supported defects until it passes. If
-missing input or tooling prevents validation, report the blocker and stop
+Use the protocol's bounded validation and correction step. If validation still
+fails or missing input or tooling prevents it, report the blocker and stop
 before production edits. Never invent references, hashes, state transitions,
 or approval.
 

@@ -6,7 +6,7 @@ Those files are the only thing that varies between repos. The skills themselves 
 
 The tracker file also tells agents to record implementation results in the existing issue or ticket, including verification and work still open. A commit reference alone does not update that record. Re-running setup adds missing conventions while preserving the repo's tracker choices and local guidance.
 
-It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, existing `AGENTS.md` and `CLAUDE.md`, and `GLOSSARY.md`, proposes what it found, and waits for you to confirm before it writes anything.
+It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, existing `AGENTS.md` and `CLAUDE.md`, and `GLOSSARY.md`, reuses choices and authorization already supplied, and asks only about unresolved decisions before writing the agreed setup.
 
 ## When to reach for it
 
@@ -28,16 +28,16 @@ It writes into the repo you run it in:
 | `validate-visual-acceptance.mjs` | `scripts/` |
 | An `## Agent skills` block | `AGENTS.md` for Codex or `CLAUDE.md` for Claude Code, when present |
 
-All outputs are committed in the repository. There is no user-level or global mode: the config lives in the repo, so every repo gets its own copy.
+All outputs are saved in the repository; commit them according to the project's workflow. There is no user-level or global mode: the config lives in the repo, so every repo gets its own copy.
 
 ## The three decisions
 
-It starts each section with the recommended answer, and skips any question its exploration already answered. Most runs need only two confirmations.
+It starts each section with the recommended answer, and skips any question its exploration already answered. Settled choices do not need another confirmation.
 
 | Decision | What it proposes | When it asks |
 | --- | --- | --- |
-| **Issue tracker** | the one matching your `git remote` | always, because this is the one real choice |
-| **Triage labels** | keep the five canonical names (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) | only if the `triage` skill is installed |
+| **Issue tracker** | the one matching your `git remote` | when existing configuration or your request has not already settled it |
+| **Triage labels** | keep category names `bug` and `enhancement` plus the five state names (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) | only if the `triage` skill is installed |
 | **Domain docs** | single-context: one `GLOSSARY.md` plus `docs/adr/` at the root | only if it spots monorepo signals, and then it offers a multi-context `GLOSSARY-MAP.md` |
 
 The tracker options:
@@ -61,6 +61,11 @@ reference selection, production comparison, human acceptance, and baseline
 promotion as separate states.
 
 "Other" is a full option too. It is how Jira, Linear, Azure DevOps and Beads all work. You describe the workflow, the skill records your prose in `docs/agents/issue-tracker.md`, and the downstream skills follow the prose. Users have already built this: a Jira-over-[MCP](https://www.aihero.dev/ai-coding-dictionary/mcp) variant, a Gitea CLI shaped like `gh`, a hand-built local dashboard.
+
+The seed tracker commands use supported structured or file input. Setup checks
+version-specific options against the installed CLI before relying on them.
+Visual planning corrects source-supported validation faults in a bounded pass;
+persistent errors remain explicit blockers, with no invented evidence.
 
 ## Common questions
 

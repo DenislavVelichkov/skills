@@ -6,7 +6,11 @@ disable-model-invocation: true
 
 This skill takes the current conversation context and codebase understanding and produces a spec. Do NOT interview the user; just synthesize what you already know.
 
-The issue tracker and triage label vocabulary should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
+Reuse tracker configuration already supplied and follow its document pointer
+in the current `AGENTS.md` or `CLAUDE.md`. If no alternate path is configured,
+read `docs/agents/issue-tracker.md` when present. If no tracker is known, tell
+the user to run `/setup-matt-pocock-skills` before publication. A parent spec
+needs no triage label mapping because it receives no execution label.
 
 ## Process
 
@@ -22,16 +26,18 @@ For a visual parity action, read `docs/agents/visual-acceptance.md` completely.
 Before sketching seams or publishing the spec, locate the initiative manifest.
 If it is missing or invalid, create or repair it from the installed template
 and the source decisions, following the protocol's Planning prerequisite. Add
-one truthful `planned` row per in-scope surface, then run the validator until it
-passes. Do not stop merely because it is absent, and do not invent references,
+one truthful `planned` row per in-scope surface, then use the protocol's bounded
+validation and correction step. Do not stop merely because it is absent, and do not invent references,
 hashes, state transitions, or approval. Advance a row to `design_selected` only
 when the selected durable references and their hashes actually exist.
 
 2. Sketch out the seams at which you're going to test the feature. Existing seams should be preferred to new ones. Use the highest seam possible. If new seams are needed, propose them at the highest point you can. The fewer seams across the codebase, the better - the ideal number is one.
 
-Check with the user that these seams match their expectations.
+Reuse seams already confirmed in the conversation or source requirements;
+record them without asking again. Ask only for a consequential unresolved seam
+decision. This exception does not start another feature interview.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. Do not apply `ready-for-agent` or another execution label to the parent spec. For local markdown, do not add a `Status:` line to `spec.md`.
+3. Write the spec using the template below. Check it against the source decisions for missing requirements, invented scope, and unresolved choices. Correct detected faults once and recheck before publication; label any remaining unknowns explicitly. Then publish it to the project issue tracker. Do not apply `ready-for-agent` or another execution label to the parent spec. For local markdown, do not add a `Status:` line to `spec.md`.
 
 The spec is ready for ticket splitting, not implementation. End after publishing it and tell the user to run `/to-tickets`. Never edit production code or invoke `/implement` from this skill.
 
@@ -47,7 +53,7 @@ The solution to the problem, from the user's perspective.
 
 ## User Stories
 
-A LONG, numbered list of user stories. Each user story should be in the format of:
+A numbered list of the agreed user stories. Each story should be in the format of:
 
 1. As an <actor>, I want a <feature>, so that <benefit>
 
@@ -55,7 +61,9 @@ A LONG, numbered list of user stories. Each user story should be in the format o
 1. As a mobile bank customer, I want to see balance on my accounts, so that I can make better informed decisions about my spending
 </user-story-example>
 
-This list of user stories should be extremely extensive and cover all aspects of the feature.
+Cover each distinct in-scope user outcome once. For architectural work with no
+user-facing stories, record its contracts and invariants under Implementation
+Decisions and Testing Decisions instead of inventing actors or features.
 
 ## Implementation Decisions
 

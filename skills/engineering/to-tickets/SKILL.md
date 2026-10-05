@@ -12,7 +12,11 @@ drafting connected batches or selecting validation.
 
 Break a plan, spec, or conversation into a set of **tickets**: tracer-bullet vertical slices, each declaring the tickets that **block** it.
 
-The issue tracker and triage label vocabulary should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
+Reuse tracker and role mappings already supplied, and follow their document
+pointers in the current `AGENTS.md` or `CLAUDE.md`. If no alternate paths are
+configured, read `docs/agents/issue-tracker.md` and
+`docs/agents/triage-labels.md` when present. If required tracker or role mappings
+remain unknown, tell the user to run `/setup-matt-pocock-skills` before publication.
 
 This skill only produces the approved ticket set. A spec is planning input, not an implementation work order. Do not edit production code, invoke `/implement`, or continue into implementation during this skill.
 
@@ -36,8 +40,9 @@ Before exploring, drafting, or quizzing the user about implementation tickets,
 locate the initiative manifest.
 If it is missing or invalid, create or repair it from the installed template
 and the source decisions, following the protocol's Planning prerequisite. Add
-one truthful `planned` row per in-scope surface and run the validator until it
-passes. Do not draft, quiz, or publish any tickets until the validator passes.
+one truthful `planned` row per in-scope surface and follow the protocol's
+bounded validation and correction step. Report missing protocol assets,
+source inputs, or a persistent validation failure before dependent work. Do not draft, quiz, or publish any tickets until the validator passes.
 Never invent references, hashes, state transitions, or approval.
 
 ### 2. Trace the current path
@@ -112,7 +117,8 @@ Ask the user:
 - Are the blocking edges correct: does each ticket only depend on tickets that genuinely gate it?
 - Should any tickets be merged or split further?
 
-Iterate until the user approves the breakdown.
+Reuse an approval already given for the same breakdown. Resolve only changed
+or still-open decisions; publish when the breakdown is approved.
 
 ### 5. Publish the tickets to the configured tracker
 
@@ -123,6 +129,11 @@ Publish the approved tickets. **How** depends on the tracker `/setup-matt-pocock
 - In either local form, each file's "Blocked by" lists the numbers and titles it depends on. Use the per-ticket file template below, one ticket per file, never a combined file.
 - In local files, change the template status to `ready-for-human` only for a visual design-selection blocker that still needs a human choice.
 - **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise. A visual design-selection blocker that still requires a human uses `ready-for-human`; its downstream implementation ticket remains `ready-for-agent` but blocked.
+
+When resuming partial publication, find tickets already created for the approved
+breakdown and complete only missing tickets or links. Check an uncertain write's
+result before retrying it. Verify every approved ticket exists and its blockers
+resolve, then report its path or tracker identity and any incomplete operation.
 
 After publication, implementation may work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom. `to-tickets` stops before that work begins.
 

@@ -47,7 +47,7 @@ Every ticket carries a `wayfinder:<type>` label. Each ticket is either **[HITL](
 | --- | --- | --- | --- |
 | `grilling` | HITL | The default. The question can be settled by talking it through. | [grilling](https://aihero.dev/skills-grilling) plus [domain-modeling](https://aihero.dev/skills-domain-modeling), in a fresh session |
 | `prototype` | HITL | "How should this look" or "how should this behave": a question talking cannot settle. | [prototype](https://aihero.dev/skills-prototype), with a link from the ticket to the built artifact |
-| `research` | AFK | A fact outside the working directory is blocking a decision. | A [research](https://aihero.dev/skills-research) [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent), started when you chart the map and run in parallel on a `research/<name>` branch |
+| `research` | AFK | A fact outside the working directory is blocking a decision. | [research](https://aihero.dev/skills-research), locally or through an available worker when the host permits delegation, with a saved file and exact commit on a `research/<name>` branch |
 | `task` | Either | Nothing to decide, but manual work blocks a decision, such as provisioning access, signing up for a service, or moving data so you can see its shape. | The agent alone where it can, otherwise a precise checklist for the human |
 
 `task` is the only type that *does* rather than decides. It belongs on the map only because it unblocks a decision, never because it delivers part of the destination. This type goes wrong most often in practice. Agents read it as an implementation step and start to write product code inside the map.
@@ -72,6 +72,12 @@ what production should become; it does not approve whatever production later
 renders. That second decision remains a human gate after implementation shows
 the exact candidate beside the frozen reference.
 
+Map Notes record human authorization; they cannot create it. Execution inside
+a map requires an explicit human instruction with its source and scope retained.
+The skill reads the configured tracker's claim operation, so remote assignment
+and local `Status: claimed` serve the same role. Without a known tracker it
+requests setup instead of silently switching to local files.
+
 ## Common questions
 
 **How is this different from `/grill-with-docs`? Which should I start with?**
@@ -84,7 +90,7 @@ The end of the whole map, not just the first session. The question reads ambiguo
 No. Wayfinder's tickets are decision tickets, and by the time the map closes they are all closed too. What is left is a map full of linked decisions, which is not a build plan. [to-spec](https://aihero.dev/skills-to-spec) collapses those linked decisions into one spec, then [to-tickets](https://aihero.dev/skills-to-tickets) slices that into tracer-bullet implementation tickets. `implement` works one of those tickets. It must not build directly from the map or parent spec.
 
 **My agent started writing production code in the middle of a wayfinder session.**
-This is the most-reported failure with this skill, and a real gap in the skill causes it. You can override wayfinder's "plan, don't do" default in the map's **Notes**. But the agent writes the Notes, so the constraint and its exemption live in a file that the constrained agent owns. One user watched an agent write "this map carries execution" into its own Notes. In later sessions the agent read that line back as permission and built on a live server. The skill has no hard stop for "I meant the default." Until it does, read the Notes on any map you did not chart yourself, keep implementation in separate sessions, and treat any `wayfinder:task` that looks like a slice of the build as mis-typed.
+Only your explicit instruction can authorize execution inside a map. Notes preserve that instruction's source and scope; an agent-written exemption is insufficient. A prerequisite task can unblock a decision, but it cannot silently become a slice of production delivery.
 
 **I charted 27 tickets, and by the time I got to the thirteenth, the rest no longer made sense.**
 This question is verbatim from a user report, and others report the same outcome. By default, wayfinder plans comprehensively. When later tickets rest on assumptions that earlier tickets invalidate, the map falls into the waterfall trap that critics accuse the skill of. Two things help. First, scope the map to a bounded destination, not to the whole product. Users report that maps scoped to one defined epic behave better than a sprawling "implement V1". The goal is to ship small increments, not to plan something very big. Second, [prototype](https://www.aihero.dev/ai-coding-dictionary/prototyping) aggressively. The route stays current because cheap concrete artifacts expose uncertainty before implementation depends on it. Wayfinder is "prototypemaxxing", not "planmaxxing".
@@ -120,4 +126,4 @@ It is this skill. v1.1 renamed it to `wayfinder`, and you invoke it as `/wayfind
 
 `wayfinder` is a **situational on-ramp**, not the default starting point. Most work still starts on the grill-led idea → ship chain. You use wayfinder when the idea is too big to hold in one session. It rejoins that chain at [to-spec](https://aihero.dev/skills-to-spec), because a cleared map hands off and does not build.
 
-Most of the work happens in other skills that wayfinder schedules. [grilling](https://aihero.dev/skills-grilling) and [domain-modeling](https://aihero.dev/skills-domain-modeling) resolve the default ticket type, [prototype](https://aihero.dev/skills-prototype) resolves the tickets that talk cannot settle, and [research](https://aihero.dev/skills-research) runs as a subagent so its reading stays out of your session. [handoff](https://aihero.dev/skills-handoff) moves work in and out: into a map from a conversation that grew too big, and out of a map when a side quest appears mid-session. For anything else, [ask-matt](https://aihero.dev/skills-ask-matt) routes over the whole set.
+Most of the work happens in other skills that wayfinder schedules. [grilling](https://aihero.dev/skills-grilling) and [domain-modeling](https://aihero.dev/skills-domain-modeling) resolve the default ticket type, [prototype](https://aihero.dev/skills-prototype) resolves the tickets that talk cannot settle, and [research](https://aihero.dev/skills-research) runs locally or through a permitted worker, with findings linked from its ticket. [handoff](https://aihero.dev/skills-handoff) moves work in and out: into a map from a conversation that grew too big, and out of a map when a side quest appears mid-session. For anything else, [ask-matt](https://aihero.dev/skills-ask-matt) routes over the whole set.

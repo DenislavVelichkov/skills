@@ -4,4 +4,10 @@ description: A relentless interview to sharpen a plan or design, which also crea
 disable-model-invocation: true
 ---
 
-Call the Skill tool twice, for "grilling" and "domain-modeling".
+Load the available `grilling` and `domain-modeling` skills separately, then use
+both throughout the interview. If the host exposes a skill tool, use it;
+otherwise read each discovered `SKILL.md` before proceeding. Report an
+unavailable dependency instead of improvising its instructions.
+
+Use `grilling` for question rounds and `domain-modeling` to record resolved
+terms and qualifying ADRs as they arise. Preserve its lazy file creation rules.

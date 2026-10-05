@@ -1,6 +1,6 @@
 ## What it does
 
-`code-review` reviews a frozen committed candidate against a supplied or evidence-derived baseline along two axes. Standards checks repository rules; Spec checks the originating requirements. Both run locally by default. Explicit authorization permits parallel read-only reviewers, each forbidden from delegating further.
+`code-review` reviews a frozen committed candidate, or a requested work-in-progress snapshot, against a supplied or evidence-derived baseline along two axes. Standards checks repository rules; Spec checks the originating requirements. Both run locally by default. Explicit authorization permits parallel read-only reviewers, each forbidden from delegating further.
 
 The skill never merges or re-ranks the two axes. The report ends with a worst issue *per axis* and declines to name a single winner across them. A change can pass one axis and fail the other. Code that follows every convention but implements the wrong thing passes Standards and fails Spec. Code that does exactly what the [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket) asked but breaks the repo's conventions does the reverse. A blended verdict lets the passing axis hide the failing one.
 
@@ -27,7 +27,7 @@ Type `/code-review`, or the agent reaches for it automatically when you ask to r
 | The whole codebase has drifted, not one diff | [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) |
 | Something is broken and you do not know why | [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs) |
 
-A supplied fixed point wins. Otherwise the review derives it from the recorded task-start commit, established PR base or verified upstream merge-base, in that order. It states the derivation and asks only when the evidence is missing or conflicting. It checks that the ref resolves and the diff is non-empty.
+A supplied fixed point wins. Otherwise the review derives it from the recorded task-start commit, established PR base or verified upstream merge-base, in that order. It states the derivation and asks only when the evidence is missing or conflicting. It resolves refs to commit ids before capturing the scope. Requested uncommitted changes remain in scope even when the committed diff is empty.
 
 ## Prerequisites
 
@@ -89,7 +89,7 @@ Review the integrated candidate against its full scope. After related fixes, rev
 
 **Can I trust the findings?**
 
-Not without checking. Sub-agent output is a hypothesis, not evidence. One team reported a dozen breaking changes that prose-based reviews had missed. The skill combines the two reports as they are, or lightly cleaned. It does not re-verify each claim against the files, so a finding can cite the wrong location or overstate an impact. Read the citation on each finding before you act on it. The skill requires every finding to carry a citation (a standards rule, a smell plus its hunk, or a spec line), and that is what makes the findings checkable.
+Not without checking. Sub-agent output is a hypothesis, not evidence. One team reported a dozen breaking changes that prose-based reviews had missed. The skill combines the two reports as they are, or lightly cleaned. It checks each reported location against the frozen files and each alleged breach against its cited rule or requirement. Unsupported or mislocated findings receive one correction and recheck; unresolved evidence stays uncertain. The skill requires every finding to carry a citation (a standards rule, a smell plus its hunk, or a spec line), and that is what makes the findings checkable.
 
 **Why does it find new problems every single time I run it?**
 
@@ -97,11 +97,11 @@ Accepted fixes receive a delta review. Once both axes and required checks pass, 
 
 **Does it review my uncommitted work?**
 
-No. It diffs `<fixed-point>...HEAD`. The three-dot form measures from the merge-base and excludes staged and working-tree changes. If `implement` has not made an interim commit, the review cannot see the work that is about to go into the next commit. Commit first, then review, then amend or add a fixup.
+Yes, when you request a work-in-progress review. It captures the working-tree delta and relevant untracked files, records staging status, and reviews the saved scope without staging or committing it. The normal implementation checkpoint still reviews a committed integrated candidate.
 
 ## It's working if
 
-- It refuses to start on a bad ref or an empty diff, before any sub-agent is spawned.
+- It stops on a bad ref or a fully empty scope; an empty committed diff does not hide requested uncommitted work.
 - The report arrives as two separate blocks under `## Standards` and `## Spec`, not one merged list.
 - Every Standards finding names either a rule in one of your repo's files or one of the twelve smells, with the hunk quoted; every Spec finding quotes a line of the spec.
 - The closing summary gives a worst issue per axis and declines to pick an overall winner.

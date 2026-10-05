@@ -1,26 +1,48 @@
 # Model-invoked vs user-invoked
 
-Every `SKILL.md` in this repo is a skill. The one axis that splits them is **invocation**, who can reach it:
+Preserve the selected skill's invocation policy in both platforms.
 
-- **User-invoked**: reachable **only by the human typing its name**. Set `disable-model-invocation: true` in the frontmatter (Claude Code) and `policy.allow_implicit_invocation: false` in `agents/openai.yaml` (Codex). The `description` is **human-facing**: a one-line summary read by a person browsing slash-commands. Strip trigger lists ("Use when the user says…").
-- **Model-invoked**: reachable by **model or user**. The default: omit `disable-model-invocation` and the `policy` block from `agents/openai.yaml`. The `description` is **model-facing** and keeps rich trigger phrasing ("Use when the user wants…, mentions…, asks for…") so auto-invocation fires. The test for whether a skill should stay model-invoked: _could the model usefully reach for this autonomously?_ (Reuse is the reason to extract a skill, not the test.)
+| Invocation | Claude Code `SKILL.md` | Codex `agents/openai.yaml` | Description |
+| --- | --- | --- | --- |
+| User-invoked | `disable-model-invocation: true` | `policy.allow_implicit_invocation: false` | Human-facing summary |
+| Model-invoked | Omit `disable-model-invocation` | Omit the `policy` block | Model-facing trigger branches |
 
-Each harness excludes a user-invoked skill from the model's reach in its own way, so nothing but the human can fire it: no other skill can. A user-invoked skill may invoke model-invoked skills, but it can never reach another user-invoked skill.
+Both kinds retain a `name` and `description`. Invocation is controlled by the
+host's policy, not by deleting descriptions. Each skill also has
+`interface.display_name` and `interface.short_description` in `agents/openai.yaml`.
+Keep policy and picker metadata consistent. Bucket and root READMEs group
+skills by invocation.
 
-Every skill also carries an `agents/openai.yaml` beside its `SKILL.md`. It holds Codex UI metadata: `interface.display_name` and `interface.short_description` for the skill picker, and, for user-invoked skills, the `policy.allow_implicit_invocation: false` that pairs with `disable-model-invocation`. Keep the two in sync: a skill is user-invoked in both harnesses or neither.
+Only the human invokes a user-invoked skill. Other skills may recommend it,
+but must not execute it or bypass its policy by reading its instructions.
 
-Bucket `README.md`s and the top-level `README.md` group entries into **User-invoked** and **Model-invoked**.
+## Dependencies between skills
 
-## Dependencies between them
+For a model-invoked dependency, state the action explicitly:
+"Load the available `grilling` skill and follow it." Use the host's skill tool
+when exposed; otherwise discover and read the registered `SKILL.md` through
+the supported loading mechanism. Report a required dependency that cannot be
+loaded instead of improvising it or claiming it ran.
 
-Dependencies are expressed as an explicit instruction to **call the Skill tool** with the named skill (`Call the Skill tool with "grilling"`), not deep `../other-skill/FILE.md` cross-references, and not a bare `/skill`-style mention left for the model to interpret. Naming the tool is what gets it fired: most harnesses expose skill invocation as a tool the model calls, and spelling that out gets a higher hit rate than dropping a `/name` into prose and hoping it's read as a command. Dropping the leading `/` also keeps this harness-neutral rather than less: a skill name on its own carries no assumption about which harness's trigger syntax it belongs to. Shared reference docs stay with their existing owner. A pointer to a plain reference file, such as `implement/VERIFICATION.md`, reads policy without invoking its owning skill. Use a relative link for that reference; never use it to execute a user-invoked skill.
+Load each dependency separately. Use its registered name and supported tool
+schema; a Claude `Skill` tool name is not a universal Codex tool contract.
+Check the selected plugin manifest or registration when implicit discovery
+omits an explicit-only skill. The root `.codex-plugin/plugin.json` determines
+this fork's Codex exposure; Claude metadata does not expand that selection.
 
-This is about **operative** instructions: a skill's own steps telling the agent to go run another skill right now. Router prose that just names skills for a human to pick from (`ask-matt`, bucket `README.md`s) isn't invoking anything, so it keeps `/skill`-style names as plain labels.
+Router prose recommends `/skill` names for the human. A router may inspect a
+skill as reference material to verify that recommendation, then stops without
+executing it. Reading for inspection is distinct from following its workflow.
 
-The Skill tool takes one skill per call. A step that needs two skills is two calls, not one call with two names: say so (`Call the Skill tool twice, for "grilling" and "domain-modeling"`), not "call it with X and Y," which reads as a single call taking both.
+Shared reference files stay with their existing owner. Use a conditional
+relative link to read a plain reference such as `implement/VERIFICATION.md`;
+that does not invoke the owning explicit-only skill.
 
-This whole convention only holds when the named skill is **model-invoked**. A user-invoked skill can never be reached this way, full stop: per the invariant above, no other skill can call it, including by naming it to the Skill tool. When a step's precondition is a user-invoked skill (e.g. `setup-matt-pocock-skills`), phrase it as an instruction for the human to act on: "tell the user to run `/setup-matt-pocock-skills`", never as a Skill tool call.
+When a precondition requires a user-invoked skill, tell the user to run it.
+Do not silently run it as a dependency.
 
 ## Passive vs active domain work
 
-Merely _reading_ `GLOSSARY.md` for vocabulary is a one-line prose pointer, not the `domain-modeling` skill. Only the active build/sharpen discipline (challenge terms, edge-case scenarios, write ADRs, update `GLOSSARY.md` inline) is `domain-modeling`.
+Reading `GLOSSARY.md` for vocabulary is a prose pointer, not `domain-modeling`.
+Use `domain-modeling` for active work: challenging terms, exploring edge cases,
+writing ADRs, and updating the glossary as decisions resolve.

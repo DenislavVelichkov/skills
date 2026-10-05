@@ -3,15 +3,15 @@ name: writing-for-agents
 description: Writing documents for agents. Use when creating or editing skills, or modifying AGENTS.md or CLAUDE.md.
 ---
 
-Reference for writing any document an agent consumes: a skill, an `AGENTS.md` / `CLAUDE.md`, a doc reached by a pointer. The packaging differs; the writing does not: the same levers make each one predictable, since the agent takes the same _process_ every run rather than producing the same output.
+Reference for writing any document an agent consumes: a skill, an `AGENTS.md` / `CLAUDE.md`, or a doc reached by a pointer. Define an explicit process and observable completion criteria. These techniques aim for consistency; their effect depends on the model and runtime.
 
 When the document you're writing is a skill, read [`SKILL-MECHANICS.md`](SKILL-MECHANICS.md) for frontmatter, invocation choice, and router skills.
 
 ## Context pointers
 
-A **context pointer** is a reference held in the agent's context that names some out-of-context material and encodes the condition for reaching it. A skill's description is one; a line in `AGENTS.md` naming a doc is the same object. The pointer's _wording_, not its target, decides when the agent reaches the material, and how reliably. A must-have target behind a weakly worded pointer is a variance bug: sharpen the wording first, and inline the material only if sharpening fails.
+A **context pointer** is a reference held in the agent's context that names some out-of-context material and encodes the condition for reaching it. A skill's description is one; a line in `AGENTS.md` naming a doc is the same object. The pointer's wording helps the agent decide when to load the material. First verify that a required target exists and the host can discover and read it. Then clarify its loading condition; stronger wording cannot repair a broken path or unavailable tool.
 
-A pointer does two jobs: state what the material is, and list the **branches** that should trigger reaching it (a branch is a distinct case the document handles, so different runs take different paths through it). Every word of an always-loaded pointer costs on every turn, so it earns even harder pruning than the body:
+A pointer does two jobs: state what the material is, and list the **branches** that should trigger reaching it (a branch is a distinct case the document handles, so different runs take different paths through it). When the host always loads a pointer, its words consume context on every turn, so prune it more closely than a body loaded only on demand:
 
 - **Front-load the leading word**: the pointer is where it does its triggering work.
 - **One trigger per branch.** Synonyms that rename a single branch are one branch written twice; collapse them and keep only genuinely distinct branches.
@@ -60,9 +60,9 @@ Splitting one document into two spends one of the two loads, so split only when 
 
 ## Leading words
 
-A **leading word** is a compact concept already living in the model's pretraining that the agent thinks with while running the document (_lesson_, _fog of war_, _tracer bullets_). Repeated as a token, never as a sentence, it accumulates a distributed definition and anchors a whole region of behaviour in the fewest tokens, by recruiting priors the model already holds. Coining your own works if you define it clearly, but a made-up word recruits no priors: you pay in definition tokens what a pretrained word gives free; reach for an existing word first.
+A **leading word** is a compact name for a task concept, such as _lesson_, _fog of war_, or _tracer bullet_. Define it once and use it consistently. Prefer an established term when its meaning fits; define an unfamiliar or project-specific term rather than assuming the model shares your meaning.
 
-It anchors twice. In the body, _execution_: the agent reaches for the same behaviour every time the word appears, and inside flat reference it focuses attention on a class of thing to look for. In a pointer, _invocation_: when the same word lives in your prompts, your docs, and your codebase, the agent links that shared language to the material and reaches it more reliably.
+Use it in the body to name the desired behaviour or class of findings. In a pointer, use the same defined term as the prompts, docs, and codebase so it supplies a consistent discovery cue.
 
 Hunt for opportunities to refactor with leading words. A triad spelled out at three sites, a pointer spending a sentence to gesture at one idea. Each is a passage begging to collapse into a single token:
 
@@ -71,7 +71,7 @@ Hunt for opportunities to refactor with leading words. A triad spelled out at th
 
 You win twice: fewer tokens, and a sharper hook for the agent to hang its thinking on. Assume every document is carrying restatements that leading words retire. Go find them.
 
-**Negation** is the failure mode beside this lever: steering by prohibition drags the forbidden behaviour into context and makes it _more_ available, not less. _Don't think of an elephant_, and the elephant is all there is; the negation is a weak modifier the strongly-activated concept overruns, so the ban half-reads as an instruction to do the thing. Prompt the **positive**: state the target behaviour ("write one-line comments") so the banned one is never spoken. A prohibition earns its place only as a hard guardrail you cannot phrase positively; even then, pair it with the positive target so attention lands on what to do.
+State the **positive** action directly, such as "write one-line comments". Keep necessary prohibitions beside the permitted action, especially for scope, permissions, and correctness. Treat claims about how negation affects a particular model as hypotheses to test in that runtime, not as a reason to remove a required constraint.
 
 ## Pruning
 

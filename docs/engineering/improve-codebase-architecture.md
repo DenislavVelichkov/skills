@@ -55,6 +55,11 @@ The report ends with a **Top recommendation**, the candidate it would do first. 
 
 When you pick a candidate, a [grilling](https://aihero.dev/skills-grilling) session starts on it. It covers the constraints, what goes behind the seam, which tests survive, and what the deepened interface should look like. The output of that session is a decision, not a diff. From there the normal flow applies: take the decision into [to-spec](https://aihero.dev/skills-to-spec), then [to-tickets](https://aihero.dev/skills-to-tickets), then [implement](https://aihero.dev/skills-implement).
 
+Exploration uses an available worker when the host permits it, or runs locally.
+If no justified deepening opportunity exists, the result says so. Alternative
+interface designs can also be compared locally; all must satisfy the same
+requirements.
+
 ## Common questions
 
 **It grilled me for an hour about one idea instead of showing me options. Can I turn that off?**

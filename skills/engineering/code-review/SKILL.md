@@ -3,7 +3,9 @@ name: code-review
 description: "Review changes since a commit, branch, tag, or merge-base against repository standards and the originating spec. Report both axes separately. Use for a branch, PR, work-in-progress review, or \"review since X\"."
 ---
 
-Two-axis review of the diff between `HEAD` and a fixed point supplied by the user or derived from task evidence:
+Two-axis review of the requested changes since a fixed point supplied by the
+user or derived from task evidence. Freeze a committed candidate by default;
+include uncommitted work when the user requests a work-in-progress review:
 
 - **Standards**: does the code conform to this repo's documented coding standards?
 - **Spec**: does the code faithfully implement the originating issue / spec?
@@ -34,12 +36,22 @@ commit, an established PR base, or the branch's verified upstream merge-base,
 in that order. State the derivation. Ask only when these are unavailable or
 conflicting; never choose a recent commit that omits part of the requested work.
 
-Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
+Resolve the fixed point and candidate to commit ids before reviewing:
+`git rev-parse --verify '<ref>^{commit}'`. Use those ids in
+`git diff <fixed-point>...<candidate>` and
+`git log <fixed-point>..<candidate> --oneline`; three-dot compares from their
+merge-base. Retain the command outputs as the frozen committed scope.
 
-Before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here, not inside two parallel sub-agents.
+For a work-in-progress review, also capture `git diff <candidate>` for the
+working-tree delta, record staging status, and snapshot relevant untracked files
+and changed file contents. Review those snapshots, not a moving working tree.
+Do not stage or commit merely to perform this read-only review.
 
-Freeze the candidate revision as well as the fixed point; use that revision
-in the diff and log commands so concurrent edits cannot move the review scope.
+Confirm the full requested scope is captured. An invalid ref stops the review;
+an empty committed diff does not discard requested uncommitted work. If the
+entire scope is empty, report that and stop.
+
+Use the frozen scope for both axes so concurrent edits cannot move it.
 The first review covers the full requested diff. After accepted fixes, review
 the delta from the last reviewed candidate plus affected callers, contracts,
 and regression risks. Retain the original baseline and prior coverage; a
@@ -113,13 +125,13 @@ Use the following briefs locally, or assign them to the authorized reviewers
 described above. A reviewer already assigned one axis completes only that axis
 and returns its findings without spawning another reviewer.
 
-**Standards sub-agent prompt** should include:
+**Standards review brief** should include:
 
 - The full diff command and commit list.
-- The list of standards-source files you found in step 3, **plus the smell baseline from step 3** pasted in full (the sub-agent has no other access to it).
+- The list of standards-source files you found in step 3, **plus the smell baseline from step 3** pasted in full so the brief is self-contained.
 - The brief: "Report, per file/hunk where relevant, (a) every place the diff violates a documented standard: cite the standard (file + the rule); and (b) any baseline smell you spot: name it and quote the hunk. Distinguish hard violations from judgement calls: documented-standard breaches can be hard, but baseline smells are always judgement calls, and a documented repo standard overrides the baseline. Skip anything tooling enforces. Under 400 words."
 
-**Spec sub-agent prompt** should include:
+**Spec review brief** should include:
 
 - The diff command and commit list.
 - The path or fetched contents of the spec.
@@ -128,6 +140,11 @@ and returns its findings without spawning another reviewer.
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 
 ### 6. Aggregate
+
+Verify each reported location against the frozen files and each claimed breach
+against its cited rule or requirement. Correct unsupported or mislocated
+findings once, then recheck the affected citations; report any unverifiable
+finding as uncertain. This checks the report, not the implementation.
 
 Present the two reports under `## Standards` and `## Spec` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings, because the two axes are deliberately separate (see _Why two axes_).
 

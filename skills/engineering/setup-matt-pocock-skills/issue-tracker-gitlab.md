@@ -4,7 +4,7 @@ Issues and specs for this repo live as GitLab issues. Use the [`glab`](https://g
 
 ## Conventions
 
-- **Create an issue**: `glab issue create --title "..." --description "..."`. Use a heredoc for multi-line descriptions. Pass `--description -` to open an editor.
+- **Create an issue**: `glab issue create --title "..." --description-file <path>` when supported by the installed CLI. Write the exact Markdown to that file first. The [CLI documentation](https://docs.gitlab.com/cli/issue/create/) also supports `--description-file -` for stdin; `--description -` opens an editor. Check `glab issue create --help` before choosing the input method.
 - **Read an issue**: `glab issue view <number> --comments`. Use `-F json` for machine-readable output.
 - **List issues**: `glab issue list -F json` with appropriate `--label` filters.
 - **Comment on an issue**: `glab issue note <number> --message "..."`. GitLab calls comments "notes".

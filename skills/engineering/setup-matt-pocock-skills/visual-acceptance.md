@@ -61,7 +61,11 @@ in the conversation, map, spec, or ticket:
    visible regions, and known interactions. Start references, candidates,
    deviations, and baselines empty; set comparison, approval request, and
    approval to `null`.
-4. Run the validator and repair the manifest until it passes.
+4. Run the validator. Correct source-supported defects in one focused pass,
+   then recheck. Follow a project-defined retry limit if one exists. If the
+   result is still invalid or required inputs or tooling are missing, preserve
+   the truthful manifest, report the exact blocker, and stop dependent work.
+   A repeated failure does not authorize invented evidence or relaxed gates.
 
 Use this exact shape for each new `planned` row, replacing every bracketed
 value with facts from the source:

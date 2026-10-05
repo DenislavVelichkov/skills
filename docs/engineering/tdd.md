@@ -32,6 +32,11 @@ That last row is a real gap. The skill decides *where* the seams go, but nothing
 
 [codebase-design](https://aihero.dev/skills-codebase-design) needs to be installed. `tdd` used to carry its own deep-module and interface-design notes; v1.0 deleted them in favour of the shared skill, and `tdd` now uses its interface-design vocabulary. Nothing else; the skill is [stateless](https://www.aihero.dev/ai-coding-dictionary/stateless) and writes no files of its own.
 
+When interface design needs shared vocabulary, the skill loads
+[codebase-design](https://aihero.dev/skills-codebase-design) through the current
+host's supported mechanism. A missing skill tool does not remove that
+reference requirement.
+
 ## The loop, and the seam it runs at
 
 The skill rests on three terms.

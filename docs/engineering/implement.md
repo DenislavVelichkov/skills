@@ -94,6 +94,10 @@ The skill's central idea is the **seam**, the public boundary you observe behavi
 
 Reuse test boundaries confirmed in the ticket, spec or conversation. If none is established, recommend a public boundary and explain what it catches before asking the user to choose. Existing agreement does not need another approval.
 
+Visual-manifest recovery follows the protocol's bounded correction step. If
+validation still fails, or required evidence or tooling is missing, the skill
+preserves the truthful state and reports the blocker before production edits.
+
 ## Common questions
 
 **Does each ticket need new verification tooling?**

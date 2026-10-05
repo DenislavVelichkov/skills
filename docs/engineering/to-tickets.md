@@ -86,6 +86,13 @@ One shape breaks the tracer-bullet rule. A **wide refactor** is a single mechani
 
 Where even the batches can't stay green alone, they share an integration branch and all block a final integrate-and-verify ticket. CI only has to be green at that ticket.
 
+An unchanged approved breakdown is reused. If publication was interrupted, the
+skill finds the tickets and links already created before completing missing
+operations. It reports each ticket's path or tracker identity and verifies its
+blocking references. An uncertain write is checked before retrying. Persistent
+visual-preflight failures stop dependent work and name the missing input or
+capability.
+
 ## Common questions
 
 **It produced twelve tickets for a three-line change.**
