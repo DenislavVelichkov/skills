@@ -7,7 +7,7 @@ least one of these:
 
 - require `Compare <production surface> against <visual reference>`
 - require `Select and freeze <visual reference> so <production surface> can be
-  compared later`
+compared later`
 - link an existing visual-acceptance manifest that records that obligation
 
 Applicability must precede artifact creation. A proposed manifest path or a
@@ -137,6 +137,16 @@ order.
 9. Copy the accepted candidate bytes to regression baselines, record their
    hashes, rerun the visual tests, and set `baseline_promoted`.
 10. Only then resolve the surface and unlock work blocked by it.
+
+## Visual fidelity review
+
+Before requesting approval, inspect the original reference and candidate pairs
+at each required locale, viewport and scenario. Account for required maps,
+forms, buttons, typography, icons, spacing and shared navigation. Repair an
+unintended mismatch or record a deliberate adaptation for the human to assess.
+Keep corrections scoped to the feedback; fixing an arrow's alignment preserves
+the surrounding link unless a broader change is requested. Passing behavioral
+checks does not establish visual fidelity or human acceptance.
 
 ## Approval boundary
 

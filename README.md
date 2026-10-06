@@ -81,6 +81,7 @@ In your agent, run it once per repo. It will:
 - Ask you which issue tracker you want to use (GitHub, Linear, or local files)
 - Ask you what labels you apply to tickets when you triage them (`/triage` uses labels)
 - Ask you where you want to save any docs we create
+- Reuse existing tools for local commit checks and applicable review guidance
 
 ### 3. Bam - you're ready to go.
 
@@ -198,7 +199,7 @@ Skills I use daily for code work.
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)**: Grilling session that also builds your project's domain model, sharpening terminology and updating `GLOSSARY.md` and ADRs inline.
 - **[triage](./skills/engineering/triage/SKILL.md)**: Move issues through a state machine of triage roles.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)**: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
-- **[setup-matt-pocock-skills](./skills/engineering/setup-matt-pocock-skills/SKILL.md)**: Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo before using the other engineering skills.
+- **[setup-matt-pocock-skills](./skills/engineering/setup-matt-pocock-skills/SKILL.md)**: Configure issue tracking, domain docs, review guidance and local commit checks. Run before the engineering workflow, or to update an existing setup.
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)**: Turn the current conversation into a spec and publish it to the issue tracker. No interview, just synthesizes what you've already discussed.
 - **[to-tickets](./skills/engineering/to-tickets/SKILL.md)**: Break any plan, spec, or conversation into a set of tracer-bullet tickets, each declaring its blocking edges, written as text in a local file, or as native blocking links on a real tracker.
 - **[implement](./skills/engineering/implement/SKILL.md)**: Build one approved ticket or one small plan retained in the current conversation, driving `/tdd` at pre-agreed seams and reviewing the committed integrated candidate with `/code-review`.

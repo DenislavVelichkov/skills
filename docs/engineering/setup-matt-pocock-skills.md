@@ -1,8 +1,15 @@
 ## What it does
 
-`setup-matt-pocock-skills` answers three questions about one repo: where issues live, what the triage labels are called, and where the domain docs sit. It records the answers as markdown files under `docs/agents/`. It also installs the dormant visual-acceptance protocol, manifest template, and dependency-free validator used when a project defines a visual parity action.
+`setup-matt-pocock-skills` configures repository issue tracking, domain docs,
+review guidance and local verification. It reuses the tools and choices already
+present, then asks only about unresolved decisions. Its output belongs to the
+repository, where the engineering skills and commit checks can use it.
 
-Those files are the only thing that varies between repos. The skills themselves are identical everywhere. They read `docs/agents/issue-tracker.md` at run time and do what it says. That is why the set is not tied to GitHub, and why you never edit a skill file to point it at another tracker. Invoking it with "link the skills to a custom issue tracker" works with anything you can connect to programmatically, with no changes to the skills.
+The skills read the repository's guidance at run time. Tracker configuration
+supports GitHub, GitLab, local markdown and a custom workflow. Local checks use
+installed tools and repository-owned hooks. The dormant visual protocol and
+validator apply when the project requires a named production/reference
+comparison.
 
 The tracker file also tells agents to record implementation results in the existing issue or ticket, including verification and work still open. A commit reference alone does not update that record. Re-running setup adds missing conventions while preserving the repo's tracker choices and local guidance.
 
@@ -18,40 +25,44 @@ Reach for it once per repo, before the first use of any other engineering skill.
 
 It writes into the repo you run it in:
 
-| It writes | Where |
-| --- | --- |
-| `issue-tracker.md` | `docs/agents/` |
-| `domain.md` | `docs/agents/` |
-| `triage-labels.md` | `docs/agents/`, only when the `triage` skill is installed |
-| `visual-acceptance.md` | `docs/agents/` |
-| `visual-acceptance.template.json` | `docs/agents/` |
-| `validate-visual-acceptance.mjs` | `scripts/` |
-| An `## Agent skills` block | `AGENTS.md` for Codex or `CLAUDE.md` for Claude Code, when present |
+| It writes                         | Where                                                                 |
+| --------------------------------- | --------------------------------------------------------------------- |
+| `issue-tracker.md`                | `docs/agents/`                                                        |
+| `domain.md`                       | `docs/agents/`                                                        |
+| `triage-labels.md`                | `docs/agents/`, only when the `triage` skill is installed             |
+| `visual-acceptance.md`            | `docs/agents/`                                                        |
+| `visual-acceptance.template.json` | `docs/agents/`                                                        |
+| `validate-visual-acceptance.mjs`  | `scripts/`                                                            |
+| Local verification guidance       | `docs/agents/local-verification.md`, or its existing equivalent       |
+| Local commit checks               | Existing hook manager or repository-owned Git hook and check commands |
+| Review criteria                   | Existing review guidance or `CODING_STANDARDS.md`                     |
+| An `## Agent skills` block        | `AGENTS.md` for Codex or `CLAUDE.md` for Claude Code, when present    |
 
 All outputs are saved in the repository; commit them according to the project's workflow. There is no user-level or global mode: the config lives in the repo, so every repo gets its own copy.
 
-## The three decisions
+## Repository choices
 
 It starts each section with the recommended answer, and skips any question its exploration already answered. Settled choices do not need another confirmation.
 
-| Decision | What it proposes | When it asks |
-| --- | --- | --- |
-| **Issue tracker** | the one matching your `git remote` | when existing configuration or your request has not already settled it |
-| **Triage labels** | keep category names `bug` and `enhancement` plus the five state names (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) | only if the `triage` skill is installed |
-| **Domain docs** | single-context: one `GLOSSARY.md` plus `docs/adr/` at the root | only if it spots monorepo signals, and then it offers a multi-context `GLOSSARY-MAP.md` |
+| Decision               | What it proposes                                                                                                                                      | When it asks                                                                            |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| **Issue tracker**      | the one matching your `git remote`                                                                                                                    | when existing configuration or your request has not already settled it                  |
+| **Triage labels**      | keep category names `bug` and `enhancement` plus the five state names (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) | only if the `triage` skill is installed                                                 |
+| **Domain docs**        | single-context: one `GLOSSARY.md` plus `docs/adr/` at the root                                                                                        | only if it spots monorepo signals, and then it offers a multi-context `GLOSSARY-MAP.md` |
+| **Local verification** | fast, offline lint and local documentation link checks that block a bad staged commit                                                                 | when check coverage or failure behavior has not already been settled                    |
 
 The tracker options:
 
-| Option | Where issues live | Needs |
-| --- | --- | --- |
-| **GitHub** | the repo's GitHub Issues | the `gh` CLI |
-| **GitLab** | the repo's GitLab Issues | the `glab` CLI |
-| **Local markdown** | files under `.scratch/<feature>/` in this repo | nothing, not even a remote |
-| **Other** | wherever you say | one paragraph from you describing the workflow |
+| Option             | Where issues live                              | Needs                                          |
+| ------------------ | ---------------------------------------------- | ---------------------------------------------- |
+| **GitHub**         | the repo's GitHub Issues                       | the `gh` CLI                                   |
+| **GitLab**         | the repo's GitLab Issues                       | the `glab` CLI                                 |
+| **Local markdown** | files under `.scratch/<feature>/` in this repo | nothing, not even a remote                     |
+| **Other**          | wherever you say                               | one paragraph from you describing the workflow |
 
 The first three ship as templates in the skill and work out of the box. Local markdown is a first-class option, not a fallback: a solo project with no remote is fully supported. One caveat is worth repeating: don't use local markdown if you're using GitHub. They are alternatives, not layers.
 
-Visual acceptance is not a fourth configuration choice. The installed pointer
+Visual acceptance is conditional. The installed pointer
 defines one narrow trigger: the work requires a named production surface to be
 compared against a visual reference, requires selecting and freezing that
 reference for the later comparison, or links an existing manifest that records
@@ -67,15 +78,36 @@ version-specific options against the installed CLI before relying on them.
 Visual planning corrects source-supported validation faults in a bounded pass;
 persistent errors remain explicit blockers, with no invented evidence.
 
+## Fast checks, explicit acceptance
+
+A local commit check catches mechanical failures in the staged candidate. It
+leaves files unchanged and uses installed tools. Builds, service startup,
+emulators, full tests and acceptance journeys run at their explicit workflow
+steps. Setup preserves existing hooks and a recorded local-only choice.
+
+Where applicable, setup also places visual fidelity in review guidance, short
+native checks before long journeys, read-only evidence verification and a
+compact current checkpoint with linked history. These extend the existing
+workflow and preserve its acceptance and human approval requirements.
+
 ## Common questions
 
 **Do I have to use GitHub?**
 
-No. GitHub, GitLab and local markdown under `.scratch/` all ship as ready-made templates, and anything else works through the "other" path. This is the most-repeated question, in roughly these words: *"hard locked to github"*, *"can I use GitLab / Jira"*, *"what about Azure DevOps"*. The answer is always the same: setup chooses the tracker, not the skill.
+No. GitHub, GitLab and local markdown under `.scratch/` all ship as ready-made templates, and anything else works through the "other" path. This is the most-repeated question, in roughly these words: _"hard locked to github"_, _"can I use GitLab / Jira"_, _"what about Azure DevOps"_. The answer is always the same: setup chooses the tracker, not the skill.
+
+**Can commits be checked locally without GitHub Actions?**
+
+Yes. Choose a blocking local hook for lint and documentation links. Setup reuses
+repository tools and validates the staged files, including partial staging.
+Offline link checks cover local targets; remote URL health is separate. A
+local-only choice is preserved without adding a hosted CI/CD pipeline.
 
 **Do I need to re-run it after updating the skills?**
 
-The direct answer after v1.1 was yes. The skill's own closing message is softer. It tells you to re-run only to switch trackers or start over. Both are defensible. The seed templates change between versions, so a `docs/agents/issue-tracker.md` from an older release can go out of date against the skills that now read it. If a downstream skill does something different from what the docs describe, re-run setup. It is cheap.
+Rerun it when you want missing setup conventions added, or when a downstream
+skill and the repository guidance disagree. It preserves existing tracker,
+labels, hook configuration and local choices while preparing the update.
 
 **It wrote to `CLAUDE.md`, but I'm on Codex.**
 
@@ -83,14 +115,16 @@ Setup now selects `AGENTS.md` for Codex and `CLAUDE.md` for Claude Code when bot
 
 **It didn't create my triage labels.**
 
-It doesn't. `docs/agents/triage-labels.md` is a *mapping*: it tells `/triage` which strings in your tracker correspond to the five canonical roles. It does not run `gh label create`. On a fresh GitHub repo the labels do not exist yet, and users have filed this as a bug more than once. Two consequences:
+It doesn't. `docs/agents/triage-labels.md` is a _mapping_: it tells `/triage` which strings in your tracker correspond to the five canonical roles. It does not run `gh label create`. On a fresh GitHub repo the labels do not exist yet, and users have filed this as a bug more than once. Two consequences:
 
 - If your tracker already uses the canonical names, the mapping is an identity table and there is nothing to configure. That is the intended common case, not a missing step.
 - This skill does not create [wayfinder](https://aihero.dev/skills-wayfinder)'s `wayfinder:map` and `wayfinder:<type>` labels either, and `gh issue create --label <missing>` fails instead of creating the label. Create them by hand before the first wayfinder run on a GitHub repo.
 
 **Can I configure the other skills' behaviour here ([grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) cadence, question format, tone)?**
 
-No. It configures three things: tracker, labels, doc layout. Users have asked to make it the place for per-user preferences. The answer is that skills stay opinionated and take no per-user config. Preferences belong in your `CLAUDE.md` as plain instructions, which every skill already reads.
+It configures repository boundaries such as tracker, labels, doc layout and
+local verification. Personal cadence, question format and tone belong in the
+instruction file your coding tool reads. Setup preserves those instructions.
 
 **Can I keep the config in `~/.claude` instead of committing it to every repo?**
 
@@ -98,7 +132,7 @@ Not today. A user who runs the skills across many repos has an open request for 
 
 **Isn't it strange to have a skill that configures the other skills?**
 
-One long-standing complaint says yes, in these words: *"having a skill to set up the other skill does not feel right to me: that means the LLM is configuring its own skills."* The trade-off is real. Without a setup step, every skill that touches issues would need its own copy of the tracker instructions. The output is markdown you can read and edit, and that limits the risk. You can read every file it wrote and change it by hand. Make day-to-day changes that way, not with another run.
+One long-standing complaint says yes, in these words: _"having a skill to set up the other skill does not feel right to me: that means the LLM is configuring its own skills."_ The trade-off is real. Without a setup step, every skill that touches issues would need its own copy of the tracker instructions. The output is markdown you can read and edit, and that limits the risk. You can read every file it wrote and change it by hand. Make day-to-day changes that way, not with another run.
 
 ## It's working if
 
@@ -107,6 +141,10 @@ One long-standing complaint says yes, in these words: *"having a skill to set up
 - The tracker it proposed matches the remote you use, and the label strings match labels that exist in your tracker.
 - Afterwards, `/to-tickets` publishes without asking you where issues live, and `/triage` applies labels rather than inventing them.
 - Nothing in the skill files themselves changed. If setup edited a `SKILL.md`, something went wrong.
+- Valid staged changes pass; a lint failure or broken local link blocks a
+  commit. An unstaged repair cannot hide either staged failure.
+- Rechecking unchanged evidence leaves repository files unchanged, and current
+  progress points to history instead of repeating it.
 - Repositories expose the visual parity action test through the instruction
   file the active harness reads. UI work without a production-to-reference
   comparison creates no manifest.

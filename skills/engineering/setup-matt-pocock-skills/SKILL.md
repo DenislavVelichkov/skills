@@ -1,6 +1,6 @@
 ---
 name: setup-matt-pocock-skills
-description: "Configure this repo for the engineering skills: set up its issue tracker, triage label vocabulary, and domain doc layout. Run once before first use of the other engineering skills."
+description: "Configure repository issue tracking, domain docs, review guidance and local commit checks. Run before the engineering workflow, or to update an existing setup."
 disable-model-invocation: true
 ---
 
@@ -13,6 +13,8 @@ Scaffold the per-repo configuration that the engineering skills assume:
 - **Domain docs**: where `GLOSSARY.md` and ADRs live, and the consumer rules for reading them
 - **Visual acceptance**: the fail-closed creation and approval rules used
   only for a visual parity action
+- **Local verification**: repository-owned lint and link checks, review criteria,
+  and proportionate evidence and progress recording
 
 Explore the repository and reuse choices already supplied by the user or
 recorded in its configuration. Ask about unresolved choices, then complete the
@@ -32,6 +34,10 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `docs/agents/`: does this skill's prior output already exist?
 - `.scratch/`: a sign that a local-markdown issue tracker convention is already in use
 - `docs/visual-acceptance/`: does this repo already carry a visual contract?
+- Existing lint, format, type and test commands; link validators; Git hooks and
+  `core.hooksPath`; `CODING_STANDARDS.md`; native/evidence runners; current
+  progress records and their history. Read their configuration before proposing
+  another tool or duplicating guidance.
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
 - Monorepo signals: a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. These are present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
 
@@ -69,6 +75,14 @@ The defaults map category roles `bug` and `enhancement`, and state roles `needs-
 
 Offer **multi-context** (a root `GLOSSARY-MAP.md` pointing to per-context `GLOSSARY.md` files) only when exploration found monorepo signals. Then confirm which layout they want.
 
+**Section D: Local verification.** Reuse the repository's existing tools and
+the user's recorded choices. Recommend fast, offline staged lint and local
+documentation link checks that block a commit on failure. Resolve only
+unanswered choices about check coverage and blocking behavior. Preserve a
+local-only choice without proposing GitHub Actions or another hosted pipeline.
+Load [local verification](local-verification.md) to configure and verify the
+hook, then record the actual commands and applicable workflow guidance.
+
 ### 3. Prepare the changes
 
 Show the user a draft of:
@@ -77,6 +91,9 @@ Show the user a draft of:
 - The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
 - The conditional visual-acceptance pointer and
   `docs/agents/visual-acceptance.md`
+- The local hook and check commands, `docs/agents/local-verification.md`, and
+  updates to existing review, native, evidence and progress guidance where
+  applicable
 
 Use any corrections already supplied. When setup is authorized and the choices
 are settled, apply the draft. If approval for a remaining decision is required,
@@ -121,6 +138,11 @@ that records either obligation. Only then create and validate an initiative
 manifest before drafting implementation tickets or editing production code. UI
 work without that comparison uses no manifest. See
 `docs/agents/visual-acceptance.md`.
+
+### Local verification
+
+Before committing, follow `docs/agents/local-verification.md`. During review,
+read `CODING_STANDARDS.md` when it exists.
 ```
 
 Include the `### Triage labels` sub-block only when `triage` is installed and Section B ran. Reuse an existing triage-label mapping file and its pointer; otherwise write `docs/agents/triage-labels.md`. When `triage` isn't installed, omit both.
@@ -145,8 +167,27 @@ Install the visual-acceptance assets in the target repository:
 Copy the template and validator byte-for-byte from their bundled sources.
 Apply any user-approved prose edits only to the installed protocol.
 
+Use [local verification](local-verification.md) as the seed for
+`docs/agents/local-verification.md`; replace tooling placeholders with verified
+repository commands and omit inapplicable native/evidence branches. Keep the
+root instruction file as a short navigation index. Mechanical restrictions
+belong in automated checks; `CODING_STANDARDS.md` holds review judgements.
+Preserve equivalent existing guidance instead of copying it into another file.
+
+Validate the installed local checks with isolated staged examples: a valid
+commit candidate passes, a lint failure and a broken local link each block,
+and an unstaged repair cannot hide either staged failure. Verify renamed or
+deleted link targets, run from a subdirectory, and confirm index/worktree bytes
+and unrelated hooks remain unchanged. Use the project's temporary directory
+and remove only these owned examples. Report hook activation separately from
+source files or a successful manual check.
+
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 
 ### 5. Done
 
-Tell the user the setup is complete and which engineering skills will now read from these files. Mention they can edit `docs/agents/*.md` directly later; re-running this skill is only necessary if they want to switch issue trackers or restart from scratch.
+Tell the user which engineering skills read the setup, which local checks are
+active, how they were verified, and any work still open. They can edit
+`docs/agents/*.md` directly or rerun setup to adopt missing conventions while
+preserving current choices. A passing hook does not complete acceptance or
+authenticate human visual approval.
