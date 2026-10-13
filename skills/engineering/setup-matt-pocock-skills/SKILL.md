@@ -147,6 +147,8 @@ read `CODING_STANDARDS.md` when it exists.
 
 Include the `### Triage labels` sub-block only when `triage` is installed and Section B ran. Reuse an existing triage-label mapping file and its pointer; otherwise write `docs/agents/triage-labels.md`. When `triage` isn't installed, omit both.
 
+When Section B ran on GitHub or GitLab, create each configured label the tracker lacks (`gh label create` / `glab label create`).
+
 Then write the docs files using the seed templates in this skill folder as a starting point. Validate tracker commands against the installed CLI's help before relying on version-specific flags; report a missing required capability. On a rerun, update existing files in place: preserve the project's tracker, labels, PR or MR policy, and other local guidance. Add missing conventions without replacing an equivalent existing section. Ensure the tracker document tells agents how to record implementation progress and when an issue can close.
 
 - [issue-tracker-github.md](./issue-tracker-github.md): GitHub issue tracker

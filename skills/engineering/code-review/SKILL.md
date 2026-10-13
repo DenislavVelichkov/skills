@@ -66,7 +66,7 @@ follow stricter project requirements where they apply.
 
 Look for the originating spec, in this order:
 
-1. Issue references in the commit messages (`#123`, `Closes #45`, GitLab `!67`, etc.), fetched via the workflow in `docs/agents/issue-tracker.md`.
+1. Issue references in the commit messages (`#123`, `Closes #45`, GitLab `!67`, etc.), fetched via the workflow in the tracker doc.
 2. A path the user passed as an argument.
 3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
 4. Use requirements already stated in the conversation. If no spec can be
@@ -76,7 +76,7 @@ Look for the originating spec, in this order:
 
 ### 3. Identify the standards sources
 
-Anything in the repo that documents how code should be written, such as `CODING_STANDARDS.md` or `CONTRIBUTING.md`.
+Search the repo for every file that documents how code should be written. When `CODING_STANDARDS.md` or `CONTRIBUTING.md` exists, it must be on the list.
 
 On top of whatever the repo documents, the Standards axis always carries the **smell baseline** below: a fixed set of Fowler code smells (_Refactoring_, ch.3) that applies even when a repo documents nothing. Two rules bind it:
 
@@ -124,6 +124,9 @@ remaining requirements and their owners, including gates outside this diff.
 Use the following briefs locally, or assign them to the authorized reviewers
 described above. A reviewer already assigned one axis completes only that axis
 and returns its findings without spawning another reviewer.
+
+When parallel review is authorized, issue both bounded reviewer calls together
+and aggregate the reports they return.
 
 **Standards review brief** should include:
 

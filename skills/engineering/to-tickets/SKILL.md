@@ -128,7 +128,7 @@ Publish the approved tickets. **How** depends on the tracker `/setup-matt-pocock
 - **Local files without a parent feature spec** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order.
 - In either local form, each file's "Blocked by" lists the numbers and titles it depends on. Use the per-ticket file template below, one ticket per file, never a combined file.
 - In local files, change the template status to `ready-for-human` only for a visual design-selection blocker that still needs a human choice.
-- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Apply the `ready-for-agent` triage label unless instructed otherwise. A visual design-selection blocker that still requires a human uses `ready-for-human`; its downstream implementation ticket remains `ready-for-agent` but blocked.
+- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. If the source was an existing issue, make each ticket its sub-issue using the configured tracker operation. Apply the `ready-for-agent` triage label unless instructed otherwise. A visual design-selection blocker that still requires a human uses `ready-for-human`; its downstream implementation ticket remains `ready-for-agent` but blocked.
 
 When resuming partial publication, find tickets already created for the approved
 breakdown and complete only missing tickets or links. Check an uncertain write's
@@ -171,7 +171,7 @@ The end-to-end behaviour this ticket makes work, from the user's perspective, no
 
 ## Blocked by
 
-- A reference to each blocking ticket, or "None (can start immediately)".
+- A reference to each blocking ticket, or "None (can start immediately)". Omit this section when blockers were set as native edges.
 
 </issue-template>
 
