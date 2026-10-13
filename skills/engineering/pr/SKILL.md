@@ -1,6 +1,6 @@
 ---
 name: pr
-description: "Use when writing a PR body."
+description: "Shapes a pull request body: the smallest visual that shows the change, before/after evidence that it works, and a merge-danger call (one-way or two-way door, blast radius). Use when writing a PR body."
 metadata:
   credits:
     skill: show-me
