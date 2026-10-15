@@ -61,26 +61,41 @@ def runtime(event, client):
     tool = required(event.get("tool_use_id"), "tool-use ID")
     match = None
     session = None
+    agent = event.get("agent_id")
+    if client == "claude" and agent is not None:
+        if not re.fullmatch(r"[A-Za-z0-9_-]+", required(agent, "agent ID")):
+            raise ValueError("Invalid Claude hook agent ID")
     # shortcut: native transcript schemas can change; update adapters if evidence stops matching.
     for attempt in range(11):
-        with transcript.open(encoding="utf-8") as stream:
-            for line in stream:
-                try:
-                    row = json.loads(line)
-                except json.JSONDecodeError:
-                    continue
-                if client == "codex":
-                    if row.get("type") == "session_meta":
-                        session = row["payload"].get("id")
-                    if row.get("type") == "turn_context" and row["payload"].get("turn_id") == turn:
-                        match = row["payload"]
-                elif row.get("type") == "assistant":
-                    message = row.get("message", {})
-                    if any(item.get("type") == "tool_use" and item.get("id") == tool
-                           for item in message.get("content", []) if isinstance(item, dict)):
-                        if row.get("sessionId") != event.get("session_id"):
-                            raise ValueError("Claude transcript session does not match the hook")
-                        match = message
+        transcripts = [transcript]
+        if client == "claude" and agent and transcript.name != f"agent-{agent}.jsonl":
+            # Claude worker hooks report the parent transcript, including for nested workflows.
+            transcripts = (transcript.with_suffix("") / "subagents").rglob(f"agent-{agent}.jsonl")
+        for path in transcripts:
+            with path.open(encoding="utf-8") as stream:
+                for line in stream:
+                    try:
+                        row = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    if client == "codex":
+                        if row.get("type") == "session_meta":
+                            session = row["payload"].get("id")
+                        if row.get("type") == "turn_context" and row["payload"].get("turn_id") == turn:
+                            match = row["payload"]
+                    elif row.get("type") == "assistant":
+                        message = row.get("message", {})
+                        if any(item.get("type") == "tool_use" and item.get("id") == tool
+                               for item in message.get("content", []) if isinstance(item, dict)):
+                            if row.get("sessionId") != event.get("session_id"):
+                                raise ValueError("Claude transcript session does not match the hook")
+                            native_agent = row.get("agentId")
+                            if row.get("isSidechain") or agent is not None:
+                                required(native_agent, "subagent ID")
+                            if agent is not None and native_agent != agent:
+                                raise ValueError("Claude transcript and hook subagent identity disagree")
+                            agent = native_agent
+                            match = message
         if match is not None or attempt == 10:
             break
         # Claude may flush its current assistant message just after PreToolUse begins.
@@ -95,7 +110,7 @@ def runtime(event, client):
         effort = required(match.get("effort"), "reasoning effort")
     else:
         effort = required(event.get("effort", {}).get("level"), "reasoning effort")
-    return model, effort
+    return model, effort, agent
 
 
 def control(event):
@@ -154,7 +169,7 @@ def check(event, client, data_dir):
         state["model"], state["effort"] = pair
         save(state_path, state)
     state = json.loads(state_path.read_text()) if state_path.exists() else None
-    model, effort = runtime(event, client)
+    model, effort, agent = runtime(event, client)
     if state:
         if str(Path(event["cwd"]).resolve()) != state["cwd"]:
             raise ValueError("Working directory changed; rebind the ticket before implementation")
@@ -166,7 +181,7 @@ def check(event, client, data_dir):
     elif not action or action[0] != "probe":
         raise ValueError("No ticket is bound; run bind before implementation")
     receipt = {"status": "verified" if state else "runtime observed", "client": client,
-               "session": identity[1], "agent": identity[2], "model": model, "effort": effort,
+               "session": identity[1], "agent": agent, "model": model, "effort": effort,
                "tool_use_id": event["tool_use_id"], "turn_id": event.get("turn_id"),
                "ticket": state["ticket"] if state else None}
     if action:

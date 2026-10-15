@@ -35,7 +35,13 @@ class ModelGateTests(unittest.TestCase):
                 if client == "codex" else
                 [{"type": "assistant", "sessionId": "session", "message": {
                     "model": model, "content": [{"type": "tool_use", "id": "tool"}]}}])
-        self.transcript.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
+        transcript = self.transcript
+        if client == "claude" and agent:
+            rows[0].update(agentId=agent, isSidechain=True)
+            self.transcript.write_text("")
+            transcript = self.transcript.with_suffix("") / "subagents" / f"agent-{agent}.jsonl"
+            transcript.parent.mkdir(parents=True, exist_ok=True)
+        transcript.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
         command = ["python3", str(gate.SCRIPT), action]
         if action == "bind":
             command.append(str(self.ticket))
@@ -144,6 +150,58 @@ class ModelGateTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unavailable"):
             self.run_gate(event, "claude")
 
+    def test_claude_worker_uses_native_identity_through_finish(self):
+        for direct, subdir in ((False, ""), (False, "workflows/run"), (True, "")):
+            with self.subTest(direct=direct, subdir=subdir):
+                event = self.event("claude", agent="worker")
+                transcript = self.transcript.with_suffix("") / "subagents" / "agent-worker.jsonl"
+                if subdir:
+                    nested = transcript.parent / subdir / transcript.name
+                    nested.parent.mkdir(parents=True, exist_ok=True)
+                    transcript.rename(nested)
+                if direct:
+                    event.pop("agent_id")
+                    event["transcript_path"] = str(transcript)
+                for action in ("bind", "probe", "finish"):
+                    command = ["python3", str(gate.SCRIPT), action]
+                    if action == "bind":
+                        command.append(str(self.ticket))
+                    event["tool_input"]["command"] = shlex.join(command)
+                    result = self.run_gate(event, "claude")["hookSpecificOutput"]
+                    receipt = json.loads(subprocess.check_output(result["updatedInput"]["command"], shell=True))
+                    self.assertEqual((receipt["status"], receipt["session"], receipt["agent"]),
+                                     ("verified", "session", "worker"))
+                self.assertFalse(list((self.root / "state/model-execution").glob("*.json")))
+                if subdir:
+                    nested.unlink()
+
+    def test_claude_worker_rejects_unrelated_or_missing_native_evidence(self):
+        for override in ({"sessionId": "unrelated"}, {"agentId": "sibling"},
+                         {"agentId": None}, {"message": {"model": "test-claude", "content": []}}):
+            with self.subTest(override=override):
+                event = self.event("claude", agent="worker")
+                transcript = self.transcript.with_suffix("") / "subagents" / "agent-worker.jsonl"
+                row = json.loads(transcript.read_text())
+                row.update(override)
+                transcript.write_text(json.dumps(row) + "\n")
+                with self.assertRaises(ValueError):
+                    self.run_gate(event, "claude")
+
+    def test_claude_worker_waits_for_transcript_creation(self):
+        event = self.event("claude", agent="worker")
+        transcript = self.transcript.with_suffix("") / "subagents" / "agent-worker.jsonl"
+        current = transcript.read_text()
+        transcript.unlink()
+        with patch.object(gate.time, "sleep", side_effect=lambda _: transcript.write_text(current)):
+            self.assertEqual(gate.runtime(event, "claude"), ("test-claude", "medium", "worker"))
+
+    def test_claude_worker_id_cannot_escape_transcript_directory(self):
+        event = self.event("claude")
+        for agent in ("../worker", "*", "worker/name"):
+            with self.subTest(agent=agent), self.assertRaises(ValueError):
+                event["agent_id"] = agent
+                self.run_gate(event, "claude")
+
     def test_claude_clamp_and_absent_effort_block(self):
         for effort in ({"level": "low"}, {}):
             event = self.event("claude")
@@ -163,7 +221,7 @@ class ModelGateTests(unittest.TestCase):
         current = self.transcript.read_text()
         self.transcript.write_text(current.replace('"tool"', '"previous-tool"'))
         with patch.object(gate.time, "sleep", side_effect=lambda _: self.transcript.write_text(current)):
-            self.assertEqual(gate.runtime(event, "claude"), ("test-claude", "medium"))
+            self.assertEqual(gate.runtime(event, "claude"), ("test-claude", "medium", None))
 
     def test_duplicate_headings_block_even_without_duplicate_fields(self):
         self.ticket.write_text(self.ticket.read_text() + "## Model recommendation\n### Codex\n")

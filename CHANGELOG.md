@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.3.4
+
+### Patch Changes
+
+- Verify Claude workers against their own native transcripts when hooks report the parent transcript. Read the recorded agent identity for receipts and keep session, model, and effort checks through completion.
+
 ## 1.3.3
 
 ### Patch Changes
