@@ -72,6 +72,12 @@ def runtime(event, client):
                 if client == "codex":
                     if row.get("type") == "session_meta":
                         session = row["payload"].get("id")
+                        source = row["payload"].get("source")
+                        if isinstance(source, dict) and "subagent" in source:
+                            spawn = source["subagent"].get("thread_spawn", {})
+                            session = required(spawn.get("parent_thread_id"), "subagent parent session")
+                            if required(spawn.get("agent_path"), "subagent path") != event.get("agent_id"):
+                                raise ValueError("Codex transcript and hook subagent identity disagree")
                     if row.get("type") == "turn_context" and row["payload"].get("turn_id") == turn:
                         match = row["payload"]
                 elif row.get("type") == "assistant":

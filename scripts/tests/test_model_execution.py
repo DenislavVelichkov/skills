@@ -57,6 +57,41 @@ class ModelGateTests(unittest.TestCase):
                 self.assertEqual(receipt["status"], "verified")
                 self.assertEqual(receipt["ticket"], str(self.ticket))
 
+    def test_codex_subagent_uses_its_recorded_parent_hook_session(self):
+        event = self.event(agent="/root/worker")
+        rows = [json.loads(line) for line in self.transcript.read_text().splitlines()]
+        rows[0]["payload"] = {"id": "child-session", "source": {"subagent": {
+            "thread_spawn": {"parent_thread_id": "session", "agent_path": "/root/worker"}}}}
+        self.transcript.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
+        result = self.run_gate(event)["hookSpecificOutput"]
+        receipt = json.loads(subprocess.check_output(result["updatedInput"]["command"], shell=True))
+        self.assertEqual((receipt["status"], receipt["session"], receipt["agent"]),
+                         ("verified", "session", "/root/worker"))
+
+    def test_codex_subagent_rejects_unrelated_parent_agent_and_runtime(self):
+        for override in ({"session_id": "unrelated"}, {"agent_id": "/root/sibling"},
+                         {"agent_id": None}, {"model": "wrong-model"}):
+            with self.subTest(override=override):
+                event = self.event(agent="/root/worker")
+                rows = [json.loads(line) for line in self.transcript.read_text().splitlines()]
+                rows[0]["payload"] = {"id": "child-session", "source": {"subagent": {
+                    "thread_spawn": {"parent_thread_id": "session", "agent_path": "/root/worker"}}}}
+                self.transcript.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
+                event.update(override)
+                with self.assertRaisesRegex(ValueError, "disagree"):
+                    self.run_gate(event)
+
+    def test_codex_subagent_still_checks_effort_and_requires_parent_metadata(self):
+        for effort, parent in (("low", "session"), ("high", None)):
+            with self.subTest(effort=effort, parent=parent):
+                event = self.event(agent="/root/worker", effort=effort)
+                rows = [json.loads(line) for line in self.transcript.read_text().splitlines()]
+                rows[0]["payload"] = {"id": "child-session", "source": {"subagent": {
+                    "thread_spawn": {"parent_thread_id": parent, "agent_path": "/root/worker"}}}}
+                self.transcript.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
+                with self.assertRaises(ValueError):
+                    self.run_gate(event)
+
     def test_unassessed_tickets_need_no_runtime_or_binding(self):
         for client, other in (("codex", "Claude Code"), ("claude", "Codex")):
             for content in ("# Ordinary ticket", "## Model recommendation\n### " + other + "\n",
