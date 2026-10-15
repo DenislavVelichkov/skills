@@ -22,6 +22,11 @@ ask for the missing input before dependent work. State the resolved identity,
 title and scope without asking again for settled approval.
 For conversation-only work, restate the agreed scope.
 
+Before implementation, follow [model execution verification](MODEL-EXECUTION.md).
+Bind the ticket in this actual session and require a verified runtime model and
+reasoning level. Stop on mismatches or missing evidence. Keep the gate active
+through fixes and checks, then finish it before reporting completion.
+
 Record the current branch and task-start commit before editing, preserving
 unrelated changes.
 
