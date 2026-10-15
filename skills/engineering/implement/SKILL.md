@@ -8,6 +8,11 @@ Implement the work described by the user in the spec or tickets.
 
 If the user passes a ticket reference, fetch it from the issue tracker and state its title before starting. If the reference is ambiguous, ask.
 
+Before implementation, follow [model execution verification](MODEL-EXECUTION.md).
+Bind the ticket in this actual session and require a verified runtime model and
+reasoning level. Stop on mismatches or missing evidence. Keep the gate active
+through fixes and checks, then finish it before reporting completion.
+
 Call the Skill tool with "tdd" where possible, at pre-agreed seams.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the end.

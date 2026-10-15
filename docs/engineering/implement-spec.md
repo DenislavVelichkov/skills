@@ -35,6 +35,21 @@ Implementers talk to the orchestrator through [context pointers](https://www.aih
 
 ## Common questions
 
+**Will it respect the model and reasoning level recorded in my ticket?**
+
+Before implementation, it binds the ticket to a gate that checks the actual
+session's model and reasoning effort. A mismatch, missing recommendation, or
+unavailable runtime evidence stops work. Each worker, retry and fix must pass
+its own check. Python 3, the enabled plugin hook, and native session transcripts
+are required; Codex also requires trusting the hook through `/hooks`.
+
+The ticket uses `## Model recommendation`, then `### Codex` or `### Claude Code`,
+with `- Recommended model:` and `- Recommended reasoning level:` fields containing
+the exact available-now values. The model-selector skill writes this format.
+Prompt text and launch flags alone do not prove what ran. Completion records the
+verified runtime receipt. Disabled hooks or host hook-process failures cannot
+provide enforcement; the skill must stop on those errors too.
+
 **How is this different from running `/implement` on each ticket myself?**
 
 This is the question the skill exists to answer. Before it shipped, people kept building their own versions, and one user described the need: they wanted "subagents implement the tickets" instead of having "to individually create new session and tell them to implement a ticket one by one, when a spec may contain over 5 tickets." With `implement` you are the dispatcher: one [session](https://www.aihero.dev/ai-coding-dictionary/session) per ticket, clearing in between, and keeping track yourself of which tickets are unblocked. `implement-spec` hands that job to one orchestrating session. The price is that you no longer read each ticket's work as it lands; you review the integration branch at the end. To start a run, clear the context and type `/implement-spec` with a pointer to the spec (an issue number or a file path). For a small change with no real graph, skip it and use `implement` directly.
@@ -45,7 +60,7 @@ No, not any more. One user who liked the in-progress version had exactly this co
 
 **Its review and fix loop ran for hours, or kept "fixing" tickets that hadn't been built yet.**
 
-Both happen when `code-review` runs anywhere other than the one point the skill gives it. It compares the code against the whole spec, so it only makes sense once every ticket has landed. If it runs mid-run, every unbuilt ticket reads as a failure. The agent then builds that ticket, and that triggers another review. At the end, the skill runs `code-review` once and sends every finding to one fix subagent, but it doesn't yet say when to stop after that fix. One user reported a five-ticket feature where "the review and fix loop took roughly four hours". If you see a second broad review start, tell it to run focused checks for the fixed findings and stop. Expect that first review to find real problems. The run's output is a draft that the review completes, not something to ship on its own.
+Both happen when `code-review` runs anywhere other than the one point the skill gives it. It compares the code against the whole spec, so it only makes sense once every ticket has landed. If it runs mid-run, every unbuilt ticket reads as a failure. The agent then builds that ticket, and that triggers another review. At the end, the skill runs `code-review` once and routes accepted fixes to ticket implementers whose model and effort have been verified. One user reported a five-ticket feature where "the review and fix loop took roughly four hours". If you see a second broad review start, tell it to run focused checks for the fixed findings and stop. Expect that first review to find real problems. The run's output is a draft that the review completes, not something to ship on its own.
 
 **Does it drive tdd like implement does?**
 
@@ -69,6 +84,7 @@ A worktree holds only what git tracks. Tests that read gitignored fixtures, loca
 
 ## It's working if
 
+- The actual model and effort match the ticket before editing, and a mismatch blocks further tool use.
 - Several implementers are running at once whenever the graph allows, not one after another.
 - A ticket starts as soon as its last blocker lands on the integration branch, not when the whole run ends.
 - Every ticket's trace shows `tdd` running, with a failing test before the code.

@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.3.2
+
+### Patch Changes
+
+- Require ticket model and reasoning recommendations in `implement` and every `implement-spec` worker, retry and fix. The plugin hook verifies native runtime evidence before tools and blocks mismatches or missing evidence; completion records a final receipt.
+
 ## 1.3.1
 
 ### Patch Changes

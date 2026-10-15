@@ -48,6 +48,21 @@ The "pre-agreed" part matters, and it is also the skill's weakest point. Nothing
 
 ## Common questions
 
+**Will it respect the model and reasoning level recorded in my ticket?**
+
+Before implementation, it binds the ticket to a gate that checks the actual
+session's model and reasoning effort. A mismatch, missing recommendation, or
+unavailable runtime evidence stops work. Each worker, retry and fix must pass
+its own check. Python 3, the enabled plugin hook, and native session transcripts
+are required; Codex also requires trusting the hook through `/hooks`.
+
+The ticket uses `## Model recommendation`, then `### Codex` or `### Claude Code`,
+with `- Recommended model:` and `- Recommended reasoning level:` fields containing
+the exact available-now values. The model-selector skill writes this format.
+Prompt text and launch flags alone do not prove what ran. Completion records the
+verified runtime receipt. Disabled hooks or host hook-process failures cannot
+provide enforcement; the skill must stop on those errors too.
+
 **It finished, but my ticket is still open and the acceptance criteria are still unchecked.**
 
 Correct, and expected. `implement` has no completion step. It ends at the commit and never touches the work item. This is the same on GitHub Issues and on the local markdown tracker, so it is not a tracker integration problem. It also does not act on the findings `code-review` produced, and does not tick the `- [ ]` boxes on the originating issue. Close the ticket and reconcile the criteria yourself. This matters most on a dependency chain, because `to-tickets` defines the frontier as tickets whose blockers are all closed. If nothing gets closed, nothing ever becomes visibly unblocked.
@@ -76,6 +91,7 @@ The agent resolved `#2` against another numbered list in context, such as a todo
 
 ## It's working if
 
+- The actual model and effort match the ticket before editing, and a mismatch blocks further tool use.
 - The session opens by reading the ticket or spec and restating what it will build, rather than asking you what to build.
 - You can see an actual `tdd` Skill tool call in the trace, not just tests appearing in the diff.
 - Typechecks and single test files run repeatedly during the run, and the full suite runs once near the end.
