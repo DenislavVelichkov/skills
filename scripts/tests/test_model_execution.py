@@ -59,18 +59,25 @@ class ModelGateTests(unittest.TestCase):
 
     def test_codex_subagent_uses_its_recorded_parent_hook_session(self):
         event = self.event(agent="/root/worker")
+        event.pop("agent_id")
         rows = [json.loads(line) for line in self.transcript.read_text().splitlines()]
         rows[0]["payload"] = {"id": "child-session", "source": {"subagent": {
             "thread_spawn": {"parent_thread_id": "session", "agent_path": "/root/worker"}}}}
         self.transcript.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
-        result = self.run_gate(event)["hookSpecificOutput"]
-        receipt = json.loads(subprocess.check_output(result["updatedInput"]["command"], shell=True))
-        self.assertEqual((receipt["status"], receipt["session"], receipt["agent"]),
-                         ("verified", "session", "/root/worker"))
+        for action in ("bind", "probe", "finish"):
+            command = ["python3", str(gate.SCRIPT), action]
+            if action == "bind":
+                command.append(str(self.ticket))
+            event["tool_input"]["command"] = shlex.join(command)
+            result = self.run_gate(event)["hookSpecificOutput"]
+            receipt = json.loads(subprocess.check_output(result["updatedInput"]["command"], shell=True))
+            self.assertEqual((receipt["status"], receipt["session"], receipt["agent"]),
+                             ("verified", "session", "/root/worker"))
+        self.assertFalse(list((self.root / "state/model-execution").glob("*.json")))
 
-    def test_codex_subagent_rejects_unrelated_parent_agent_and_runtime(self):
-        for override in ({"session_id": "unrelated"}, {"agent_id": "/root/sibling"},
-                         {"agent_id": None}, {"model": "wrong-model"}):
+    def test_codex_subagent_rejects_unrelated_parent_and_runtime(self):
+        for override in ({"session_id": "unrelated"}, {"model": "wrong-model"},
+                         {"turn_id": "previous-turn"}):
             with self.subTest(override=override):
                 event = self.event(agent="/root/worker")
                 rows = [json.loads(line) for line in self.transcript.read_text().splitlines()]
@@ -78,16 +85,17 @@ class ModelGateTests(unittest.TestCase):
                     "thread_spawn": {"parent_thread_id": "session", "agent_path": "/root/worker"}}}}
                 self.transcript.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
                 event.update(override)
-                with self.assertRaisesRegex(ValueError, "disagree"):
+                with self.assertRaises(ValueError):
                     self.run_gate(event)
 
-    def test_codex_subagent_still_checks_effort_and_requires_parent_metadata(self):
-        for effort, parent in (("low", "session"), ("high", None)):
-            with self.subTest(effort=effort, parent=parent):
+    def test_codex_subagent_still_checks_effort_and_requires_spawn_metadata(self):
+        for effort, parent, agent in (("low", "session", "/root/worker"),
+                                      ("high", None, "/root/worker"), ("high", "session", None)):
+            with self.subTest(effort=effort, parent=parent, agent=agent):
                 event = self.event(agent="/root/worker", effort=effort)
                 rows = [json.loads(line) for line in self.transcript.read_text().splitlines()]
                 rows[0]["payload"] = {"id": "child-session", "source": {"subagent": {
-                    "thread_spawn": {"parent_thread_id": parent, "agent_path": "/root/worker"}}}}
+                    "thread_spawn": {"parent_thread_id": parent, "agent_path": agent}}}}
                 self.transcript.write_text("\n".join(json.dumps(row) for row in rows) + "\n")
                 with self.assertRaises(ValueError):
                     self.run_gate(event)
@@ -198,7 +206,7 @@ class ModelGateTests(unittest.TestCase):
         current = self.transcript.read_text()
         self.transcript.write_text(current.replace('"tool"', '"previous-tool"'))
         with patch.object(gate.time, "sleep", side_effect=lambda _: self.transcript.write_text(current)):
-            self.assertEqual(gate.runtime(event, "claude"), ("test-claude", "medium"))
+            self.assertEqual(gate.runtime(event, "claude"), ("test-claude", "medium", None))
 
     def test_duplicate_headings_block_even_without_duplicate_fields(self):
         self.ticket.write_text(self.ticket.read_text() + "## Model recommendation\n### Codex\n")

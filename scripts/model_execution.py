@@ -61,6 +61,7 @@ def runtime(event, client):
     tool = required(event.get("tool_use_id"), "tool-use ID")
     match = None
     session = None
+    agent = event.get("agent_id")
     # shortcut: native transcript schemas can change; update adapters if evidence stops matching.
     for attempt in range(11):
         with transcript.open(encoding="utf-8") as stream:
@@ -76,8 +77,7 @@ def runtime(event, client):
                         if isinstance(source, dict) and "subagent" in source:
                             spawn = source["subagent"].get("thread_spawn", {})
                             session = required(spawn.get("parent_thread_id"), "subagent parent session")
-                            if required(spawn.get("agent_path"), "subagent path") != event.get("agent_id"):
-                                raise ValueError("Codex transcript and hook subagent identity disagree")
+                            agent = required(spawn.get("agent_path"), "subagent path")
                     if row.get("type") == "turn_context" and row["payload"].get("turn_id") == turn:
                         match = row["payload"]
                 elif row.get("type") == "assistant":
@@ -101,7 +101,7 @@ def runtime(event, client):
         effort = required(match.get("effort"), "reasoning effort")
     else:
         effort = required(event.get("effort", {}).get("level"), "reasoning effort")
-    return model, effort
+    return model, effort, agent
 
 
 def control(event):
@@ -160,7 +160,7 @@ def check(event, client, data_dir):
         state["model"], state["effort"] = pair
         save(state_path, state)
     state = json.loads(state_path.read_text()) if state_path.exists() else None
-    model, effort = runtime(event, client)
+    model, effort, agent = runtime(event, client)
     if state:
         if str(Path(event["cwd"]).resolve()) != state["cwd"]:
             raise ValueError("Working directory changed; rebind the ticket before implementation")
@@ -172,7 +172,7 @@ def check(event, client, data_dir):
     elif not action or action[0] != "probe":
         raise ValueError("No ticket is bound; run bind before implementation")
     receipt = {"status": "verified" if state else "runtime observed", "client": client,
-               "session": identity[1], "agent": identity[2], "model": model, "effort": effort,
+               "session": identity[1], "agent": agent, "model": model, "effort": effort,
                "tool_use_id": event["tool_use_id"], "turn_id": event.get("turn_id"),
                "ticket": state["ticket"] if state else None}
     if action:
