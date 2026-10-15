@@ -57,6 +57,65 @@ class ModelGateTests(unittest.TestCase):
                 self.assertEqual(receipt["status"], "verified")
                 self.assertEqual(receipt["ticket"], str(self.ticket))
 
+    def test_unassessed_tickets_need_no_runtime_or_binding(self):
+        for client, other in (("codex", "Claude Code"), ("claude", "Codex")):
+            for content in ("# Ordinary ticket", "## Model recommendation\n### " + other + "\n",
+                            "## All models accessible\n### " + gate.CLIENTS[client] + "\n"):
+                with self.subTest(client=client, content=content):
+                    self.ticket.write_text(content)
+                    event = self.event(client)
+                    self.transcript.unlink()
+                    event.pop("model")
+                    event.pop("effort")
+                    result = self.run_gate(event, client)["hookSpecificOutput"]
+                    receipt = json.loads(subprocess.check_output(result["updatedInput"]["command"], shell=True))
+                    self.assertEqual(receipt["status"], "not assessed")
+                    self.assertNotIn("model", receipt)
+                    self.assertFalse((self.root / "state").exists())
+                    event["tool_name"] = "Write"
+                    self.assertEqual(self.run_gate(event, client), {})
+
+    def test_partial_current_client_assessment_still_blocks(self):
+        for client in gate.CLIENTS:
+            with self.subTest(client=client):
+                self.ticket.write_text("## Model recommendation\n### " + gate.CLIENTS[client] +
+                                       "\n- Recommended model: test-" + client + "\n")
+                with self.assertRaisesRegex(ValueError, "ticket reasoning"):
+                    self.run_gate(self.event(client), client)
+
+    def test_bound_assessment_cannot_be_removed_to_bypass_gate(self):
+        original = self.ticket.read_text()
+        for client in gate.CLIENTS:
+            with self.subTest(client=client):
+                self.ticket.write_text(original)
+                event = self.event(client)
+                self.run_gate(event, client)
+                self.ticket.write_text("# Assessment removed")
+                with self.assertRaisesRegex(ValueError, "cannot become unassessed"):
+                    self.run_gate(event, client)
+                event["tool_name"] = "Write"
+                with self.assertRaisesRegex(ValueError, "changed"):
+                    self.run_gate(event, client)
+
+    def test_mixed_workers_and_transition_after_finish(self):
+        for client in gate.CLIENTS:
+            with self.subTest(client=client):
+                original = self.ticket.read_text()
+                self.run_gate(self.event(client), client)
+                assessed = self.ticket
+                self.ticket = self.root / "unassessed.md"
+                self.ticket.write_text("# Ordinary ticket")
+                self.assertIn("not assessed", self.run_gate(self.event(client, agent="other"), client)
+                              ["hookSpecificOutput"]["updatedInput"]["command"])
+                with self.assertRaisesRegex(ValueError, "cannot become unassessed"):
+                    self.run_gate(self.event(client), client)
+                self.ticket = assessed
+                self.run_gate(self.event(client, action="finish"), client)
+                self.ticket.write_text("# Next ticket without assessment")
+                self.assertIn("not assessed", self.run_gate(self.event(client), client)
+                              ["hookSpecificOutput"]["updatedInput"]["command"])
+                self.ticket.write_text(original)
+
     def test_model_and_effort_mismatches_block(self):
         for client in gate.CLIENTS:
             for override in ({"model": "wrong-model"}, {"effort": "low"}):
@@ -113,7 +172,7 @@ class ModelGateTests(unittest.TestCase):
 
     def test_missing_duplicate_and_non_executable_recommendations_block(self):
         original = self.ticket.read_text()
-        for content in ("# No recommendation", original + "- Recommended model: duplicate\n",
+        for content in ("## Model recommendation\n### Codex\n", original + "- Recommended model: duplicate\n",
                         original.replace("test-codex", "not applicable"),
                         original.replace("high", "undetermined")):
             self.ticket.write_text(content)
@@ -122,7 +181,7 @@ class ModelGateTests(unittest.TestCase):
                 self.run_gate(self.event(client), client)
 
     def test_invalid_bind_leaves_gate_closed(self):
-        self.ticket.write_text("# Missing recommendation")
+        self.ticket.write_text("## Model recommendation\n### Codex\n")
         event = self.event()
         with self.assertRaises(ValueError):
             self.run_gate(event)

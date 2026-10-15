@@ -27,7 +27,7 @@ The route most work travels. You have an idea and want it built.
      - **`/implement-spec`** for the whole spec in one run. It reads the tickets as a **task graph**, runs implementer subagents across the ready **frontier** in parallel, and lands everything on one **integration branch**. Reach for it when you'd rather orchestrate the build than drive each ticket yourself.
    - **No** → **`/implement`** right here, in the same context window.
 
-   Both implementation paths require a current model/effort recommendation in each ticket and a verified runtime gate before edits. Each worker and resumed fix verifies its own settings; mismatches stop that ticket. See [model execution verification](../implement/MODEL-EXECUTION.md).
+   Model selection is optional in both implementation paths: unassessed tickets, plans, and conversations continue with current or inherited settings. An existing recommendation for the current client requires a verified runtime gate before edits, including every worker and resumed fix; mismatches stop that ticket. See [model execution verification](../implement/MODEL-EXECUTION.md).
 
    Either way, the code gets built by driving **`/tdd`** (one red-green slice at a time) and closes out with **`/code-review`**, a two-axis review (Standards + Spec) of the diff. `/implement` runs both per ticket; `/implement-spec`'s implementers each drive `/tdd`, and it runs one `/code-review` over the integration branch. Reach for **`/tdd`** on its own when you just want to build a concrete behaviour test-first without a full spec, and **`/code-review`** on its own whenever you want to review a branch or PR against a fixed point.
 
