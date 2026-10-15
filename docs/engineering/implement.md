@@ -100,11 +100,20 @@ preserves the truthful state and reports the blocker before production edits.
 
 ## Common questions
 
+**Must I run task-model-selector first?**
+
+No. Tickets, plans, and conversations without an applicable assessment continue
+with the current or inherited settings. They need no model choice, hook probe, or
+verification receipt. In a mixed plan, only assessed tickets require the gate;
+normal dependencies and acceptance checks still apply. An incomplete existing
+assessment must be resolved, and removing one cannot bypass an active gate.
+
 **Will it respect the model and reasoning level recorded in my ticket?**
 
-Before implementation, it binds the ticket to a gate that checks the actual
-session's model and reasoning effort. A mismatch, missing recommendation, or
-unavailable runtime evidence stops work. Each worker, retry and fix must pass
+When this client has an applicable assessment, implementation binds that
+recommendation to a gate that checks the actual session's model and reasoning
+effort. A mismatch, incomplete assessment, or unavailable runtime evidence stops
+that assessed work. Each worker, retry and fix must pass
 its own check. Python 3, the enabled plugin hook, and native session transcripts
 are required; Codex also requires trusting the hook through `/hooks`.
 
@@ -162,7 +171,7 @@ be resolved unambiguously, it asks for the missing input. Pass an issue URL,
 
 ## It's working if
 
-- The actual model and effort match the ticket before editing, and a mismatch blocks further tool use.
+- Unassessed work proceeds with existing settings; assessed work verifies the ticket's model and effort before edits, and a mismatch stops that ticket.
 - The session opens by reading the exact ticket or retained same-session plan and restating what it will build, rather than asking you what to build.
 - You can see the `tdd` skill loaded through the host's supported mechanism and followed at the agreed seams.
 - Typechecks and single test files run repeatedly during the run, and the full suite runs once near the end.

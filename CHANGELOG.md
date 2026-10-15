@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.3.1+codex.20261015optionalgate
+
+### Patch Changes
+
+- Keep model selection optional: unassessed tickets, plans, and conversations use existing settings without a model gate. Existing recommendations still require verified model and effort, including workers and fixes; deleting a bound assessment cannot bypass enforcement.
+
 ## 1.3.1+codex.20261015modelgate
 
 ### Patch Changes

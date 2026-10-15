@@ -23,9 +23,12 @@ title and scope without asking again for settled approval.
 For conversation-only work, restate the agreed scope.
 
 Before implementation, follow [model execution verification](MODEL-EXECUTION.md).
-Bind the ticket in this actual session and require a verified runtime model and
-reasoning level. Stop on mismatches or missing evidence. Keep the gate active
-through fixes and checks, then finish it before reporting completion.
+If this ticket, plan, or conversation has no applicable model assessment, continue
+with the current or inherited settings; do not require the selector, a model choice,
+or a gate receipt. If a recommendation exists for this client and scope, bind it
+in this actual session and verify the runtime model and reasoning level. Stop on
+mismatches or missing evidence, keep the gate active through fixes and checks,
+and finish it before reporting completion.
 
 Record the current branch and task-start commit before editing, preserving
 unrelated changes.

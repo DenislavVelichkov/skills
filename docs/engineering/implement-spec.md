@@ -35,11 +35,20 @@ Implementers talk to the orchestrator through [context pointers](https://www.aih
 
 ## Common questions
 
+**Must I run task-model-selector first?**
+
+No. Tickets, plans, and conversations without an applicable assessment continue
+with the current or inherited settings. They need no model choice, hook probe, or
+verification receipt. In a mixed plan, only assessed tickets require the gate;
+normal dependencies and acceptance checks still apply. An incomplete existing
+assessment must be resolved, and removing one cannot bypass an active gate.
+
 **Will it respect the model and reasoning level recorded in my ticket?**
 
-Before implementation, it binds the ticket to a gate that checks the actual
-session's model and reasoning effort. A mismatch, missing recommendation, or
-unavailable runtime evidence stops work. Each worker, retry and fix must pass
+When this client has an applicable assessment, implementation binds that
+recommendation to a gate that checks the actual session's model and reasoning
+effort. A mismatch, incomplete assessment, or unavailable runtime evidence stops
+that assessed work. Each worker, retry and fix must pass
 its own check. Python 3, the enabled plugin hook, and native session transcripts
 are required; Codex also requires trusting the hook through `/hooks`.
 
@@ -60,7 +69,7 @@ No, not any more. One user who liked the in-progress version had exactly this co
 
 **Its review and fix loop ran for hours, or kept "fixing" tickets that hadn't been built yet.**
 
-Both happen when `code-review` runs anywhere other than the one point the skill gives it. It compares the code against the whole spec, so it only makes sense once every ticket has landed. If it runs mid-run, every unbuilt ticket reads as a failure. The agent then builds that ticket, and that triggers another review. At the end, the skill runs `code-review` once and routes accepted fixes to ticket implementers whose model and effort have been verified. One user reported a five-ticket feature where "the review and fix loop took roughly four hours". If you see a second broad review start, tell it to run focused checks for the fixed findings and stop. Expect that first review to find real problems. The run's output is a draft that the review completes, not something to ship on its own.
+Both happen when `code-review` runs anywhere other than the one point the skill gives it. It compares the code against the whole spec, so it only makes sense once every ticket has landed. If it runs mid-run, every unbuilt ticket reads as a failure. The agent then builds that ticket, and that triggers another review. At the end, the skill runs `code-review` once and routes accepted fixes to ticket implementers, verifying model and effort when an assessment applies. One user reported a five-ticket feature where "the review and fix loop took roughly four hours". If you see a second broad review start, tell it to run focused checks for the fixed findings and stop. Expect that first review to find real problems. The run's output is a draft that the review completes, not something to ship on its own.
 
 **Does it drive tdd like implement does?**
 
@@ -84,7 +93,7 @@ A worktree holds only what git tracks. Tests that read gitignored fixtures, loca
 
 ## It's working if
 
-- The actual model and effort match the ticket before editing, and a mismatch blocks further tool use.
+- Unassessed work proceeds with existing settings; assessed work verifies the ticket's model and effort before edits, and a mismatch stops that ticket.
 - Several implementers are running at once whenever the graph allows, not one after another.
 - A ticket starts as soon as its last blocker lands on the integration branch, not when the whole run ends.
 - Every ticket's trace shows `tdd` running, with a failing test before the code.

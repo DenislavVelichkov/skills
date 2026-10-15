@@ -44,6 +44,8 @@ def recommendation(path, client):
                 if field[1] in fields:
                     raise ValueError("Duplicate recommendation field; reassess the ticket")
                 fields[field[1]] = field[2]
+    if clients == 0:
+        return None
     if sections != 1 or clients != 1:
         raise ValueError("Ticket requires one recommendation section and one current-client subsection")
     model = required(fields.get("model"), "ticket model recommendation")
@@ -138,11 +140,18 @@ def check(event, client, data_dir):
         state_path.unlink(missing_ok=True)
         return rewrite(event, {"status": "aborted", "instruction": "Stop implementation now"})
     if action and action[0] == "bind":
-        save(state_path, {"ticket": action[1], "model": None, "effort": None,
-                          "cwd": str(Path(event["cwd"]).resolve())})
-        model, effort = recommendation(action[1], client)
-        state = {"ticket": action[1], "model": model, "effort": effort,
+        state = {"ticket": action[1], "model": None, "effort": None,
                  "cwd": str(Path(event["cwd"]).resolve())}
+        try:
+            pair = recommendation(action[1], client)
+        except Exception:
+            save(state_path, state)
+            raise
+        if pair is None:
+            if state_path.exists():
+                raise ValueError("An active model gate cannot become unassessed; finish or abort its scope first")
+            return rewrite(event, {"status": "not assessed", "client": client, "ticket": action[1]})
+        state["model"], state["effort"] = pair
         save(state_path, state)
     state = json.loads(state_path.read_text()) if state_path.exists() else None
     model, effort = runtime(event, client)
