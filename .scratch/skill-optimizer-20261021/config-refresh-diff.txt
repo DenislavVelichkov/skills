@@ -1,0 +1,47 @@
+Pre-refresh SHA-256: 019803ab007c484ed822abfb28fc150712e738a25a1bb4b9d7adc9273812fe17
+Current SHA-256: c2e85295b454e4a59ec63442391f43eed51fac0230f2431c0df0f198ad1b1786
+
+--- pre-refresh config, exact SHA-256 match
++++ current config
+@@ -156,10 +156,10 @@
+ [plugins."cursor-codex@dv8-marketplace"]
+ enabled = true
+ 
++[plugins."dv8-codex@dv8-marketplace"]
++enabled = true
++
+ [plugins."mattpocock-codex@dv8-marketplace"]
+-enabled = true
+-
+-[plugins."dv8-codex@dv8-marketplace"]
+ enabled = true
+ 
+ [tui]
+@@ -329,7 +329,7 @@
+ 
+ [hooks.state."dv8-codex@dv8-marketplace:hooks/hooks.json:pre_tool_use:0:0"]
+ trusted_hash = "sha256:215892fa748ce86825bcbe4ab0dc3c165c2eca6ce5c5a116fdad5286218af86d"
+-enabled = false
++enabled = true
+ 
+ [hooks.state."ponytail@dv8-marketplace:hooks/claude-codex-hooks.json:session_start:0:0"]
+ trusted_hash = "sha256:5f81d38f47448a1581c08ec877e044d9e04dd6f814dce3f2671f7a8edadd719b"
+@@ -363,15 +363,15 @@
+ 
+ [hooks.state."dv8-codex@dv8-marketplace:hooks/hooks.json:session_start:0:0"]
+ trusted_hash = "sha256:412c47b053b8275a95d2930f4ec8206aaa34f8cc3434e3a331354e57913b14b1"
+-enabled = false
++enabled = true
+ 
+ [hooks.state."dv8-codex@dv8-marketplace:hooks/hooks.json:pre_tool_use:1:0"]
+ trusted_hash = "sha256:c51e38bc1ff46115bf45b81109e782f4d4314c63d2f26dc30778f9851948b14f"
+-enabled = false
++enabled = true
+ 
+ [hooks.state."dv8-codex@dv8-marketplace:hooks/hooks.json:post_tool_use:0:0"]
+ trusted_hash = "sha256:cb449cc4d6537fcc35e2d6e996dfabe0d3e2828158fa7c99ba06aabf47467f8d"
+-enabled = false
++enabled = true
+ 
+ [marketplaces.openai-bundled]
+ source_type = "local"

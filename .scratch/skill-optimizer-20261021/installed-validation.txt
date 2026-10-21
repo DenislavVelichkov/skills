@@ -1,0 +1,6 @@
+Commit: ee3f8bf715a50fa0522252dce94c0bc065cb304a
+Installed directory: /home/dv8/.codex/plugins/cache/dv8-marketplace/mattpocock-codex/1.3.1+codex.20261021skilloptimizer
+Tracked files checked: 202
+Selected skill entrypoints: 27
+Failures: 0
+Extra installed files outside .git: 0

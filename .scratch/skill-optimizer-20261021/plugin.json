@@ -1,0 +1,65 @@
+{
+  "name": "mattpocock-codex",
+  "version": "1.3.1+codex.20261021skilloptimizer",
+  "description": "Personal Matt Pocock Codex skills and workflows.",
+  "author": {
+    "name": "Custom Plugin for Matt skills",
+    "url": "https://github.com/DenislavVelichkov/skills"
+  },
+  "homepage": "https://github.com/DenislavVelichkov/skills",
+  "repository": "https://github.com/DenislavVelichkov/skills",
+  "keywords": [
+    "engineering",
+    "skills",
+    "tdd",
+    "code-review",
+    "grilling",
+    "domain-modeling",
+    "productivity"
+  ],
+  "skills": [
+    "./skills/engineering/ask-matt",
+    "./skills/engineering/diagnosing-bugs",
+    "./skills/engineering/grill-with-docs",
+    "./skills/engineering/triage",
+    "./skills/engineering/improve-codebase-architecture",
+    "./skills/engineering/setup-matt-pocock-skills",
+    "./skills/engineering/tdd",
+    "./skills/engineering/to-spec",
+    "./skills/engineering/to-tickets",
+    "./skills/engineering/wayfinder",
+    "./skills/engineering/implement",
+    "./skills/engineering/implement-spec",
+    "./skills/engineering/prototype",
+    "./skills/engineering/research",
+    "./skills/engineering/domain-modeling",
+    "./skills/engineering/codebase-design",
+    "./skills/engineering/code-review",
+    "./skills/engineering/pr",
+    "./skills/engineering/retro",
+    "./skills/engineering/wizard",
+    "./skills/productivity/grill-me",
+    "./skills/productivity/grilling",
+    "./skills/productivity/handoff",
+    "./skills/productivity/teach",
+    "./skills/productivity/to-questionnaire",
+    "./skills/productivity/wait-what",
+    "./skills/productivity/writing-for-agents"
+  ],
+  "interface": {
+    "displayName": "mattpocock Codex",
+    "shortDescription": "Personal Codex workflows and skills.",
+    "longDescription": "Packages the reusable mattpocock Codex Home skills and workflows.",
+    "developerName": "mattpocock",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use mattpocock Codex to choose and run the right workflow.",
+      "Use mattpocock Codex to review and improve this repository."
+    ],
+    "brandColor": "#2563EC"
+  }
+}

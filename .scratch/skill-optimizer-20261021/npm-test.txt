@@ -1,0 +1,39 @@
+npm notice run mattpocock-skills@1.3.1 test
+npm notice run node --test scripts/*.test.mjs
+✔ accepts a frozen design selection and reports separate progress (3.047844ms)
+✔ accepts a truthful planning surface before references are selected (0.555037ms)
+✔ rejects acceptance that is not bound to the candidate set (2.511606ms)
+✔ accepts only promoted baselines that match the approved candidate (0.876725ms)
+✔ rejects evidence paths outside the repository (0.550642ms)
+✔ rejects a visual surface with no required regions (0.465936ms)
+✔ records a user-visible approval request as a separate progress state (0.922354ms)
+✔ rejects acceptance when approval was never requested (0.593013ms)
+✔ formats the exact human approval prompt (0.427434ms)
+✔ an unrelated test edit cannot authorize visual evidence reuse (1.473807ms)
+✔ shared fixes precede consumer evidence without changing approved order (0.292428ms)
+✔ a stable fix ends verification while retaining full initial review coverage (0.288429ms)
+✔ published specs must pass through an approved ticket split (0.24093ms)
+✔ visual acceptance stays local and human-approved (0.311605ms)
+✔ visual parity gates require an explicit reference comparison (1.129794ms)
+✔ applicable missing manifests are created before ticketing or implementation (0.260675ms)
+✔ validation selects desktop behavior, native exceptions, and complete final proof (0.383934ms)
+✔ reports stay passive and live reuse expires at real operation boundaries (0.318993ms)
+✔ feature verification bounds shared-tooling repairs and debugging effort (0.458636ms)
+✔ hidden dependency: prescribed next action is Name missing dependencies and their existing owners before substantial component work (0.357236ms)
+✔ missing ordinary entry: prescribed next action is If components have no ordinary entry, make connecting that path the next authorized batch (0.211474ms)
+✔ settled authorization: prescribed next action is Carry confirmed scope, authorization, decisions and test boundaries forward (0.182972ms)
+✔ inferable review baseline: prescribed next action is use the recorded task-start commit (0.315223ms)
+✔ unresolved design: prescribed next action is Ask only for consequential unresolved decisions (0.227488ms)
+✔ delta review: prescribed next action is review the delta from the last reviewed candidate plus affected callers (0.275129ms)
+✔ disconnected progress: prescribed next action is Component completion cannot close a ticket whose required user path remains disconnected (0.186552ms)
+✔ connected batches retain scope and route through shared guidance (0.918265ms)
+✔ public workflow docs retain connected delivery and settled decisions (1.46113ms)
+✔ planning and design selection cannot reopen or expand execution authority (0.252594ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 75.994526

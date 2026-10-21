@@ -1,0 +1,48 @@
+PASS: all 38 skill identities and invocation policies preserved.
+PASS: picker YAML, code blocks, executable files and manifest unchanged.
+PASS: all skills below 500 lines; all 27 selected skill directories exist.
+PASS: all 8 affected promoted docs retain required sections and absolute links.
+PASS: 14 skills changed; 24 skills left byte-for-byte unchanged.
+Fallback validator: 15 skills pass; 23 fail with 24 unchanged baseline compatibility errors; 40 advisory warnings.
+
+Changed skill files:
+skills/engineering/ask-matt/SKILL.md
+skills/engineering/codebase-design/SKILL.md
+skills/engineering/implement-spec/SKILL.md
+skills/engineering/improve-codebase-architecture/SKILL.md
+skills/engineering/retro/SKILL.md
+skills/in-progress/claude-handoff/SKILL.md
+skills/in-progress/loop-me/SKILL.md
+skills/in-progress/setup-ts-deep-modules/SKILL.md
+skills/misc/git-guardrails-claude-code/SKILL.md
+skills/misc/scaffold-exercises/SKILL.md
+skills/misc/setup-pre-commit/SKILL.md
+skills/productivity/teach/SKILL.md
+skills/productivity/to-questionnaire/SKILL.md
+skills/productivity/writing-for-agents/SKILL.md
+
+Known fallback errors:
+skills/engineering/ask-matt/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/engineering/grill-with-docs/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/engineering/implement/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/engineering/implement-spec/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/engineering/improve-codebase-architecture/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/engineering/retro/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/engineering/setup-matt-pocock-skills/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/engineering/setup-matt-pocock-skills/SKILL.md: missing_local_refs: Referenced local skill files do not exist: scripts/validate-visual-acceptance.mjs
+skills/engineering/to-spec/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/engineering/to-tickets/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/engineering/triage/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/engineering/wayfinder/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/in-progress/chief-of-staff/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/in-progress/claude-handoff/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: argument-hint, disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/in-progress/loop-me/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: argument-hint, disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/in-progress/setup-ts-deep-modules/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/in-progress/writing-beats/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/in-progress/writing-fragments/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/in-progress/writing-shape/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/productivity/grill-me/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/productivity/handoff/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: argument-hint, disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/productivity/teach/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: argument-hint, disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/productivity/to-questionnaire/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+skills/productivity/wait-what/SKILL.md: frontmatter_keys: Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
