@@ -35,7 +35,7 @@ Then use an available subagent to explore the selected scope when host instructi
 - Where do tightly-coupled modules leak across their seams?
 - Which parts of the codebase are untested, or hard to test through their current interface?
 
-Apply the **deletion test** to anything you suspect is shallow: would deleting it concentrate complexity, or just move it? A "yes, concentrates" is the signal you want.
+Apply the **deletion test** from `codebase-design`: if removing a module makes complexity disappear, it may be a needless pass-through. If that complexity reappears across callers, the module hides useful behavior. Propose a deepening only when you can show how the changed interface reduces what callers must know.
 
 ### 2. Present candidates as an HTML report
 

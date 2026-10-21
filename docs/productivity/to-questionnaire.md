@@ -21,12 +21,14 @@ The common case is a [grilling](https://www.aihero.dev/ai-coding-dictionary/gril
 
 ## The send, not the subject
 
-The interview is two exchanges, and then it stops.
+The skill establishes the recipient and the answers you need, reusing details already supplied. It asks only for missing information that affects the questionnaire.
 
 - **Who is it going to?** Their role, their expertise, their relationship to you. This sets the tone and how much context the document has to carry. An outside client needs orienting; a teammate does not.
 - **What do you need back?** The concrete decisions or facts you can't resolve alone. This becomes the checklist for the finished document. Every item you name gets a question aimed at it.
 
 Everything after that is drafting. The skill writes the file to `to-questionnaire-<slug>.md` in the current directory. There is no setup, no workspace, and nothing to configure.
+
+It includes a deadline only when you supply one and labels any effort estimate.
 
 ## The document
 
@@ -65,10 +67,10 @@ Yes, and plenty of people did before it existed: `OPEN_QUESTIONS.md` files, spre
 
 ## It's working if
 
-- It asks about the recipient and about what you need back, then stops asking. If it asks about the subject itself, the skill has gone wrong.
+- It uses the recipient and goals you supplied and asks only about unresolved details. It does not interview you about the subject itself.
 - Every item you named as "what I need back" is traceable to a question in the file.
 - The questions read as aimed at what the *recipient* knows, not as your own open questions copied down verbatim.
-- You could hand the file to someone who wasn't in the conversation and they would know why they got it and by when to reply.
+- Someone outside the conversation can tell why they received the file and see the deadline if you supplied one.
 - The answers that come back are usable input for a new grilling round, rather than a fresh set of questions.
 
 ## Where it fits

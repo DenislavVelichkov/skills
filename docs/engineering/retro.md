@@ -24,9 +24,9 @@ Each candidate belongs to one category, and the category decides where the fix g
 | A steering file is full of lines that change nothing | Delete the **no-ops** |
 | The agent needed information it couldn't reach | Widen its access: tee the dev server log to a file, give read-only access to a service |
 
-The leading idea is that standards belong to the **reviewer**, not the implementer. The implementing agent has the most context pressure, because it explores, writes code, and debugs failures. The reviewing agent gets a diff and nothing else. So a new rule goes where there is room to apply it, which is review. It never goes in [AGENTS.md](https://www.aihero.dev/ai-coding-dictionary/agents-md), which loads into every session's [context window](https://www.aihero.dev/ai-coding-dictionary/context-window) whether it is relevant or not.
+Review criteria belong in the repository's standards documents, with short pointers in [AGENTS.md](https://www.aihero.dev/ai-coding-dictionary/agents-md). The reviewer reads those standards, the fixed diff and the requirements, then inspects affected callers and contracts where needed. A diff alone cannot establish whether a requirement is complete.
 
-Before `retro` writes any rule, it classifies the violation. A **mechanical** violation (a banned API, an import shape, a file-location rule) gets a deterministic check, because a check can fail and a sentence in a standards file can't. Only real judgement calls, which no linter can enforce, become prose. If the repo has no guardrail at all (no pre-commit hook, and no CI job that runs lint, typecheck, and tests), `retro` reports that as a finding of its own.
+Before proposing a rule, `retro` classifies the violation. It recommends deterministic checks for mechanical mistakes and prose standards for judgement calls. Each recommendation needs a session event or verified repository gap and a way to check the proposed improvement. It can return no recommendations. Editing files or installing hooks requires authorization beyond the retrospective itself.
 
 ## Common questions
 

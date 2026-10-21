@@ -1,15 +1,15 @@
 ---
 name: git-guardrails-claude-code
-description: Set up Claude Code hooks to block dangerous git commands (push, reset --hard, clean, branch -D, etc.) before they execute. Use when user wants to prevent destructive git operations, add git safety hooks, or block git push/reset in Claude Code.
+description: "Sets up a Claude Code Bash hook that blocks configured Git command patterns such as push and reset --hard. Use when adding Git safety hooks in Claude Code; it is not a shell parser or a security boundary."
 ---
 
 # Setup Git Guardrails
 
-Sets up a PreToolUse hook that intercepts and blocks dangerous git commands before Claude executes them.
+Sets up a PreToolUse hook that checks Bash command text against the bundled regex patterns before Claude executes it. Alternate spacing, option order, aliases or indirect execution may evade a match; quoted text may match without executing Git. Do not claim coverage beyond those patterns.
 
 ## What Gets Blocked
 
-- `git push` (all variants including `--force`)
+- Text matching `git push`, including the usual `git push --force` form
 - `git reset --hard`
 - `git clean -f` / `git clean -fd`
 - `git branch -D`
@@ -27,7 +27,7 @@ Ask the user: install for **this project only** (`.claude/settings.json`) or **a
 
 The bundled script is at: [scripts/block-dangerous-git.sh](scripts/block-dangerous-git.sh)
 
-Copy it to the target location based on scope:
+Copy it to the target location when absent. If a target script already exists, preserve customizations and change only the requested patterns. Choose the target based on scope:
 
 - **Project**: `.claude/hooks/block-dangerous-git.sh`
 - **Global**: `~/.claude/hooks/block-dangerous-git.sh`
@@ -78,7 +78,7 @@ Add to the appropriate settings file:
 }
 ```
 
-If the settings file already exists, merge the hook into the existing `hooks.PreToolUse` array. Don't overwrite other settings.
+If the settings file already exists, merge the hook into the existing `hooks.PreToolUse` array. Reuse a registration for this script instead of adding a duplicate. Preserve other settings.
 
 ### 4. Ask about customization
 

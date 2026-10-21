@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Make every package in this repo a **deep module**: a lot of behaviour behind a small interface. A package's public surface is its **entry points** (the files at the package root), and everything in its subfolders is hidden. This skill installs [dependency-cruiser](https://github.com/sverweij/dependency-cruiser) and the rules that make the entry points the only way in, then proves the rules bite.
 
-For the vocabulary (deep module, interface, seam, depth), call the Skill tool with "codebase-design" and use its language throughout.
+Load `codebase-design` through the host's skill tool, or read its discovered `SKILL.md` when no skill tool is exposed. Report a missing dependency. Use its module, interface, seam and depth vocabulary throughout.
 
 ## The shape this enforces
 
@@ -52,9 +52,9 @@ Install `dependency-cruiser` as a devDependency with the detected package manage
 
 ### 3. Write the config
 
-Copy [`dependency-cruiser.config.cjs`](./dependency-cruiser.config.cjs) to the repo root as `.dependency-cruiser.cjs`. Set `PACKAGES_ROOT` to the root detected in step 1. The rules are path-depth based and extension-agnostic, so nothing else needs adapting.
+Use [`dependency-cruiser.config.cjs`](./dependency-cruiser.config.cjs) as the source for the four rules. Copy it to `.dependency-cruiser.cjs` only when no config exists; otherwise merge the rules into the existing config without replacing its other rules or options. Set `PACKAGES_ROOT` to the root detected in step 1 and preserve the bundled group matching.
 
-**Done when:** `.dependency-cruiser.cjs` exists with the correct `PACKAGES_ROOT`, and the four forbidden rules are present.
+**Done when:** the active config has the correct packages root and all four rules, with existing project rules and options preserved.
 
 ### 4. Wire it into the checks
 
@@ -62,11 +62,13 @@ Copy [`dependency-cruiser.config.cjs`](./dependency-cruiser.config.cjs) to the r
 - Fold it into the repo's umbrella check command, the one that already runs typecheck (e.g. a `check` / `ci` / `validate` script). Do **not** touch `tsconfig` or add path aliases.
 - If there is no umbrella script, add `lint:boundaries` and tell the user to include it in CI.
 
-**Done when:** `lint:boundaries` exists and runs as part of the same command as typecheck.
+**Done when:** `lint:boundaries` runs and the existing umbrella check calls it. If no umbrella check exists, report that limitation and the standalone command.
 
 ### 5. Scaffold the example package
 
 Create a committed `<packages-root>/example/` as a copy-me template:
+
+If that path exists, inspect and reuse an equivalent example or choose an unused name. Preserve existing files and use the chosen example path in the proof steps below.
 
 - `index.ts` is an entry point. Export one function that delegates to an internal file (so the package is visibly *deep*, not a pass-through).
 - `lib/impl.ts`: an internal file in a **subfolder**, imported by `index.ts`, not reachable from outside.

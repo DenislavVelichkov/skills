@@ -27,7 +27,7 @@ expand into shared verification-tool development.
 
 ## Prerequisites
 
-The router names skills; it does not install them. It checks the loaded plugin's selection or registration before recommending a route. Explicit-only skills can be installed while absent from implicit discovery. In the Codex fork, `implement-spec`, `retro`, and `pr` are excluded from the selected set and are optional only when separately installed.
+The router checks the loaded plugin's selection or registration before recommending a route. Explicit-only skills can be installed while absent from implicit discovery. This Codex fork includes `implement-spec`, `retro` and `pr`; the loaded manifest remains the authority for a particular installation. Parallel implementation also requires subagents and isolated worktrees.
 
 The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assume [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) has already configured an issue tracker in the repo. The router recommends them even before that has happened.
 
@@ -35,7 +35,7 @@ The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assu
 
 The skill's leading word is **flow**, a path *through* the skills rather than a single skill. When you name your situation, the router places you at a step on a flow. That is a different answer from "here is the skill that matches your keywords". There are five kinds of route, and the skill itself describes them in full:
 
-- **The main flow**, idea to ship. Grill, spec, tickets, implement one ticket at a time, review, then [retro](https://aihero.dev/skills-retro) if separately installed. [implement-spec](https://aihero.dev/skills-implement-spec) is an optional parallel route when available. The retrospective feeds what the build taught back into the agent's environment. The main flow has two branches. One is a prototype detour, for when a question needs runnable code to settle it. The other is the spec-and-tickets split, which is only worth its cost when the build spans more than one session.
+- The main flow starts with grilling, then a spec, tickets, implementation and review. [implement-spec](https://aihero.dev/skills-implement-spec) can coordinate an approved ticket graph when the host supports it. [retro](https://aihero.dev/skills-retro) proposes environment changes after the build. A prototype can answer a design question before planning continues. Small unpublished plans can go directly to implementation; a published spec goes through ticket splitting.
 - **On-ramps**, for a situation that generates work and then merges onto the main flow: incoming bug reports, something broken, or an effort too foggy and too large to hold in one session.
 - **Codebase health**, upkeep rather than feature work. [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) surveys the code for deepening opportunities, and each one it finds re-enters the main flow as an idea.
 - **Standalones**, which sit off every flow and which you use on their own: the prototype, the questionnaire, the research run.

@@ -23,7 +23,7 @@ Once you think in these two loads, most authoring decisions (split or don't, inl
 
 ## The levers
 
-- **[Context pointers](https://www.aihero.dev/ai-coding-dictionary/context-pointer)**: the reference held in context that names out-of-context material and encodes when to reach it. A skill description and an `AGENTS.md` line naming a doc are the same thing. The pointer's *wording*, not its target, decides how reliably the agent follows it.
+- A [context pointer](https://www.aihero.dev/ai-coding-dictionary/context-pointer) names material and says when to read it. Check that the target exists and can be loaded before revising the wording. A skill description and an `AGENTS.md` link both need this check.
 - **Information hierarchy**: the ladder from in-file step, to in-file reference, to disclosed reference behind a pointer. **[Progressive disclosure](https://www.aihero.dev/ai-coding-dictionary/progressive-disclosure)** is moving material down that ladder so the top stays easy to read.
 - **Completion criteria**: how clear and demanding each step's done-condition is, and the **legwork** that demand causes. They are the defence against **premature completion**.
 - **Leading words**: a compact name for a defined task concept (*tight*, *red*, *tracer bullet*). The same term names the desired behaviour in the body and supplies a discovery cue in the pointer.
@@ -34,6 +34,9 @@ invocation policy. Both explicit and implicit skills retain descriptions. Shared
 reference files can remain under an explicit-only skill without invoking it.
 For context pointers, verify the path and loading capability before strengthening
 wording. Keep required scope and permission constraints when pruning prose.
+Replace vague demands with concrete actions and observable completion criteria.
+A stronger adjective is not evidence of better behavior. Untested deletions
+remain hypotheses about the model and runtime.
 
 ## Common questions
 

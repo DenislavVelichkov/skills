@@ -47,8 +47,8 @@ Two supporting files go further, and the skill reads them on demand rather than 
 
 When you request alternative interfaces, the design-it-twice reference compares
 three distinct designs, adding a fourth only for relevant cross-seam dependencies.
-It uses available workers when the host permits delegation, or develops the
-designs locally. Flexibility stays within the required use cases.
+It uses authorized workers when the host supports delegation, or develops the
+same alternatives locally. Flexibility stays within the required use cases.
 
 ## Common questions
 

@@ -1,6 +1,6 @@
 ## What it does
 
-`teach` turns the directory you run it in into a standing teaching workspace and teaches you one topic across many [sessions](https://www.aihero.dev/ai-coding-dictionary/session), in short self-contained HTML lessons.
+`teach` turns the directory you run it in into a teaching workspace for one topic across many [sessions](https://www.aihero.dev/ai-coding-dictionary/session). Each short HTML lesson can use the workspace's shared assets.
 
 It does not teach from what the [model](https://www.aihero.dev/ai-coding-dictionary/model) already knows. It treats [parametric knowledge](https://www.aihero.dev/ai-coding-dictionary/parametric-knowledge) as untrusted. Before it teaches, it finds high-trust resources, records them in `RESOURCES.md`, and cites them inside every lesson. It is also [stateful](https://www.aihero.dev/ai-coding-dictionary/stateful). The mission, the resources, the lessons and the record of what you have learned all live as files in the directory, so the next session continues from those files, not from what is left of the last conversation.
 
@@ -47,7 +47,7 @@ Storage strength is also why the skill pushes back instead of agreeing. A questi
 
 ## Lessons, references and components
 
-A **lesson** is one self-contained HTML file, short enough to finish in a sitting, tied to the mission, giving one tangible win. It cites its sources, recommends one primary source to go and read yourself, and links to sibling lessons and reference documents.
+A lesson is one HTML file tied to the mission, with source citations and links to related materials. Keep its referenced workspace assets when sharing it. Before handoff, the agent checks local links and, when a browser is available, exercises the interactive feedback. It reports any unrun checks or remaining faults.
 
 You rarely go back to a lesson, but you do go back to reference documents. So the short form of a lesson (the syntax table, the algorithm, the pose sequence, the glossary) belongs in `reference/`, not buried in the lesson that introduced it.
 

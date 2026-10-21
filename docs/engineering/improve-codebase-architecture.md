@@ -4,7 +4,7 @@
 
 It never changes the code. The whole run produces a conversation and one HTML file in your OS temp directory. You do the refactor later, in a separate [session](https://www.aihero.dev/ai-coding-dictionary/session), through the normal build flow. This makes it a survey, not a refactoring tool, so you can run it on a codebase you are not ready to touch yet.
 
-Two filters stop the report from becoming generic cleanup advice. First, every candidate must pass the **deletion test**: if you removed this module, would its complexity move behind a smaller interface, or spread across the callers? Only the first case gets a card. Second, unless you point it at a specific area, it reads recent commit history first and focuses the scan on paths that change often. A deepening in code that nobody touches is a refactor that never pays back.
+The deletion test asks what happens if a module disappears. If complexity disappears too, it may be a needless pass-through. If complexity spreads across callers, the module hides useful behavior. A proposed deepening must explain how its changed interface reduces what callers need to know. Unless you name an area, the review starts with paths that change often in recent history.
 
 ## When to reach for it
 
@@ -45,7 +45,7 @@ Each candidate is a card with the files involved, the friction, a plain-English 
 
 | Badge | What it means for you |
 | --- | --- |
-| `Strong` | The deletion test passes clearly and the friction is real. Take these seriously. |
+| `Strong` | The review identifies concrete friction and shows how the proposed interface reduces caller complexity. |
 | `Worth exploring` | Plausible deepening, but the payoff depends on where the code is going next. |
 | `Speculative` | Included for completeness. You can ignore most of these. |
 
