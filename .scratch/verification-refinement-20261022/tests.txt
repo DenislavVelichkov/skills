@@ -1,0 +1,50 @@
+npm notice run mattpocock-skills@1.3.1 test
+npm notice run node --test scripts/*.test.mjs
+✔ accepts a frozen design selection and reports separate progress (2.480914ms)
+✔ accepts a truthful planning surface before references are selected (0.426973ms)
+✔ rejects acceptance that is not bound to the candidate set (2.351186ms)
+✔ accepts only promoted baselines that match the approved candidate (0.89071ms)
+✔ rejects evidence paths outside the repository (0.559988ms)
+✔ rejects a visual surface with no required regions (0.510504ms)
+✔ records a user-visible approval request as a separate progress state (0.932565ms)
+✔ rejects acceptance when approval was never requested (1.3434ms)
+✔ formats the exact human approval prompt (0.48952ms)
+✔ verification preparation: wrong installed invocation path (1.178691ms)
+✔ verification preparation: malformed generated proof (1.105958ms)
+✔ verification preparation: recurring failure without a short reproducer (0.357873ms)
+✔ verification preparation: native-only retention failure (0.27673ms)
+✔ verification preparation: prerequisite expires during capture (0.272957ms)
+✔ verification preparation: missing assertion samples and cleanup proof (0.309607ms)
+✔ verification preparation: unchanged valid evidence and a routine edit (0.301789ms)
+✔ verification preparation: passive review of incomplete acceptance coverage (0.411825ms)
+✔ verification preparation: retro lesson already has an owner (0.232687ms)
+✔ verification preparation: advisor capacity unavailable (0.532277ms)
+✔ implementation routes and public docs retain verification preparation (0.869003ms)
+✔ an unrelated test edit cannot authorize visual evidence reuse (0.270943ms)
+✔ shared fixes precede consumer evidence without changing approved order (0.162673ms)
+✔ a stable fix ends verification while retaining full initial review coverage (0.162462ms)
+✔ published specs must pass through an approved ticket split (0.147434ms)
+✔ visual acceptance stays local and human-approved (0.301599ms)
+✔ visual parity gates require an explicit reference comparison (0.446345ms)
+✔ applicable missing manifests are created before ticketing or implementation (0.190104ms)
+✔ validation selects desktop behavior, native exceptions, and complete final proof (0.254271ms)
+✔ reports stay passive and live reuse expires at real operation boundaries (0.219282ms)
+✔ feature verification bounds shared-tooling repairs and debugging effort (0.174443ms)
+✔ hidden dependency: prescribed next action is Name missing dependencies and their existing owners before substantial component work (0.257549ms)
+✔ missing ordinary entry: prescribed next action is If components have no ordinary entry, make connecting that path the next authorized batch (0.245357ms)
+✔ settled authorization: prescribed next action is Carry confirmed scope, authorization, decisions and test boundaries forward (0.329495ms)
+✔ inferable review baseline: prescribed next action is use the recorded task-start commit (0.446217ms)
+✔ unresolved design: prescribed next action is Ask only for consequential unresolved decisions (0.42042ms)
+✔ delta review: prescribed next action is review the delta from the last reviewed candidate plus affected callers (0.422063ms)
+✔ disconnected progress: prescribed next action is Component completion cannot close a ticket whose required user path remains disconnected (0.34591ms)
+✔ connected batches retain scope and route through shared guidance (0.804688ms)
+✔ public workflow docs retain connected delivery and settled decisions (1.597077ms)
+✔ planning and design selection cannot reopen or expand execution authority (0.20125ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 77.397195

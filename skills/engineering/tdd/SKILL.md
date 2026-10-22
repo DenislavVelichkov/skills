@@ -20,6 +20,13 @@ Tests verify behavior through public interfaces, not implementation details. Cod
 
 See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking guidelines.
 
+For generated artifacts, test actual producer output through the actual consumer
+at the agreed public boundary. Assert a successful consumed result against the
+contract, then cover incomplete and incompatible outputs. Handwritten consumer
+fixtures alone do not prove producer compatibility. Check rejection before
+runtime mutation or ownership acquisition where possible; use isolated state
+and verify restoration when the boundary requires mutation.
+
 ## Seams: where tests go
 
 A **seam** is the public boundary you test at: the interface where you observe behavior without reaching inside. Tests live at seams, never against internals.

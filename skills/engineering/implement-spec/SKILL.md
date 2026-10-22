@@ -16,7 +16,7 @@ The goal is the entire spec implemented on a single **integration branch**, with
 
 The tickets form a **task graph**. Its **frontier** contains tickets whose blockers have landed on the integration branch with their required acceptance evidence. Track those results during the run; remote issues may remain open until the final PR merges. Preserve external blockers and any approved serial acceptance order. If unfinished tickets remain but none is ready, report their blockers rather than claiming completion.
 
-Read [proportionate verification](../implement/VERIFICATION.md) before choosing checks. For a ticket with a visual parity action, read the repository's `docs/agents/visual-acceptance.md` and follow its design, comparison, human-approval and baseline gates. A worker cannot satisfy a human gate on the user's behalf.
+Read [proportionate verification](../implement/VERIFICATION.md) before choosing checks. Require each implementer to apply its expensive-execution preparation and recurring-failure diagnosis before costly runs or retries. For a ticket with a visual parity action, read the repository's `docs/agents/visual-acceptance.md` and follow its design, comparison, human-approval and baseline gates. A worker cannot satisfy a human gate on the user's behalf.
 
 If the approved acceptance order requires review before the next ticket can start, review the integrated ticket scope at that checkpoint. Retain that coverage for the final spec review; do not report still-blocked tickets as missing implementation in the checkpoint review.
 

@@ -8,6 +8,8 @@ Validation follows the behavior being changed. Existing desktop tests provide
 feedback during editing; platform-owned behavior needs focused native checks.
 Required final proof still runs on the stable candidate.
 
+For generated artifacts, a test passes actual producer output through its real consumer and checks the consumed result. Incomplete and incompatible outputs must fail at that boundary. Handwritten fixtures alone cannot establish compatibility.
+
 ## When to reach for it
 
 The red-green loop runs the focused test. Broader checks follow the affected

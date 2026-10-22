@@ -24,7 +24,18 @@ Return recommendations grounded in the specified session. Apply them only when t
 - **No-ops**: look for instructions in steering files that don't modify the agent's behavior. _Use when_ the steering files are large and unwieldy.
 - **Information access**: look for opportunities to increase the agent's access to information. Teeing dev server logs, readonly access to third-party services. _Use when_ a crucial piece of information was not available to the agent.
 
-4. Check that each candidate cites a session event or a verified repository gap, then present them in severity order. Remove unsupported candidates; an empty list is valid. Name the proposed change and the check that would establish whether it helped.
+4. Check that each candidate cites a session event or a verified repository gap.
+   For a workflow lesson, identify the existing owning skill or shared reference
+   and inspect overlapping guidance. Distinguish a missing instruction from one
+   that was unavailable, ignored or contradicted. Propose a precise behavior
+   change at that owner, replacing broad advice or duplicates instead of adding
+   an incident story. Keep application repairs separate from skill changes.
+
+5. Name an observable success criterion and an evaluation for each proposal.
+   Reuse existing workflow evaluations and include a routine case that should
+   not gain extra process. Present supported candidates in severity order; an
+   empty list is valid. Separate instruction checks from observed agent behavior
+   and measured improvement on later work. Wording alone cannot prove a speedup.
 
 ## Reference
 

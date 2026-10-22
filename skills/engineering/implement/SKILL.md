@@ -41,7 +41,8 @@ required review rather than claiming it ran.
 
 Read [proportionate verification](VERIFICATION.md), including connected delivery,
 before planning batches, choosing checks, reusing evidence, changing verification
-tooling, or starting live validation. Keep reports passive and share verified
+tooling, or starting live validation. Apply its expensive-execution preparation
+and recurring-failure diagnosis before costly runs or retries. Keep reports passive and share verified
 assessments through the existing controller. Run the smallest relevant check
 after a meaningful change. Run the required final suite once on the stable
 candidate; repeat only checks affected by later changes or required by the

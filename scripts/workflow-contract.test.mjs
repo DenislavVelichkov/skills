@@ -7,6 +7,98 @@ import assert from "node:assert/strict";
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const read = (path) => readFileSync(join(root, path), "utf8");
 
+// These scenarios check saved instructions, not observed execution or speedup.
+for (const [situation, file, actions] of [
+  ["wrong installed invocation path", "implement/VERIFICATION.md", [
+    "Exercise the real invocation with the smallest supported input",
+    "installed entry point, working directory and path resolution",
+    "An import test or `--help` alone does not prove the execution path works",
+  ]],
+  ["malformed generated proof", "tdd/SKILL.md", [
+    "test actual producer output through the actual consumer",
+    "Assert a successful consumed result against the contract",
+    "cover incomplete and incompatible outputs",
+    "Check rejection before runtime mutation or ownership acquisition",
+  ]],
+  ["recurring failure without a short reproducer", "implement/VERIFICATION.md", [
+    "product, verification tooling, environment or unresolved",
+    "reproduce it with the smallest supported check and verify the repair there",
+    "record what was tried, why it cannot expose the failure",
+    "hypothesis, observation and stop condition",
+    "Check the outcome of uncertain mutations before any retry",
+  ]],
+  ["native-only retention failure", "implement/VERIFICATION.md", [
+    "bounded check on the affected runtime",
+    "process identity and relevant resource measurements",
+    "passing desktop mocks cannot establish that repair",
+  ]],
+  ["prerequisite expires during capture", "implement/VERIFICATION.md", [
+    "Compare prerequisite expiry with the expected duration of execution and recovery",
+    "Refresh through supported mechanisms",
+    "never change timestamps or weaken freshness rules",
+  ]],
+  ["missing assertion samples and cleanup proof", "implement/VERIFICATION.md", [
+    "List covered and uncovered required scenarios",
+    "Metadata counts and mocked fixtures do not establish assertion coverage",
+    "permit a first collection or diagnostic run to obtain missing samples",
+    "do not require a full capture before the run that will collect them",
+    "including failure cleanup",
+    "successful cleanup cannot turn a failed run into a pass",
+  ]],
+  ["unchanged valid evidence and a routine edit", "implement/VERIFICATION.md", [
+    "Reuse applicable results under the evidence rules below",
+    "Routine edits need no separate preparation record or new tooling",
+    "only when the project verifier supports it and proves applicability",
+    "Preparation is not acceptance and adds no new human approval requirement",
+    "financial non-retry rules and human approval boundaries",
+  ]],
+  ["passive review of incomplete acceptance coverage", "code-review/SKILL.md", [
+    "successful real entry-path invocation",
+    "actual producer output accepted by its consumer",
+    "Compare claimed scenario coverage with assertions actually exercised",
+    "changed input or unresolved diagnostic question",
+    "without launching live journeys",
+    "Include this scope in any delegated review brief",
+  ]],
+  ["retro lesson already has an owner", "retro/SKILL.md", [
+    "existing owning skill or shared reference",
+    "inspect overlapping guidance",
+    "unavailable, ignored or contradicted",
+    "observable success criterion and an evaluation",
+    "routine case that should not gain extra process",
+    "Wording alone cannot prove a speedup",
+  ]],
+  ["advisor capacity unavailable", "implement/VERIFICATION.md", [
+    "available blocker consultation",
+    "Respect its host restrictions and remaining budget",
+    "creates no advisor requirement or new consultation capacity",
+    "Advice never substitutes for verification",
+  ]],
+]) {
+  test(`verification preparation: ${situation}`, () => {
+    const instructions = read(`skills/engineering/${file}`).replace(/\s+/gu, " ");
+    for (const action of actions) assert.ok(instructions.includes(action), action);
+  });
+}
+
+test("implementation routes and public docs retain verification preparation", () => {
+  for (const name of ["implement", "implement-spec"]) {
+    const skill = read(`skills/engineering/${name}/SKILL.md`);
+    assert.match(skill, /VERIFICATION.md/u);
+    assert.match(skill, /expensive-execution preparation/u);
+    assert.match(skill, /recurring-failure diagnosis/u);
+    assert.match(read(`skills/engineering/${name}/agents/openai.yaml`), /allow_implicit_invocation: false/u);
+  }
+  for (const [name, expected] of [
+    ["implement", "Routine edits need no separate preparation record"],
+    ["implement-spec", "bounded diagnostic reason"],
+    ["tdd", "actual producer output through its real consumer"],
+    ["code-review", "review starts no live journey"],
+    ["retro", "observable success criterion and an evaluation"],
+    ["ask-matt", "existing skill that owns them"],
+  ]) assert.ok(read(`docs/engineering/${name}.md`).includes(expected), name);
+});
+
 test("an unrelated test edit cannot authorize visual evidence reuse", () => {
   const implement = read("skills/engineering/implement/SKILL.md");
   assert.match(implement, /\[proportionate verification\]\(VERIFICATION.md\)/u);

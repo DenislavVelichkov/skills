@@ -4,6 +4,8 @@
 
 It reads the approved tickets as a task graph. A ticket becomes ready when its blockers have landed on the integration branch with their required acceptance evidence. Independent tickets can run concurrently within host limits. External blockers, human approval and an approved serial acceptance order still apply.
 
+Each implementer follows the shared preparation and failure-diagnosis rules before expensive acceptance runs. The coordinator retains applicable proof and requires a changed input or a bounded diagnostic reason for reruns. Failed tooling or environment checks remain separate from product failures.
+
 ## When to reach for it
 
 You invoke this by typing `/implement-spec`, and the agent won't reach for it on its own.

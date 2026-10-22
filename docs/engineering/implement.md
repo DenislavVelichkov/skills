@@ -15,6 +15,8 @@ Explicit validation shares verified assessments within the project's supported
 operation, expires them after relevant changes, and records failed work as well
 as successful reuse. Existing native and human acceptance gates still apply.
 
+Before expensive acceptance runs, it checks the actual invocation, generated artifacts, assertion coverage, restoration and prerequisite expiry. Recurring failures require a bounded reproducer and checked repair, or an explicit diagnostic reason for the next run. Routine edits need no separate preparation record.
+
 ## When to reach for it
 
 You invoke this by typing `/implement` yourself, and the agent won't reach for it on its own. It ships with `disable-model-invocation: true`, so no other skill can call it either. Wherever [ask-matt](https://aihero.dev/skills-ask-matt) or [to-tickets](https://aihero.dev/skills-to-tickets) says "then `/implement` per ticket", that is an instruction to you, not something the agent will do unprompted.

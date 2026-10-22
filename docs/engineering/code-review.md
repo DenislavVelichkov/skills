@@ -9,6 +9,8 @@ Explicit validation shares verified assessments within the project's supported
 operation, expires them after relevant changes, and records failed work as well
 as successful reuse. Existing native and human acceptance gates still apply.
 
+For acceptance tooling and its dependent claims, review checks retained evidence of the real invocation and producer-to-consumer success. It compares claimed scenario coverage with exercised assertions and checks why a rerun is needed. Missing evidence becomes a finding; the review starts no live journey.
+
 ## When to reach for it
 
 The first review covers the complete requested diff on a frozen candidate.

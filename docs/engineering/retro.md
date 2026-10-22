@@ -4,6 +4,8 @@
 
 It changes the environment, not the code. Take the bug the agent shipped, the file it needed twenty [tool calls](https://www.aihero.dev/ai-coding-dictionary/tool-call) to find, or the rule the reviewer missed. `retro` does not fix any of them directly. It asks what in the repo let them happen, and proposes the check, pointer, or standard that prevents them next time. It also only proposes. Nothing changes until you pick a candidate.
 
+Workflow lessons name the existing owning skill, overlapping guidance and the precise behavior to change. Each proposal has an observable success criterion and an evaluation, including a routine case that should gain no extra process. Application repairs and skill changes remain separate; revised wording alone does not prove improvement on later tickets.
+
 ## When to reach for it
 
 You invoke this by typing `/retro`, and the agent won't reach for it on its own.

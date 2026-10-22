@@ -100,6 +100,65 @@ gap until its required proof exists.
   verification. Verification cost is a signal to improve the workflow, not a
   reason to skip a required gate.
 
+## Prepare expensive execution
+
+Before a long-running, resource-heavy or stateful acceptance run, record the
+following checks in the existing validation notes. Reuse applicable results
+under the evidence rules below. Routine edits need no separate preparation
+record or new tooling.
+
+- Exercise the real invocation with the smallest supported input, including
+  its installed entry point, working directory and path resolution. An import
+  test or `--help` alone does not prove the execution path works.
+- Pass actual producer output through the real consumer and check its required
+  fields, format and successful result. Check source, contract, receipt and
+  observer compatibility. Reject incomplete or incompatible
+  artifacts before acquiring runtime ownership or mutating state where possible;
+  otherwise use the smallest isolated check with verified restoration.
+- Exercise relevant assertions against retained real states or small live
+  samples. List covered and uncovered required scenarios. Metadata counts and
+  mocked fixtures do not establish assertion coverage. An unavailable sample
+  remains a named gap; it cannot silently become a pass or waive final proof.
+  If the project's rules permit a first collection or diagnostic run to obtain
+  missing samples, name that run and its limits. Missing retained samples alone
+  do not require a full capture before the run that will collect them.
+- Check owned resources and starting state using existing tooling. For runs
+  that mutate state, retain a successful bounded restoration check for the
+  affected path, including failure cleanup. A written cleanup plan alone does
+  not prove it works.
+- Compare prerequisite expiry with the expected duration of execution and
+  recovery, allowing for uncertainty. Refresh through supported mechanisms or
+  use a supported renewal or split-run path before starting. Unknown readiness
+  remains unresolved; never change timestamps or weaken freshness rules. After
+  dependency replacement, revalidate affected long-lived development processes.
+
+Proceed when these checks pass and any remaining gaps have an explicit
+disposition under the project's acceptance rules. Keep security, data integrity,
+accessibility, financial non-retry rules and human approval boundaries intact.
+Preparation is not acceptance and adds no new human approval requirement.
+
+## Diagnose before repeating expensive work
+
+On failure, classify the failed stage as product, verification tooling,
+environment or unresolved, citing observed evidence. Preserve failed results
+and record restoration separately; successful cleanup cannot turn a failed run
+into a pass. Check the outcome of uncertain mutations before any retry.
+
+Before repeating an expensive run after a failure, reproduce it with
+the smallest supported check and verify the repair there. Native-only failures
+need a bounded check on the affected runtime, with process identity and relevant
+resource measurements; passing desktop mocks cannot establish that repair.
+If no bounded reproducer is available, record what was tried, why it cannot
+expose the failure, and the hypothesis, observation and stop condition for the
+next diagnostic run. An unchanged broad rerun without that reason is not diagnosis.
+
+Record changed inputs, affected claims, retained valid proof and the selected
+next check. Use an existing advisor policy's available blocker consultation
+when local diagnosis stalls, carrying failure history, short-check results and
+the proposed next run. Respect its host restrictions and remaining budget;
+this guidance creates no advisor requirement or new consultation capacity.
+Advice never substitutes for verification.
+
 ## Reuse evidence safely
 
 Reuse is available only when the project verifier supports it and proves
@@ -133,8 +192,8 @@ immutable candidate or with reliable content invalidation.
 - Within one supported operation, execute each required expensive scenario once
   per profile and relevant input state. Let prerequisite checks and finalization
   consume the same verified assessment through the project's existing controller.
-  Check source, contract, receipt and observer compatibility before native work
-  or rate-limit waits. Unsupported proof remains a named verification gap.
+  Complete the preparation checks above before native work or rate-limit waits.
+  Unsupported proof remains a named verification gap.
 - Reuse requires fresh checks of the relevant build, environment, fixture and
   native state. Mutation, drift, failure, interruption or a review pause expires
   affected live assessments. Restoring bytes or holding a lease alone cannot
@@ -144,9 +203,9 @@ immutable candidate or with reliable content invalidation.
   entry from a failed fresh observation. Establish the expected state through
   the existing entry path, verify the resulting server and native state, and
   reject later drift before reuse. Preserve fixture cleanup and serialization.
-- On failure, diagnose the failed stage and run its smallest supported check
-  before another broad run. Record actual scenario executions, assessment reuse,
-  invalidations and failures, including failed operations. Measure prerequisite,
+- Apply the failure diagnosis above before another broad run. Record actual
+  scenario executions, assessment reuse, invalidations and failures,
+  including failed operations. Measure prerequisite,
   capture, validation, recovery and human waiting separately; screenshot reuse
   alone does not demonstrate less end-to-end work or a ticket speedup.
 

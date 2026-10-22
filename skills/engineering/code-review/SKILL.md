@@ -121,6 +121,15 @@ Check the ordinary entry and full authorized behavior across changed layers.
 Passing component checks cannot establish a connected user path. Preserve all
 remaining requirements and their owners, including gates outside this diff.
 
+For changed acceptance tooling or claims that depend on it, inspect retained
+checks for a successful real entry-path invocation and actual producer output
+accepted by its consumer. Compare claimed scenario coverage with assertions
+actually exercised, including named gaps. Assess restoration and prerequisite
+readiness against the shared verification guidance. For requested reruns, trace
+the changed input or unresolved diagnostic question to the affected claim and
+selected check. Report missing proof under the applicable review axis without
+launching live journeys. Include this scope in any delegated review brief.
+
 Use the following briefs locally, or assign them to the authorized reviewers
 described above. A reviewer already assigned one axis completes only that axis
 and returns its findings without spawning another reviewer.

@@ -1,0 +1,21 @@
+npm notice run mattpocock-skills@1.3.1 check
+npm notice run npm run check-plugin-version && npm test
+npm notice run mattpocock-skills@1.3.1 check-plugin-version
+npm notice run node scripts/sync-plugin-version.mjs --check
+node:fs:484
+    return binding.readFileUtf8(path, stringToFlags(options.flag));
+                   ^
+
+Error: ENOENT: no such file or directory, open '/home/dv8/Projects/codex-claude-plugins/mattpocock-dv8/.claude-plugin/plugin.json'
+    at readFileSync (node:fs:484:20)
+    at file:///home/dv8/Projects/codex-claude-plugins/mattpocock-dv8/scripts/sync-plugin-version.mjs:14:16
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/dv8/Projects/codex-claude-plugins/mattpocock-dv8/.claude-plugin/plugin.json'
+}
+
+Node.js v24.19.0

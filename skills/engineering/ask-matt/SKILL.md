@@ -36,7 +36,7 @@ The route most work travels. You have an idea and want it built.
 
    Model selection is optional in both implementation paths: unassessed tickets, plans, and conversations continue with current or inherited settings. An existing recommendation for the current client requires a verified runtime gate before edits, including every worker and resumed fix; mismatches stop that ticket. See [model execution verification](../implement/MODEL-EXECUTION.md).
 
-   Both implementation paths use **`/tdd`** and **`/code-review`**. `/implement` reviews each committed ticket candidate and related fix deltas with affected callers. `/implement-spec` reviews the integrated branch against the full spec, with earlier ticket reviews only when the approved acceptance order requires them. Use `/tdd` directly for a concrete behavior to build test-first, or `/code-review` to assess a branch or PR against a fixed point.
+   Both implementation paths use **`/tdd`** and **`/code-review`**. They share expensive-execution preparation and recurring-failure diagnosis in [proportionate verification](../implement/VERIFICATION.md). `/implement` reviews each committed ticket candidate and related fix deltas with affected callers. `/implement-spec` reviews the integrated branch against the full spec, with earlier ticket reviews only when the approved acceptance order requires them. Use `/tdd` directly for a concrete behavior to build test-first, or `/code-review` to assess a branch or PR against a fixed point.
 
    A visual parity action adds one fail-closed boundary. It exists only when the
    source requires a production surface to be compared against a visual
@@ -49,7 +49,7 @@ The route most work travels. You have an idea and want it built.
 
    When the work goes up as a pull request, **`/pr`** shapes the body with a small visual, before/after evidence and rollback risks. It is model-invoked when the agent writes a PR body.
 
-4. **`/retro`** reviews the completed session and proposes changes to the agent's environment. It recommends automated checks for mechanical mistakes and coding standards for judgement calls. It stops after presenting the recommendations unless the user has authorized their implementation.
+4. **`/retro`** reviews the completed session and proposes changes to the agent's environment. Workflow lessons name their existing skill owner, overlapping guidance and an observable evaluation. It recommends automated checks for mechanical mistakes and coding standards for judgement calls. It stops after presenting the recommendations unless the user has authorized their implementation.
 
 ### Context hygiene
 

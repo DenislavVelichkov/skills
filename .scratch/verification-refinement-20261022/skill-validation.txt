@@ -1,0 +1,316 @@
+implement quick_validate.py: exit 1
+Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+
+implement analyze_skill.py: exit 0
+
+🔍 Analyzing skill at: skills/engineering/implement
+
+============================================================
+SKILL QUALITY ANALYSIS: implement
+============================================================
+
+📊 OVERALL SCORE: 23/100
+
+Score note: advisory heuristic only; quick_validate.py and repo validation commands are the pass/fail gates.
+
+Metadata:
+  ✅ Description is trigger-rich
+
+Anti-Patterns: 8/25 points
+  ⚠️  Negative guidance found, but no anti-pattern section
+
+Organization: 0/15 points
+  ❌ Lacks clear organization
+
+Operational Contract: 0/35 points
+  ❌ Description does not say when to use the skill
+  ❌ No explicit workflow section or step structure found
+
+Maintenance & Hygiene: 15/25 points
+  ❌ No maintenance section for stale-instruction handling
+  ✅ No missing local references or unresolved placeholders
+
+Point Gaps:
+  - Anti-Patterns: missing 17 point(s)
+  - Organization: missing 15 point(s)
+  - Operational Contract: missing 35 point(s)
+  - Maintenance & Hygiene: missing 10 point(s)
+
+Validation Signals:
+  [ERROR] Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+  [WARN] Consider adding `## Maintenance` so stale-instruction and repeated-correction handling is explicit.
+
+============================================================
+RECOMMENDATIONS
+============================================================
+
+❌ Significant improvements needed:
+   - Say in the description when to use the skill, and add a concrete workflow
+   - Add anti-pattern guidance specific to the domain
+   - Remove placeholders and repair missing local references
+
+
+
+implement-spec quick_validate.py: exit 1
+Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+
+implement-spec analyze_skill.py: exit 0
+
+🔍 Analyzing skill at: skills/engineering/implement-spec
+
+============================================================
+SKILL QUALITY ANALYSIS: implement-spec
+============================================================
+
+📊 OVERALL SCORE: 28/100
+
+Score note: advisory heuristic only; quick_validate.py and repo validation commands are the pass/fail gates.
+
+Metadata:
+  ✅ Description is trigger-rich
+
+Anti-Patterns: 8/25 points
+  ⚠️  Negative guidance found, but no anti-pattern section
+
+Organization: 5/15 points
+  ⚠️  Has limited section structure
+  ⚠️  Contains 4 list items (some actionable)
+
+Operational Contract: 0/35 points
+  ❌ Description does not say when to use the skill
+  ❌ No explicit workflow section or step structure found
+
+Maintenance & Hygiene: 15/25 points
+  ❌ No maintenance section for stale-instruction handling
+  ✅ No missing local references or unresolved placeholders
+
+Point Gaps:
+  - Anti-Patterns: missing 17 point(s)
+  - Organization: missing 10 point(s)
+  - Operational Contract: missing 35 point(s)
+  - Maintenance & Hygiene: missing 10 point(s)
+
+Validation Signals:
+  [ERROR] Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+  [WARN] Consider adding `## Maintenance` so stale-instruction and repeated-correction handling is explicit.
+
+============================================================
+RECOMMENDATIONS
+============================================================
+
+❌ Significant improvements needed:
+   - Say in the description when to use the skill, and add a concrete workflow
+   - Add anti-pattern guidance specific to the domain
+   - Remove placeholders and repair missing local references
+
+
+
+tdd quick_validate.py: exit 0
+Skill is valid with warnings: Consider adding `## Maintenance` so stale-instruction and repeated-correction handling is explicit.
+
+tdd analyze_skill.py: exit 0
+
+🔍 Analyzing skill at: skills/engineering/tdd
+
+============================================================
+SKILL QUALITY ANALYSIS: tdd
+============================================================
+
+📊 OVERALL SCORE: 63/100
+
+Score note: advisory heuristic only; quick_validate.py and repo validation commands are the pass/fail gates.
+
+Metadata:
+  ✅ Description is trigger-rich
+
+Anti-Patterns: 25/25 points
+  ✅ ## Anti-patterns lists 3 anti-patterns
+
+Organization: 8/15 points
+  ⚠️  Has 5 sections
+  ⚠️  Contains 7 list items (some actionable)
+
+Operational Contract: 15/35 points
+  ✅ Description says when to use the skill
+  ❌ No explicit workflow section or step structure found
+
+Maintenance & Hygiene: 15/25 points
+  ❌ No maintenance section for stale-instruction handling
+  ✅ No missing local references or unresolved placeholders
+
+Point Gaps:
+  - Organization: missing 7 point(s)
+  - Operational Contract: missing 20 point(s)
+  - Maintenance & Hygiene: missing 10 point(s)
+
+Validation Signals:
+  [WARN] Consider adding `## Maintenance` so stale-instruction and repeated-correction handling is explicit.
+
+============================================================
+RECOMMENDATIONS
+============================================================
+
+✅ Good skill. Tighten the contract and maintenance gaps above.
+
+
+
+code-review quick_validate.py: exit 0
+Skill is valid with warnings: Consider adding `## Maintenance` so stale-instruction and repeated-correction handling is explicit.
+
+code-review analyze_skill.py: exit 0
+
+🔍 Analyzing skill at: skills/engineering/code-review
+
+============================================================
+SKILL QUALITY ANALYSIS: code-review
+============================================================
+
+📊 OVERALL SCORE: 69/100
+
+Score note: advisory heuristic only; quick_validate.py and repo validation commands are the pass/fail gates.
+
+Metadata:
+  ✅ Description is trigger-rich
+
+Anti-Patterns: 8/25 points
+  ⚠️  Negative guidance found, but no anti-pattern section
+
+Organization: 15/15 points
+  ✅ Well-structured with 8 sections
+  ✅ Contains 24 list items (actionable)
+
+Operational Contract: 31/35 points
+  ✅ Description says when to use the skill
+  ⚠️  Uses step headings without a dedicated workflow section
+  ✅ Step headings include success criteria
+
+Maintenance & Hygiene: 15/25 points
+  ❌ No maintenance section for stale-instruction handling
+  ✅ No missing local references or unresolved placeholders
+
+Point Gaps:
+  - Anti-Patterns: missing 17 point(s)
+  - Operational Contract: missing 4 point(s)
+  - Maintenance & Hygiene: missing 10 point(s)
+
+Validation Signals:
+  [WARN] Consider adding `## Maintenance` so stale-instruction and repeated-correction handling is explicit.
+
+============================================================
+RECOMMENDATIONS
+============================================================
+
+✅ Good skill. Tighten the contract and maintenance gaps above.
+
+
+
+retro quick_validate.py: exit 1
+Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+
+retro analyze_skill.py: exit 0
+
+🔍 Analyzing skill at: skills/engineering/retro
+
+============================================================
+SKILL QUALITY ANALYSIS: retro
+============================================================
+
+📊 OVERALL SCORE: 46/100
+
+Score note: advisory heuristic only; quick_validate.py and repo validation commands are the pass/fail gates.
+
+Metadata:
+  ❌ Description is too brief (aim for the shortest trigger-rich description that still routes reliably)
+
+Anti-Patterns: 8/25 points
+  ⚠️  Negative guidance found, but no anti-pattern section
+
+Organization: 11/15 points
+  ⚠️  Has 4 sections
+  ✅ Contains 11 list items (actionable)
+
+Operational Contract: 12/35 points
+  ❌ Description does not say when to use the skill
+  ❌ No explicit workflow section or step structure found
+  ✅ Step headings include success criteria
+
+Maintenance & Hygiene: 15/25 points
+  ❌ No maintenance section for stale-instruction handling
+  ✅ No missing local references or unresolved placeholders
+
+Point Gaps:
+  - Anti-Patterns: missing 17 point(s)
+  - Organization: missing 4 point(s)
+  - Operational Contract: missing 23 point(s)
+  - Maintenance & Hygiene: missing 10 point(s)
+
+Validation Signals:
+  [ERROR] Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+  [WARN] Description is brief. Aim for the shortest trigger-rich description that still routes reliably.
+  [WARN] Consider adding `## Maintenance` so stale-instruction and repeated-correction handling is explicit.
+
+============================================================
+RECOMMENDATIONS
+============================================================
+
+⚠️  Needs improvement. Focus on:
+   - Saying in the description when to use the skill
+   - Making the workflow and success criteria more explicit
+   - Adding maintenance guidance for stale instructions
+
+
+
+ask-matt quick_validate.py: exit 1
+Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+
+ask-matt analyze_skill.py: exit 0
+
+🔍 Analyzing skill at: skills/engineering/ask-matt
+
+============================================================
+SKILL QUALITY ANALYSIS: ask-matt
+============================================================
+
+📊 OVERALL SCORE: 50/100
+
+Score note: advisory heuristic only; quick_validate.py and repo validation commands are the pass/fail gates.
+
+Metadata:
+  ✅ Description is trigger-rich
+
+Anti-Patterns: 8/25 points
+  ⚠️  Negative guidance found, but no anti-pattern section
+
+Organization: 15/15 points
+  ✅ Well-structured with 9 sections
+  ✅ Contains 27 list items (actionable)
+
+Operational Contract: 12/35 points
+  ❌ Description does not say when to use the skill
+  ❌ No explicit workflow section or step structure found
+  ✅ Step headings include success criteria
+
+Maintenance & Hygiene: 15/25 points
+  ❌ No maintenance section for stale-instruction handling
+  ✅ No missing local references or unresolved placeholders
+
+Point Gaps:
+  - Anti-Patterns: missing 17 point(s)
+  - Operational Contract: missing 23 point(s)
+  - Maintenance & Hygiene: missing 10 point(s)
+
+Validation Signals:
+  [ERROR] Unexpected key(s) in SKILL.md frontmatter: disable-model-invocation. Allowed properties are: allowed-tools, description, license, metadata, name
+  [WARN] Consider adding `## Maintenance` so stale-instruction and repeated-correction handling is explicit.
+
+============================================================
+RECOMMENDATIONS
+============================================================
+
+⚠️  Needs improvement. Focus on:
+   - Saying in the description when to use the skill
+   - Making the workflow and success criteria more explicit
+   - Adding maintenance guidance for stale instructions
+
+
+

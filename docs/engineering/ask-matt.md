@@ -9,6 +9,8 @@ and test boundaries, and reviews committed integrated candidates. Accepted
 fixes receive delta review with affected callers. A handoff or compaction
 preserves the authorized objective and all remaining requirements.
 
+Repeated costly verification failures route through the shared preparation and diagnosis rules used by implementation and debugging. Retro maps supported workflow lessons to the existing skill that owns them and proposes an evaluation.
+
 ## When to reach for it
 
 You invoke this by typing `/ask-matt`; the agent won't reach for it on its own.
