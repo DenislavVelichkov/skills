@@ -1,0 +1,2 @@
+WARNING: proceeding, even though we could not create PATH aliases: Refusing to create helper binaries under temporary dir "/tmp" (codex_home: AbsolutePathBuf("/tmp/chief-of-staff-validation/home"))
+{"timestamp":"2026-10-24T11:53:37.388125Z","level":"ERROR","fields":{"message":"Failed to deserialize JSONRPCMessage: EOF while parsing a value at line 1 column 0"},"target":"codex_app_server_transport::transport"}
