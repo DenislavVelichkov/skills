@@ -2,9 +2,19 @@
 
 `tdd` builds a feature or fixes a bug test-first: one failing test, then just enough code to pass it, then the next behaviour. It carries the standards that make that loop produce tests worth keeping: what a good test is, where tests go, what mocks are for, and the three anti-patterns that make a suite worthless.
 
-It writes no test at a seam you have not agreed to first. Before any test exists, it names the public boundaries it intends to test at and stops for your confirmation. Testing effort is finite, and this step spends it on the critical paths instead of on every edge case. `tdd` is also a **reference**, not a driver. It contains the rules of the loop, and something else (you, or [implement](https://aihero.dev/skills-implement)) runs the [session](https://www.aihero.dev/ai-coding-dictionary/session) that applies them.
+It writes no test at a seam you have not agreed to first. It carries confirmed boundaries forward and asks only when the required boundary remains unresolved. `tdd` is also a **reference**, not a driver. It contains the rules of the loop, and something else (you, or [implement](https://aihero.dev/skills-implement)) runs the [session](https://www.aihero.dev/ai-coding-dictionary/session) that applies them.
+
+Validation follows the behavior being changed. Existing desktop tests provide
+feedback during editing; platform-owned behavior needs focused native checks.
+Required final proof still runs on the stable candidate.
+
+For generated artifacts, a test passes actual producer output through its real consumer and checks the consumed result. Incomplete and incompatible outputs must fail at that boundary. Handwritten fixtures alone cannot establish compatibility.
 
 ## When to reach for it
+
+The red-green loop runs the focused test. Broader checks follow the affected
+behavior and the project's final gates, so small edits do not repeatedly run
+the whole suite. Runtime and visual evidence keep their own requirements.
 
 Type `/tdd`, or the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) reaches for it automatically when a task fits: building a feature or fixing a bug test-first, or when you say "red-green-refactor".
 
@@ -30,9 +40,9 @@ The skill rests on three terms.
 
 **Red-green.** Write the failing test, then only enough code to pass it. Do not write code for the test after next. There is no refactor phase. The skill dropped it in June 2026 because agents almost never performed it, and because review and implementation work better as separate sessions. Refactoring belongs to [code-review](https://aihero.dev/skills-code-review).
 
-**Vertical slice.** Write one test at one seam, then the minimal implementation, then repeat. The first cycle is a **tracer bullet** that proves a single path end to end. The opposite is horizontal slicing: all the tests first, then all the code. Tests written in bulk verify *imagined* behaviour. They check the shape of things rather than what a user does, and they commit you to a test structure before you understand the implementation.
+**Vertical slice.** Red-green cycles stay inside a connected behavior batch. One seam, one test, one minimal implementation, then repeat, the first cycle being a **tracer bullet** that proves a single path end to end. The opposite is horizontal slicing: all the tests first, then all the code. Bulk tests verify *imagined* behaviour, they check the shape of things rather than what a user does, and they commit you to a test structure before you understand the implementation.
 
-**Pre-agreed seam.** A seam is the public boundary you observe behaviour at without reaching inside. The rule has no exceptions. No test goes at an unconfirmed seam. In the full chain the seams are agreed earlier, during [to-spec](https://aihero.dev/skills-to-spec): "`/tdd` is told to only work at pre-agreed test seams, `/code-review` checks that only agreed-upon test seams were used." Invoked on its own, `tdd` asks you directly.
+**Pre-agreed seam.** A seam is the public boundary where tests observe behavior. Reuse boundaries confirmed in the ticket, spec or conversation without asking again. For an unresolved boundary, recommend the interface, explain what it catches and misses, and ask before writing tests there. Continue at already-confirmed boundaries.
 
 The three anti-patterns it is written to prevent:
 
@@ -52,7 +62,7 @@ Because the refactor step was removed and the description was not. The removal w
 
 **It asked me to choose a test seam and I had no idea which to pick.**
 
-This is the most-reported friction with the skill ([issue #607](https://github.com/mattpocock/skills/issues/607)). The prompt lists candidate seams by name only, with nothing about what each one catches or misses, so you are choosing between labels. There is no fix shipped yet. The practical workaround is to ask the agent for the trade-offs before answering: what does the component-level seam miss that the integration seam catches, and how much slower is it. It is also why the chain agrees seams up front in `to-spec`, where you have the whole feature in view rather than one prompt.
+The skill now requires a recommendation and its trade-offs only when a test boundary remains unresolved. A previously approved boundary carries forward into later batches.
 
 **It wrote the implementation before the test, even though the skill says red first.**
 
@@ -76,7 +86,7 @@ No. Run against one ticket, it can propose work that belongs to a sibling ticket
 
 ## It's working if
 
-- It stops and names the seams it intends to test at, and waits, before any test file exists.
+- It reuses confirmed test boundaries and asks only for unresolved ones.
 - One test appears, goes red, gets just enough code to pass, and only then does the next test appear, not a batch of tests followed by a batch of code.
 - Test names read as capabilities ("user can checkout with valid cart"), not as internals ("checkout calls paymentService.process").
 - Expected values in assertions are literals you can trace to the spec, not values recomputed the way the code computes them.

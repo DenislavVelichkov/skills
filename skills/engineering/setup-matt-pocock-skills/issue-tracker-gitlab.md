@@ -4,7 +4,7 @@ Issues and specs for this repo live as GitLab issues. Use the [`glab`](https://g
 
 ## Conventions
 
-- **Create an issue**: `glab issue create --title "..." --description "..."`. Use a heredoc for multi-line descriptions. Pass `--description -` to open an editor.
+- **Create an issue**: `glab issue create --title "..." --description-file <path>` when supported by the installed CLI. Write the exact Markdown to that file first. The [CLI documentation](https://docs.gitlab.com/cli/issue/create/) also supports `--description-file -` for stdin; `--description -` opens an editor. Check `glab issue create --help` before choosing the input method.
 - **Read an issue**: `glab issue view <number> --comments`. Use `-F json` for machine-readable output.
 - **List issues**: `glab issue list -O json` with appropriate `--label` filters.
 - **Comment on an issue**: `glab issue note <number> --message "..."`. GitLab calls comments "notes".
@@ -13,6 +13,10 @@ Issues and specs for this repo live as GitLab issues. Use the [`glab`](https://g
 - **Merge requests**: GitLab calls PRs "merge requests". Use `glab mr create`, `glab mr view`, `glab mr note`, etc., the same shape as `gh pr ...` with `mr` in place of `pr` and `note`/`--message` in place of `comment`/`--body`.
 
 Infer the repo from `git remote -v`; `glab` does this automatically when run inside a clone.
+
+## Implementation progress
+
+When completing or pausing work on an existing issue, add a note with the commit or MR, checks run and their results, acceptance criteria met, and any remaining work or blockers. Update its labels or checklist when the project's conventions use them. Close it only after its required gates pass on the intended integration branch; otherwise leave it open and say what remains. A `#<number>` commit reference does not record this progress.
 
 ## Merge requests as a triage surface
 

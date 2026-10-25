@@ -2,7 +2,15 @@
 
 `diagnosing-bugs` runs a six-phase diagnosis on a hard bug or a performance regression: build a repro, minimise it, rank hypotheses, instrument, fix with a regression test, clean up.
 
-It will not let the agent form a theory until a **tight** feedback loop exists: one named command, already run once, that goes red on *this* bug and green when it is fixed. Given a bug report, a coding agent by default reads code and guesses. This skill blocks that. If no red-capable command exists, there is no Phase 2. That single gate is what the skill is for. Once the loop exists, everything after it (bisection, hypothesis-testing, instrumentation) is mechanical.
+Start with the supplied error, owning code and smallest existing check. If these
+establish the cause, fix and verify it directly. Use the six-phase loop when the
+cause remains uncertain or the failure recurs. A **tight** loop exposes the actual
+failure and lets the agent test causes; constructing a new runner is unnecessary
+when an existing reproduction does that.
+
+Validation follows the behavior being changed. Existing desktop tests provide
+feedback during editing; platform-owned behavior needs focused native checks.
+Required final proof still runs on the stable candidate.
 
 ## When to reach for it
 
@@ -23,7 +31,7 @@ Reach for it on the hard ones: a bug you can't solve at first look, an intermitt
 
 ## The tight loop is the skill
 
-Phase 1 gets the most effort because it is the only hard phase. The skill lists ways to build the loop, roughly in order of preference:
+Reuse an existing reproduction first. When none exposes the failure, choose the smallest applicable check from this ladder:
 
 1. A failing test at whatever seam reaches the bug.
 2. A curl or HTTP script against a running dev server.
@@ -36,7 +44,10 @@ Phase 1 gets the most effort because it is the only hard phase. The skill lists 
 9. A differential loop: same input, old version against new.
 10. A [human-in-the-loop](https://www.aihero.dev/ai-coding-dictionary/human-in-the-loop) bash script, last resort. The skill ships `scripts/hitl-loop.template.sh` for this: the agent runs the script, you follow prompts in your terminal, and your answers come back as parseable output.
 
-*A* loop is not the goal. **Tight** is: fast (seconds), deterministic (same verdict every run), sharp (asserts your exact symptom, not "didn't crash"), and runnable by the agent without you. A 30-second flaky loop is barely better than none. For a bug that only shows up sometimes, the target is not a clean repro but a **higher reproduction rate**: loop the trigger, parallelise, add stress, inject sleeps, until the flake rate is high enough to debug against.
+Stop improving the loop once it distinguishes the candidate causes reliably.
+Native and external-service checks can take minutes when those systems own the
+behavior. For intermittent failures, use bounded trials and reassess the evidence
+before running another batch. General runner improvements remain separate work.
 
 When the agent cannot build one, the skill tells it to stop and say so, list what it tried, and ask you for [environment](https://www.aihero.dev/ai-coding-dictionary/environment) access, a captured artifact, or permission to add temporary instrumentation. It must not go on to form hypotheses anyway.
 
@@ -47,9 +58,9 @@ The phases are gates, not a checklist. The agent cannot enter a phase until a sp
 | Gate | What has to be true |
 | --- | --- |
 | Into Phase 2 | A named command, already run and pasted with its output, that can go red on this bug |
-| Into Phase 3 | The repro is reproduced *and* minimised: every remaining element is needed to reproduce the bug |
+| Into Phase 3 | The smallest supported reproduction isolates the behavior enough to test competing causes |
 | Into Phase 4 | 3–5 ranked, falsifiable hypotheses exist, each stating its prediction, shown to you before any is tested |
-| Into Phase 5 | Probes map to a specific prediction, one variable at a time, every debug log has a tag like `[DEBUG-a4f2]`, so one grep finds them all for cleanup |
+| Into Phase 5 | Probes map to a specific prediction, one variable at a time, every debug log has a tag like `[DEBUG-a4f2]`, so `rg` finds them all for cleanup |
 | Done | The original repro no longer reproduces, the instrumentation is gone, and the commit message names the hypothesis that turned out correct |
 
 Phase 5 has one exception. The agent writes the regression test before the fix, but only if a **correct seam** exists for it: one where the test exercises the real bug pattern as it occurs at the call site. Where the only available seam is too shallow, the skill tells the agent to say so instead of writing a test that gives false confidence. The missing seam is itself a finding, and the agent records it instead of hiding it.
@@ -57,7 +68,10 @@ Phase 5 has one exception. The agent writes the regression test before the fix, 
 ## Common questions
 
 **It fires on quick questions where I just wanted a direct answer.**
-This is the most-reported problem with the skill. On GPT-5.6-Sol especially, users report it triggering on a plain description of a problem: "the model triggers the rather formal diagnosing-bugs skill instead. It then goes on to construct a reproduction scenario (often building a mock scenario with limited value) before giving me a response or suggestion. This results in considerable reply delays." Four separate people reported the same problem on [issue #578](https://github.com/mattpocock/skills/issues/578). The accepted fix is to start with a lighter approach and move to the full diagnosis only when the problem needs it, but that change has not shipped. The skill is tuned for Claude Code's invocation behaviour, and a [model](https://www.aihero.dev/ai-coding-dictionary/model) with a lower activation threshold fires it too often. Until the fix ships, the workaround is to say what you want ("just answer this, don't diagnose") or to disable model invocation for it in your [harness](https://www.aihero.dev/ai-coding-dictionary/harness).
+This fork starts with the error, relevant code and an existing check. A clear
+cause can receive a direct fix or explanation; the full loop is reserved for
+uncertain, recurring or measured performance failures. It should not build a
+mock reproduction merely to answer a straightforward question.
 
 **Can I point it at a codebase and ask where the performance problems are?**
 No. It diagnoses one failure you can already name. Its performance branch is for a regression with a symptom (establish a baseline measurement, then bisect, measure first and fix second), not for a proactive sweep. A skill for the proactive version was [proposed and closed](https://github.com/mattpocock/skills/issues/431); no skill does it now.
@@ -69,7 +83,7 @@ No. Only Phase 3 has a human checkpoint: the ranked hypothesis list is shown to 
 Partly, and neither skill says so. As one reader put it: "Triage's step 3 is essentially a shallow, bounded instance of diagnosing-bugs Phase 1–2, but neither file mentions the other." Triage does a bounded "is this actually a bug, and what is the surface" pass; this skill does the thorough version. Running triage first is not wasted, because its verification often gives you most of Phase 1's raw material. But expect this skill to redo that work in full, and expect no cross-reference to tell you so.
 
 **Will the repro output it pastes leak secrets?**
-It might. The skill asks the agent to paste the invocation and its output, and to request artifacts like HAR files, log dumps, and core dumps. No instruction tells the agent to sanitise them. [Issue #674](https://github.com/mattpocock/skills/issues/674) raises exactly this (credentials, tokens, cookies, and personal data copied into a chat, an issue, or a PR) and proposes a redaction guardrail. It is open and unimplemented. Treat redaction as your job for now, particularly before the output goes anywhere public.
+The skill requires redaction before showing commands, outputs, or captured artifacts. Credentials stay in environment variables, and only the diagnostic lines are quoted. If redacted evidence is insufficient, it reports that gap instead of exposing a secret.
 
 **My security scanner flagged this skill as high risk.**
 Snyk flags it, and the flag is a false positive. It is the only skill in the set that ships an executable shell script (`hitl-loop.template.sh`) alongside instructions to run it and to curl a dev server. A shipped `.sh` file, instructions to run it, and outbound HTTP together are enough to trigger a static scanner. The script itself is about 30 lines of `read -r -p` prompts that pause for human input. The scanner rates what the skill could do, not a proven exploit.
@@ -83,7 +97,7 @@ v1.0.0 renamed it to `/diagnosing-bugs`. The old name no longer exists. Anything
 - The failure it reproduces is the one you reported, not a nearby one it found on the way.
 - It shrinks the repro before it starts guessing, and can tell you why it needs each remaining piece.
 - It shows you a ranked list of 3–5 hypotheses, each with a prediction you could falsify, before it tests any of them.
-- Every debug log it adds carries a tag like `[DEBUG-a4f2]`, and a grep for that tag comes back empty when it declares done.
+- Every debug log it adds carries a tag like `[DEBUG-a4f2]`, and an `rg` search for that tag comes back empty when it declares done.
 - The commit or PR message names which hypothesis was right.
 - When it cannot lock the bug down with a test, it says so instead of writing a shallow one.
 

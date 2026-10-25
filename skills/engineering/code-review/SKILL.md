@@ -3,24 +3,62 @@ name: code-review
 description: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes: Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\"."
 ---
 
-Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
+Two-axis review of the requested changes since a fixed point supplied by the
+user or derived from task evidence. Freeze a committed candidate by default;
+include uncommitted work when the user requests a work-in-progress review:
 
 - **Standards**: does the code conform to this repo's documented coding standards?
 - **Spec**: does the code faithfully implement the originating issue / spec?
 
 Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
-The issue tracker should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
+Before reviewing an integrated candidate, read [proportionate verification](../implement/VERIFICATION.md), including connected delivery.
+Inspect retained results passively; identify missing proof without launching another
+live scenario. Review does not authorize runtime execution.
+
+Visual acceptance, when applicable, is a separate delivery gate rather than a
+third review axis. A clean Standards and Spec report cannot grant human visual
+approval.
+
+Use `docs/agents/issue-tracker.md` when present. Otherwise use the supplied PR,
+issue, task context, or repository evidence to locate requirements. Missing
+tracker setup alone does not block a read-only review.
 
 ## Process
 
 ### 1. Pin the fixed point
 
-Whatever the user said is the fixed point (a commit SHA, branch name, tag, `main`, `HEAD~5`, etc.). If they didn't specify one, ask for it.
+Use the user's fixed point when supplied. Otherwise use the recorded task-start
+commit, an established PR base, or the branch's verified upstream merge-base,
+in that order. State the derivation. Ask only when these are unavailable or
+conflicting; never choose a recent commit that omits part of the requested work.
 
-Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
+Resolve the fixed point and candidate to commit ids before reviewing:
+`git rev-parse --verify '<ref>^{commit}'`. Use those ids in
+`git diff <fixed-point>...<candidate>` and
+`git log <fixed-point>..<candidate> --oneline`; three-dot compares from their
+merge-base. Retain the command outputs as the frozen committed scope.
 
-Before going further, confirm the fixed point resolves (`git rev-parse <fixed-point>`) and the diff is non-empty. A bad ref or empty diff should fail here, not inside two parallel sub-agents.
+For a work-in-progress review, also capture `git diff <candidate>` for the
+working-tree delta, record staging status, and snapshot relevant untracked files
+and changed file contents. Review those snapshots, not a moving working tree.
+Do not stage or commit merely to perform this read-only review.
+
+Confirm the full requested scope is captured. An invalid ref stops the review
+here, not inside two parallel sub-agents. An empty committed diff does not
+discard requested uncommitted work. If the entire scope is empty, report that
+and stop.
+
+Use the frozen scope for both sub-agents so concurrent edits cannot move it.
+The first review covers the full requested diff. After accepted fixes, review
+the delta from the last reviewed candidate plus affected callers, contracts,
+and regression risks. Retain the original baseline and prior coverage; a
+delta review alone cannot stand in for a missing initial review. Give both
+axes the same scope and record which requirements remain covered by prior
+results. Broaden when changed shared behavior or uncertain impact requires it.
+After required checks and both axes pass, stop reviewing that unchanged scope.
+Report-only edits or a new commit identity do not justify another full review;
+follow stricter project requirements where they apply.
 
 ### 2. Identify the spec source
 
@@ -29,7 +67,10 @@ Look for the originating spec, in this order:
 1. Issue references in the commit messages (`#123`, `Closes #45`, GitLab `!67`, etc.), fetched via the workflow in the tracker doc.
 2. A path the user passed as an argument.
 3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
-4. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
+4. Use requirements already stated in the conversation. If no spec can be
+   resolved, ask the user while continuing the Standards review. Report the
+   Spec axis as unavailable until its requirements are known; do not invent a
+   spec or claim a complete two-axis pass.
 
 ### 3. Identify the standards sources
 
@@ -55,9 +96,39 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 - **Middle Man**: a class or function that mostly just delegates onward. → cut it, call the real target direct.
 - **Refused Bequest**: a subclass or implementer that ignores or overrides most of what it inherits. → drop the inheritance, use composition.
 
-### 4. Spawn both sub-agents in parallel
+### 4. Identify visual acceptance state
 
-Issue both sub-agent calls together, in the foreground, and aggregate the reports they return.
+Determine whether the spec establishes a visual parity action. It does only
+when the spec requires a named production surface to be compared against a
+visual reference, requires selecting and freezing that reference for the later
+comparison, or links an existing manifest that records either obligation. A
+visual diff, prototype, or screenshot without that obligation creates no
+visual delivery gate.
+
+For a visual parity action, require a manifest; a missing manifest is a
+delivery-gate finding. Read `docs/agents/visual-acceptance.md` completely.
+Locate the applicable manifest, run its validator, inspect the recorded
+reference/candidate comparison artifacts, and capture its five progress
+counters. Treat a missing or invalid manifest as a delivery-gate finding. A
+`compared` surface without a recorded approval request is also a delivery-gate
+finding: the implementation must ask the human before handoff.
+
+### 5. Spawn both sub-agents in parallel
+
+Check the ordinary entry and full authorized behavior across changed layers.
+Passing component checks cannot establish a connected user path. Preserve all
+remaining requirements and their owners, including gates outside this diff.
+
+For changed acceptance tooling or claims that depend on it, inspect retained
+checks for a successful real entry-path invocation and actual producer output
+accepted by its consumer. Compare claimed scenario coverage with assertions
+actually exercised, including named gaps. Assess restoration and prerequisite
+readiness against the shared verification guidance. For requested reruns, trace
+the changed input or unresolved diagnostic question to the affected claim and
+selected check. Report missing proof under the applicable review axis without
+launching live journeys. Include this scope in both sub-agent prompts.
+
+Issue both sub-agent calls together, in the foreground, and aggregate the reports they return. Each sub-agent completes only its axis and returns its findings without spawning another sub-agent.
 
 **Standards sub-agent prompt** should include:
 
@@ -73,11 +144,21 @@ Issue both sub-agent calls together, in the foreground, and aggregate the report
 
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 
-### 5. Aggregate
+### 6. Aggregate
+
+Verify each reported location against the frozen files and each claimed breach
+against its cited rule or requirement. Correct unsupported or mislocated
+findings once, then recheck the affected citations; report any unverifiable
+finding as uncertain. This checks the report, not the implementation.
 
 Present the two reports under `## Standards` and `## Spec` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings, because the two axes are deliberately separate (see _Why two axes_).
 
-End with a one-line summary: total findings per axis, and the worst issue _within each axis_ (if any). Don't pick a single winner across axes: that's the reranking the separation exists to prevent.
+For a visual parity action, add `## Visual acceptance` with the validator
+result, the five counters, comparison evidence inspected, and any open human
+gate. Report `approval_requested` separately; do not rewrite it as accepted or
+`member_accepted` as baseline promoted.
+
+End with a one-line summary: total findings per axis, the worst issue _within each axis_ (if any), and the visual delivery state when applicable. Call the work an `implementation candidate` while any applicable surface is below `member_accepted`; never use a clean review as a completion claim. Don't pick a single winner across axes: that's the reranking the separation exists to prevent.
 
 ## Why two axes
 

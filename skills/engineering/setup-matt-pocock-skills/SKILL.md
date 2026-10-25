@@ -1,6 +1,6 @@
 ---
 name: setup-matt-pocock-skills
-description: "Configure this repo for the engineering skills: set up its issue tracker, triage label vocabulary, and domain doc layout. Run once before first use of the other engineering skills."
+description: "Configure repository issue tracking, domain docs, review guidance and local commit checks. Run before the engineering workflow, or to update an existing setup."
 disable-model-invocation: true
 ---
 
@@ -9,10 +9,17 @@ disable-model-invocation: true
 Scaffold the per-repo configuration that the engineering skills assume:
 
 - **Issue tracker**: where issues live (GitHub by default; local markdown is also supported out of the box)
-- **Triage labels**: the strings used for the five canonical triage roles
+- **Triage labels**: the strings used for two category roles and five state roles
 - **Domain docs**: where `GLOSSARY.md` and ADRs live, and the consumer rules for reading them
+- **Visual acceptance**: the fail-closed creation and approval rules used
+  only for a visual parity action
+- **Local verification**: repository-owned lint and link checks, review criteria,
+  and proportionate evidence and progress recording
 
-This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
+Explore the repository and reuse choices already supplied by the user or
+recorded in its configuration. Ask about unresolved choices, then show the user
+one concrete draft before writing. Do not request the same approval again for
+the same scope.
 
 ## Process
 
@@ -26,12 +33,19 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `docs/adr/` and any `src/*/docs/adr/` directories
 - `docs/agents/`: does this skill's prior output already exist?
 - `.scratch/`: a sign that a local-markdown issue tracker convention is already in use
+- `docs/visual-acceptance/`: does this repo already carry a visual contract?
+- Existing lint, format, type and test commands; link validators; Git hooks and
+  `core.hooksPath`; `CODING_STANDARDS.md`; native/evidence runners; current
+  progress records and their history. Read their configuration before proposing
+  another tool or duplicating guidance.
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
 - Monorepo signals: a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. These are present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
 
 ### 2. Present findings and ask
 
-Summarise what's present and what's missing. Then take the sections in order. One section, one answer, then the next.
+Summarise what's present and what's missing. Resolve each section from existing
+answers and repository conventions first. Ask one question at a time only for
+choices that remain unresolved, and continue independent preparation.
 
 Lead each section with the recommended answer so the user can accept it in a word. Give a one-line explainer only when the choice genuinely branches; skip the section entirely when exploration already settled it (Section B when `triage` isn't installed, Section C when there's no monorepo).
 
@@ -50,15 +64,24 @@ Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templ
 
 **Section B: Triage label vocabulary.** Skip this section entirely if the `triage` skill isn't installed (exploration told you), since an uninstalled skill needs no labels.
 
-If it is installed, ask exactly one question:
+If it is installed, reuse an existing label vocabulary or the user's prior
+choice. Otherwise ask exactly one question:
 
 > Do you want to keep the default triage labels? (recommended: **yes**)
 
-The defaults are the five canonical roles, each label string equal to its name: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. On **yes**, write them as-is. Only if the user says no, usually because their tracker already uses other names (e.g. `bug:triage` for `needs-triage`), collect the overrides so `triage` applies existing labels instead of creating duplicates.
+The defaults map category roles `bug` and `enhancement`, and state roles `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`, each to its own name. On **yes**, write them as-is. Only if the user says no, usually because their tracker already uses other names (e.g. `bug:triage` for `needs-triage`), collect the overrides so `triage` applies existing labels instead of creating duplicates.
 
 **Section C: Domain docs.** Default to **single-context** (one `GLOSSARY.md` + `docs/adr/` at the repo root). This fits almost every repo; write it without asking.
 
 Offer **multi-context** (a root `GLOSSARY-MAP.md` pointing to per-context `GLOSSARY.md` files) only when exploration found monorepo signals. Then confirm which layout they want.
+
+**Section D: Local verification.** Reuse the repository's existing tools and
+the user's recorded choices. Recommend fast, offline staged lint and local
+documentation link checks that block a commit on failure. Resolve only
+unanswered choices about check coverage and blocking behavior. Preserve a
+local-only choice without proposing GitHub Actions or another hosted pipeline.
+Load [local verification](local-verification.md) to configure and verify the
+hook, then record the actual commands and applicable workflow guidance.
 
 ### 3. Confirm and edit
 
@@ -66,18 +89,26 @@ Show the user a draft of:
 
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
 - The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
+- The conditional visual-acceptance pointer and
+  `docs/agents/visual-acceptance.md`
+- The local hook and check commands, `docs/agents/local-verification.md`, and
+  updates to existing review, native, evidence and progress guidance where
+  applicable
 
-Let them edit before writing.
+Apply any corrections the user already supplied. Show this draft once and let
+the user edit it before writing; on a rerun, the draft shows the in-place
+updates to existing files.
 
 ### 4. Write
 
 **Pick the file to edit:**
 
-- If `CLAUDE.md` exists, edit it.
-- Else if `AGENTS.md` exists, edit it.
-- If neither exists, ask the user which one to create; don't pick for them.
+- In Codex, edit `AGENTS.md` when it exists.
+- In Claude Code, edit `CLAUDE.md` when it exists.
+- If the active agent's file is absent but the other file exists, ask whether to update that file or create the active agent's file.
+- If neither exists, ask the user which one to create.
 
-Never create `AGENTS.md` when `CLAUDE.md` already exists (or vice versa); always edit the one that's already there.
+When both files exist independently, preserve the other agent's file. If one is a symlink to the other, edit the shared target once.
 
 If an `## Agent skills` block already exists in the chosen file, update its contents in-place rather than appending a duplicate. Don't overwrite user edits to the surrounding sections.
 
@@ -88,7 +119,7 @@ The block:
 
 ### Issue tracker
 
-[one-line summary of where issues are tracked]. See `docs/agents/issue-tracker.md`.
+[one-line summary of where issues are tracked]. For work on an existing issue, follow the progress and closure rules in `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
@@ -97,13 +128,28 @@ The block:
 ### Domain docs
 
 [one-line summary of layout: "single-context" or "multi-context"]. See `docs/agents/domain.md`.
+
+### Visual acceptance
+
+A visual parity action exists only when the source requires a named production
+surface to be compared against a visual reference, requires selecting and
+freezing that reference for the later comparison, or links an existing manifest
+that records either obligation. Only then create and validate an initiative
+manifest before drafting implementation tickets or editing production code. UI
+work without that comparison uses no manifest. See
+`docs/agents/visual-acceptance.md`.
+
+### Local verification
+
+Before committing, follow `docs/agents/local-verification.md`. During review,
+read `CODING_STANDARDS.md` when it exists.
 ```
 
-Include the `### Triage labels` sub-block, and write `docs/agents/triage-labels.md`, only when `triage` is installed and Section B ran. When it isn't, both are omitted.
+Include the `### Triage labels` sub-block only when `triage` is installed and Section B ran. Reuse an existing triage-label mapping file and its pointer; otherwise write `docs/agents/triage-labels.md`. When `triage` isn't installed, omit both.
 
 When Section B ran on GitHub or GitLab, create each configured label the tracker lacks (`gh label create` / `glab label create`).
 
-Then write the docs files using the seed templates in this skill folder as a starting point:
+Then write the docs files using the seed templates in this skill folder as a starting point. Validate tracker commands against the installed CLI's help before relying on version-specific flags; report a missing required capability. On a rerun, update existing files in place: preserve the project's tracker, labels, PR or MR policy, and other local guidance. Add missing conventions without replacing an equivalent existing section. Ensure the tracker document tells agents how to record implementation progress and when an issue can close.
 
 - [issue-tracker-github.md](./issue-tracker-github.md): GitHub issue tracker
 - [issue-tracker-gitlab.md](./issue-tracker-gitlab.md): GitLab issue tracker
@@ -111,8 +157,39 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [triage-labels.md](./triage-labels.md): label mapping (only if `triage` is installed)
 - [domain.md](./domain.md): domain doc consumer rules + layout
 
+Install the visual-acceptance assets in the target repository:
+
+- [visual-acceptance.md](./visual-acceptance.md) →
+  `docs/agents/visual-acceptance.md`
+- [visual-acceptance.template.json](./visual-acceptance.template.json) →
+  `docs/agents/visual-acceptance.template.json`
+- [validate-visual-acceptance.mjs](./validate-visual-acceptance.mjs) →
+  `scripts/validate-visual-acceptance.mjs`
+
+Copy the template and validator byte-for-byte from their bundled sources.
+Apply any user-approved prose edits only to the installed protocol.
+
+Use [local verification](local-verification.md) as the seed for
+`docs/agents/local-verification.md`; replace tooling placeholders with verified
+repository commands and omit inapplicable native/evidence branches. Keep the
+root instruction file as a short navigation index. Mechanical restrictions
+belong in automated checks; `CODING_STANDARDS.md` holds review judgements.
+Preserve equivalent existing guidance instead of copying it into another file.
+
+Validate the installed local checks with isolated staged examples: a valid
+commit candidate passes, a lint failure and a broken local link each block,
+and an unstaged repair cannot hide either staged failure. Verify renamed or
+deleted link targets, run from a subdirectory, and confirm index/worktree bytes
+and unrelated hooks remain unchanged. Use the project's temporary directory
+and remove only these owned examples. Report hook activation separately from
+source files or a successful manual check.
+
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 
 ### 5. Done
 
-Tell the user the setup is complete and which engineering skills will now read from these files. Mention they can edit `docs/agents/*.md` directly later; re-running this skill is only necessary if they want to switch issue trackers or restart from scratch.
+Tell the user which engineering skills read the setup, which local checks are
+active, how they were verified, and any work still open. They can edit
+`docs/agents/*.md` directly or rerun setup to adopt missing conventions while
+preserving current choices. A passing hook does not complete acceptance or
+authenticate human visual approval.

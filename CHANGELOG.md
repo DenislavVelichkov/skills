@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.4.0
+
+### Minor Changes
+
+- Port the Codex branch workflow changes to Claude. Add the visual acceptance protocol with frozen references, manifests and a human approval step for visual parity work. `setup-matt-pocock-skills` now records local verification and commit checks, the local issue tracker keeps planning issues and implementation tickets in separate sets, and every tracker doc says how to record implementation progress. `implement`, `implement-spec` and `code-review` now freeze candidates and baselines and check acceptance coverage. They follow a shared proportionate verification policy. `diagnosing-bugs`, `tdd`, `triage`, `retro`, `prototype`, `grilling`, `handoff`, `setup-pre-commit` and `git-guardrails-claude-code` get the smaller fixes. Workflow contract tests and the `test` and `check` package scripts are new. The Claude model execution gate, Skill tool wording and parallel sub-agent review stay as before.
+
 ## 1.3.4
 
 ### Patch Changes

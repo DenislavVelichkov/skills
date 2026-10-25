@@ -19,27 +19,61 @@ Reach for it when the build is too big for one agent [session](https://www.aiher
 
 ## Prerequisites
 
-`to-spec` publishes the spec as an issue, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) must first configure a tracker and the triage-label vocabulary for this repo. Either kind of tracker works: a real tracker like GitHub, or local markdown files under `.scratch/`, which work with no extra setup.
+`to-spec` publishes the spec as an issue, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) must first configure a tracker for this repo. The parent spec receives no execution label, so publication does not require a triage-label mapping. Either kind of tracker works: a real tracker like GitHub, or local markdown files under `.scratch/`, which need no external service.
 
 ## The spec is a decision record
 
 The spec exists because context windows end. You settled many things while [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling): the shape of the solution, the choices you argued through, and what you deliberately refused. All of that is in one conversation that you are about to clear. The spec keeps it.
 
-So the spec does not validate or decide anything. It records what you decided, in your project's own vocabulary, so a fresh session can pick up the work without you explaining it again. If the spec states something you never said, that is a defect.
+So the spec does not decide the feature or validate its implementation. It records what you decided, in your project's own vocabulary, so a fresh session can pick up the work without you explaining it again. It validates any visual-acceptance manifest that the feature requires, because that manifest is part of the planning record. If the spec states something you never said, that is a defect.
 
 ## Seams before prose
 
-Before it writes anything, `to-spec` sketches the **seams** where the feature will be tested, and checks them with you. It prefers existing seams to new ones, and picks the highest seam it can. The ideal number of seams for a change is one.
+Before it writes anything, `to-spec` records the **seams** where the feature will be tested. It reuses boundaries already confirmed and asks only for a consequential unresolved seam decision. It prefers existing seams to new ones, and picks the highest seam it can. The ideal number of seams for a change is one.
 
 Other skills use those agreed seams later. [tdd](https://aihero.dev/skills-tdd) works only at seams you agreed in advance. [code-review](https://aihero.dev/skills-code-review) reviews the diff against the spec, so a seam nobody agreed to shows up as a review finding. Both connections go through this document. That is why you should take the seam conversation seriously here, and not leave it for implementation.
+
+## Visual parity decisions stay executable
+
+`to-spec` first checks for a visual parity action. The source must require a
+named production surface to be compared against a visual reference, require
+selecting and freezing that reference for the later comparison, or link an
+existing manifest that records either obligation. A UI change without that
+obligation gets no manifest and no Visual Acceptance Contract section.
+
+For a visual parity action, the spec links the manifest instead of
+paraphrasing “match option C.” If the manifest does not exist yet, `to-spec`
+creates the smallest valid one from the decisions already made, adds a
+`planned` row for every comparison surface, and validates it before publishing
+the spec. It records frozen references as `design_selected` only when the
+reference files and hashes actually exist.
+
+The manifest carries the exact routes, references, responsive evidence, and
+approval boundary into fresh implementation sessions. A valid `planned` row
+is enough to split the work into tickets, but not enough to edit production
+code. No missing artifact is turned into vague prose, and no reference or
+approval is invented to make the planning look further along than it is.
+
+The spec records the state explicitly. A pending choice remains `planned`. A
+selected design can be `design_selected`, while production acceptance remains
+pending until a human reviews the hashed candidate comparison.
+
+The draft covers each agreed outcome once. Architectural work records contracts
+and invariants instead of inventing user stories. Before publication, the skill
+checks the draft against the source decisions, corrects detected faults once,
+and keeps remaining unknowns explicit. Visual-manifest recovery follows the
+protocol's retry limit; a persistent failure blocks publication.
 
 ## Common questions
 
 **Where did `/to-prd` go?**
 It is this skill, renamed in v1.1. "Spec" is now the one term used throughout, and the old `to-prd` slug no longer works, so reinstall under the new name. The old vocabulary is replaced by the pair *spec* and *tickets*. The spec is the destination and the decisions that fix it. The [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) are the steps that get there. If you change direction, delete the unfinished tickets and keep the spec.
 
-**Why does the spec get the `ready-for-agent` label? I don't want an agent implementing off it.**
-The label means "no further triage needed": the document is complete enough for an agent to work from. It marks an input, not a work order. But [AFK](https://www.aihero.dev/ai-coding-dictionary/afk) agents that poll for `ready-for-agent` cannot see that difference. They will try to build the whole spec in one run instead of picking up the ticket slices. This is the most-reported problem with the skill. Until it changes, exclude the parent spec explicitly in your AFK agent's prompt, or remove the label after `/to-tickets` has run.
+**Why doesn't the spec get the `ready-for-agent` label?**
+It is planning input, not a work order. `to-spec` leaves the parent spec unlabeled and stops. `to-tickets` proposes a split, quizzes you, and publishes only after you approve it. Those tickets receive `ready-for-agent`. `implement` must refuse a published spec that has not passed through that gate.
+
+**What happens when a visual parity action has no manifest yet?**
+`to-spec` creates it before publishing the spec. It starts from the installed template and records only what the conversation, map, or source artifacts establish. Unknown design choices remain `planned`; durable selected references may advance to `design_selected`. The validator has to pass before the workflow reaches `to-tickets`. Without a production-to-reference comparison obligation, this branch never runs.
 
 **Why not go straight from grilling to `/to-tickets` and skip the spec?**
 Often you should. The spec is worth its step only on multi-session work. Its value is that the tickets are disposable and the spec is not. Each ticket is sized for one fresh context window and then gets deleted or closed, while the spec stays as the one place that records the reasoning behind them. On a single-session change, that gives you nothing, and you pay for an extra synthesis step where the [model](https://www.aihero.dev/ai-coding-dictionary/model) can drift. Go from grilling to `/implement`.
@@ -54,7 +88,7 @@ Mostly for the agent, and it reads that way: complete, dense, and full of refere
 Nothing keeps it in sync. In practice it is a snapshot of what you knew at that moment, and it goes out of date the first time implementation teaches you something. Treat it as disposable after the work ships. Your `GLOSSARY.md` and ADRs are the files meant to last. If you learn something during implementation that should last, put it there, not in an edited spec.
 
 **My work is a refactor or a module boundary, not a feature. Does the template fit?**
-Less well, and this is a known limitation. The template relies heavily on user stories, which do not fit architectural work. You end up writing stories nobody asked for around decisions that are really about interfaces and invariants. Use the implementation-decisions and testing-decisions sections instead. Record the lasting architectural decisions as ADRs through [grill-with-docs](https://aihero.dev/skills-grill-with-docs), not in the spec.
+Yes. User stories cover agreed user outcomes when they exist. Architectural work uses the implementation-decisions and testing-decisions sections for contracts and invariants, without inventing actors or features. Record the lasting architectural decisions as ADRs through [grill-with-docs](https://aihero.dev/skills-grill-with-docs), not in the spec.
 
 **Will it check the tracker for related work, or cite the ADRs it's respecting?**
 No to both. It reads and follows the ADRs for the area it touches, but it does not link them. It also does not search the tracker for overlapping issues before it writes, so a spec can duplicate work that someone already filed, and nothing warns you. If the area is busy, search the tracker yourself first.
@@ -65,10 +99,14 @@ A tracker issue may not return a very large spec in full, and there is no local 
 ## It's working if
 
 - It starts writing instead of asking you a new round of questions.
-- It shows you the seams before it writes, and proposes as few as it can.
+- It carries confirmed seams forward and proposes only the unresolved ones.
 - It uses your project's nouns, not generic product-management boilerplate.
 - You remember making every decision in it. It invented nothing to fill a section.
 - The out-of-scope section lists real things. The things you refused are usually the most useful lines on the page.
+- A spec with a visual parity action links a valid acceptance manifest and
+  never treats reference selection as production approval.
+- A UI spec without a production-to-reference comparison has no manifest or
+  visual acceptance section.
 
 ## Where it fits
 

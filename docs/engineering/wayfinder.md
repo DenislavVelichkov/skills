@@ -54,6 +54,24 @@ Every ticket carries a `wayfinder:<type>` label. Each ticket is either **[HITL](
 
 Research is the only exception to *one ticket per session*.
 
+## Visual parity maps freeze the target
+
+Wayfinder writes a visual-acceptance manifest only when a ticket establishes a
+visual parity action. The ticket must require a named production surface to be
+compared against a selected visual reference, require selecting and freezing
+that reference for the later comparison, or link an existing manifest that
+records either obligation. Choosing how a UI should look without that
+comparison obligation creates no manifest.
+
+For an applicable ticket, the selected screenshots leave temporary prototype
+storage, gain immutable hashes, and become the production comparison target
+route by route, locale by locale, and viewport by viewport.
+
+This introduces two deliberately different approvals. Selecting option C says
+what production should become; it does not approve whatever production later
+renders. That second decision remains a human gate after implementation shows
+the exact candidate beside the frozen reference.
+
 ## Common questions
 
 **How is this different from `/grill-with-docs`? Which should I start with?**
@@ -63,7 +81,7 @@ Session count, not project size. `/grill-with-docs` is single-session planning; 
 The end of the whole map, not just the first session. The question reads ambiguously, but wayfinder is a multi-session tool by definition, so a session-scoped answer never makes sense. Typical destinations are a [spec](https://www.aihero.dev/ai-coding-dictionary/spec) to hand off, a decision to lock before planning starts, a proof of concept, or an in-place change such as a data migration.
 
 **The map is cleared. Didn't wayfinder already write the spec and make the tickets? Why do I still need `/to-spec` and `/to-tickets`?**
-No. Wayfinder's tickets are decision tickets, and by the time the map closes they are all closed too. What is left is a map full of linked decisions, which is not a build plan. [to-spec](https://aihero.dev/skills-to-spec) collapses those linked decisions into one spec (`/to-spec #<map_issue>`), and [to-tickets](https://aihero.dev/skills-to-tickets) slices that spec into tracer-bullet implementation tickets. If you loop the map straight into [implement](https://aihero.dev/skills-implement), you skip the collapse and lose the linked detail. Go straight to implementation only when the effort turned out small. Some people run the shorter pipeline and report that it works. The two extra steps give you an explicit spec that a reviewer or a colleague can read, which matters more when you do not work alone.
+No. Wayfinder's tickets are decision tickets, and by the time the map closes they are all closed too. What is left is a map full of linked decisions, which is not a build plan. [to-spec](https://aihero.dev/skills-to-spec) collapses those linked decisions into one spec (`/to-spec #<map_issue>`), and [to-tickets](https://aihero.dev/skills-to-tickets) slices that spec into tracer-bullet implementation tickets. [implement](https://aihero.dev/skills-implement) works one of those tickets. It must not build directly from the map or parent spec.
 
 **My agent started writing production code in the middle of a wayfinder session.**
 This is the most-reported failure with this skill, and a real gap in the skill causes it. You can override wayfinder's "plan, don't do" default in the map's **Notes**. But the agent writes the Notes, so the constraint and its exemption live in a file that the constrained agent owns. One user watched an agent write "this map carries execution" into its own Notes. In later sessions the agent read that line back as permission and built on a live server. The skill has no hard stop for "I meant the default." Until it does, read the Notes on any map you did not chart yourself, keep implementation in separate sessions, and treat any `wayfinder:task` that looks like a slice of the build as mis-typed.
@@ -95,6 +113,8 @@ It is this skill. v1.1 renamed it to `wayfinder`, and you invoke it as `/wayfind
 - **Not yet specified** shrinks over time. When fog graduates into a ticket, it leaves that section and does not appear in both places.
 - When the opening breadth-first grill finds no fog at all, the skill stops and tells you the effort is small enough to skip the map.
 - The session that finishes the map points you toward a spec, not a pull request.
+- A map with a visual parity action cannot clear while its comparison target
+  lacks a durable, hashed reference in the acceptance manifest.
 
 ## Where it fits
 

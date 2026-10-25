@@ -4,6 +4,13 @@
 
 It recommends and stops. It does not grill, write a [spec](https://www.aihero.dev/ai-coding-dictionary/spec), open a file or fire the skill it just named; what you get back is the next thing to type, and you type it. It is also a hand-written map of the skills in this repo rather than a scan of what you have installed, so it will not route you over your own skills or another author's.
 
+Implementation connects the ordinary entry early, retains settled decisions
+and test boundaries, and reviews committed integrated candidates. Accepted
+fixes receive delta review with affected callers. A handoff or compaction
+preserves the authorized objective and all remaining requirements.
+
+Repeated costly verification failures route through the shared preparation and diagnosis rules used by implementation and debugging. Retro maps supported workflow lessons to the existing skill that owns them and proposes an evaluation.
+
 ## When to reach for it
 
 You invoke this by typing `/ask-matt`; the agent won't reach for it on its own.
@@ -31,6 +38,17 @@ The skill's leading word is **flow**, a path *through* the skills rather than a 
 - **Codebase health**, upkeep rather than feature work. [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) surveys the code for deepening opportunities, and each one it finds re-enters the main flow as an idea.
 - **Standalones**, which sit off every flow and which you use on their own: the prototype, the questionnaire, the research run.
 - **A vocabulary layer underneath**, the two references the other skills pull in when the words rather than the process are the problem.
+
+A visual parity action adds a manifest to the route. The source must require a
+production surface to be compared against a visual reference, require
+selecting that reference for the later comparison, or link an existing manifest
+that records either obligation. UI work without that obligation stays on the
+normal flow. For an applicable action, the manifest
+travels through spec, tickets, implementation, and review.
+The flow pauses after each production comparison; only your approval of the
+exact candidate hash unlocks baseline promotion and the next surface.
+The implementation turn must ask you directly with the validator-generated
+`Approve` or `Reject` prompt; an unasked approval is a blocked delivery gate.
 
 ## The phase boundary
 
