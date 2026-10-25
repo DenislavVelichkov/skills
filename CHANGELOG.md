@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.4.1
+
+### Patch Changes
+
+- Port the remaining non-visual Codex changes to `ask-matt`. The router recommends and stops, sends a published spec through `/to-tickets` into `.scratch/<feature>/implementation/issues/`, links the shared proportionate verification policy, and no longer lets `/implement` build from a wayfinder map or parent spec. The retro, diagnosing-bugs, context hygiene, phase boundary and precondition text follow the 1.4.0 skills. The Claude plugin now ships the in-progress `chief-of-staff` skill (user-invoked), as the Codex plugin does.
+
 ## 1.4.0
 
 ### Minor Changes
