@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.4.3
+
+### Patch Changes
+
+- `handoff` and the `implement` model execution note say user-invoked instead of the Codex term explicit-only, as `.agents/invocation.md` asks.
+
 ## 1.4.2
 
 ### Patch Changes

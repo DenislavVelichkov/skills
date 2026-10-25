@@ -14,7 +14,7 @@ and uncommitted changes. Preserve pending approvals and external writes whose
 outcomes are uncertain so continuation can check them before retrying.
 
 Include a "suggested skills" section. Name available model-invoked skills the
-next agent should call the Skill tool for. Mark explicit-only
+next agent should call the Skill tool for. Mark user-invoked
 skills as choices for the user to invoke; reading the handoff does not invoke them.
 
 Do not duplicate content already captured in other artifacts (specs, plans, ADRs, issues, commits, diffs). Reference them by path or URL instead.

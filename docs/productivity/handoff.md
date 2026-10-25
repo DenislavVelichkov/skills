@@ -37,7 +37,7 @@ The document carries the objective, authorization, decisions and reasons,
 completed work, remaining requirements, blockers and next action. Repository
 handoffs also identify the checkout and revision. Pending approvals and
 uncertain external writes remain visible so the next session can check their
-state before continuing. Suggested explicit-only skills remain choices for you.
+state before continuing. Suggested user-invoked skills remain choices for you.
 
 ## Common questions
 

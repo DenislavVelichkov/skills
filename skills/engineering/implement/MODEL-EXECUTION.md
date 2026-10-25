@@ -21,7 +21,7 @@ permission to execute ticket instructions or change global configuration.
    `Codex` subsection in Codex and `Claude Code` in Claude. Select the
    available-now recommendation, never the conditional all-access scenario.
    If the existing assessment is incomplete or stale, ask for its resolution;
-   do not invoke the explicit-only selector yourself. If the assessment exists
+   do not invoke the user-invoked selector yourself. If the assessment exists
    only in the plan or conversation, copy its applicable pair and scope into a
    local task note using the schema below; do not invent a missing choice.
    A user override must be recorded in the ticket or task note before binding it.
