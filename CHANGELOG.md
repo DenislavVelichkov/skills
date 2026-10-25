@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.4.2
+
+### Patch Changes
+
+- Port the non-visual Codex changes to `wayfinder`. Only explicit human authorization, recorded with its source and scope in Notes, lets a map carry execution; agent-written Notes grant nothing. The skill follows the configured tracker instead of defaulting to local Markdown, claims through the tracker's own operation (`Status: claimed` locally), rechecks a ticket before claiming it, and marks invalidated tickets superseded instead of deleting them. Research subagents work one claimed ticket each, do not delegate again, and leave a pointer to the saved file and exact commit.
+
 ## 1.4.1
 
 ### Patch Changes
