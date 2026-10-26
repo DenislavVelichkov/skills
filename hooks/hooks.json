@@ -6,7 +6,8 @@
           {
             "type": "command",
             "command": "python3 \"${PLUGIN_ROOT}/scripts/model_execution.py\" hook codex",
-            "timeout": 30
+            "timeout": 30,
+            "statusMessage": "Checking ticket model requirements..."
           }
         ]
       }
