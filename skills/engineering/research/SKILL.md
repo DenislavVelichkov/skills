@@ -3,6 +3,8 @@ name: research
 description: Investigate a question against high-trust primary sources and capture the findings as a Markdown file in the repo. Use when the user wants a topic researched, docs or API facts gathered, or reading legwork delegated to a background agent.
 ---
 
+When delegation is authorized, start each subagent with a fresh context window and pass a bounded brief instead of inheriting the conversation.
+
 Research in the current agent by default. When the user has authorized
 delegation, you are the coordinator, tools are available, and independent work
 can continue locally, delegate one bounded research task to a background agent.

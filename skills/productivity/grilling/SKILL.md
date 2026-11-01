@@ -3,6 +3,8 @@ name: grilling
 description: Grill the user relentlessly about a plan, decision, or idea. Use when the user wants to stress-test their thinking, or uses any 'grill' trigger phrases.
 ---
 
+When delegation is authorized, start each subagent with a fresh context window and pass a bounded brief instead of inheriting the conversation.
+
 Interview the user relentlessly until you reach a shared understanding. Map this as a **design tree**: every decision branches into the decisions that hang off it.
 
 Carry settled scope, authorization, design choices and test boundaries into the

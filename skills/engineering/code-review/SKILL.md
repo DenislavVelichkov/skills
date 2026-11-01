@@ -3,6 +3,8 @@ name: code-review
 description: "Review changes since a commit, branch, tag, or merge-base against repository standards and the originating spec. Report both axes separately. Use for a branch, PR, work-in-progress review, or \"review since X\"."
 ---
 
+When delegation is authorized, start each subagent with a fresh context window and pass a bounded brief instead of inheriting the conversation.
+
 Two-axis review of the requested changes since a fixed point supplied by the
 user or derived from task evidence. Freeze a committed candidate by default;
 include uncommitted work when the user requests a work-in-progress review:

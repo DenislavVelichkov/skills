@@ -1,3 +1,5 @@
+When delegation is authorized, start each subagent with a fresh context window and pass a bounded brief instead of inheriting the conversation.
+
 # Design It Twice
 
 When the user wants to explore alternative interfaces for a chosen deepening candidate, use this comparison pattern. Based on "Design It Twice" (Ousterhout), it explores alternatives before selecting an interface.
