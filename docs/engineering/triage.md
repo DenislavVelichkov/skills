@@ -30,7 +30,7 @@ Every triaged item ends with exactly one category role and one state role. There
 
 | State | Means |
 | --- | --- |
-| `needs-triage` | You need to evaluate it. An unlabelled issue normally lands here first. |
+| `needs-triage` | You need to evaluate it. An unlabelled issue lands here first. |
 | `needs-info` | Waiting on the reporter. Returns to `needs-triage` when they reply. |
 | `ready-for-agent` | Fully specified, with an agent brief attached. An [AFK](https://www.aihero.dev/ai-coding-dictionary/afk) agent can take it. |
 | `ready-for-human` | The same brief, plus why an agent can't do it: judgment, external access, manual testing. |

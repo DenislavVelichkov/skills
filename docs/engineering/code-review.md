@@ -29,7 +29,7 @@ Type `/code-review`, or the agent reaches for it automatically when you ask to r
 | The whole codebase has drifted, not one diff | [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) |
 | Something is broken and you do not know why | [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs) |
 
-A supplied fixed point wins. Otherwise the review derives it from the recorded task-start commit, established PR base or verified upstream merge-base, in that order. It states the derivation and asks only when the evidence is missing or conflicting. It resolves refs to commit ids before capturing the scope. Requested uncommitted changes remain in scope even when the committed diff is empty.
+A supplied fixed point wins. Otherwise the review derives it from the recorded task-start commit, established PR base or verified upstream merge-base, in that order. It states the derivation and asks only when the evidence is missing or conflicting. It resolves refs to commit ids before capturing the scope; when the fixed point is not an ancestor of the candidate, it states the merge-base it actually compared from. Requested uncommitted changes remain in scope even when the committed diff is empty.
 
 ## Prerequisites
 
@@ -42,7 +42,7 @@ The Spec axis needs a spec to exist and be findable. It looks in this order:
 3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch or feature name.
 4. Asking you.
 
-Step 1 depends on the tracker doc, which [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) writes. Without it the axis still works if you hand it a path. With no spec at all, the skill skips the Spec sub-agent and the report says "no spec available" rather than inventing requirements.
+Step 1 depends on the tracker doc, which [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) writes. Without it the axis still works if you hand it a path. With no spec at all, the skill asks for one while the Standards review continues, and reports the Spec axis as unavailable rather than inventing requirements or claiming a two-axis pass.
 
 ## The two axes
 

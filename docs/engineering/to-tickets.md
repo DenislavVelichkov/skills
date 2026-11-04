@@ -53,7 +53,7 @@ The edges are the point of the artifact. They work in two ways, depending on the
 | Tracker | Where the edges live | How you work them |
 | --- | --- | --- |
 | Local markdown spec | Text in one file per ticket under `.scratch/<feature>/implementation/issues/<NN>-<slug>.md`, numbered blockers-first from `01` | Top to bottom, by hand |
-| A real tracker (GitHub, Linear) | Native blocking links, or sub-issues where the tracker has them | Any ticket whose blockers are done is on the **frontier** and can be grabbed |
+| A real tracker (GitHub, Linear) | Native blocking links where the tracker has them, otherwise a "Blocked by" list. A sub-issue link never records a blocking edge | Any ticket whose blockers are done is on the **frontier** and can be grabbed |
 
 The edges live in the ticket either way. The tracker only decides whether anything can act on them in parallel. `to-tickets` produces the artifact; running it (one session at a time, or a fleet) is your job, not the skill's.
 

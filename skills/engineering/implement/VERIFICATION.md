@@ -4,6 +4,17 @@ Evidence supports a particular claim under particular inputs. A new commit
 does not by itself change every claim. Before repeating work, identify the
 changed input and the evidence it can invalidate.
 
+Terms used below:
+
+- Controller (proof controller): the project's existing tool or script that
+  runs checks and records which evidence applies to which candidate.
+- Observer: the tool that watches or captures runtime behavior, such as a
+  browser driver, device harness or screenshot capture.
+- Lease: a time-bounded claim on a shared device, environment or account that
+  a run holds while it uses that resource.
+- Proof policy: the project's rules for which evidence satisfies a claim and
+  which input changes invalidate it.
+
 ## Connected delivery
 
 Before substantial implementation or ticket drafting, trace the real user path
@@ -180,6 +191,13 @@ must remain separate from capture inputs when the project supports that
 distinction. Until it does, respect the existing validator and report the
 specific overbroad dependency as a controller improvement.
 
+Live assessment reuse also requires fresh checks of the relevant build,
+environment, fixture and native state. Mutation, drift, failure, interruption or
+a review pause expires affected live assessments. Restoring bytes or holding a
+lease alone cannot revive them. Retain valid captures and reviews across
+operations; obtain only the fresh proof required by the verifier. Never add an
+ad hoc acceptance cache.
+
 For each rerun, name the changed input, affected claim, and selected check.
 When developing a controller, cache repeated reads and hashes only within an
 immutable candidate or with reliable content invalidation.
@@ -194,11 +212,8 @@ immutable candidate or with reliable content invalidation.
   consume the same verified assessment through the project's existing controller.
   Complete the preparation checks above before native work or rate-limit waits.
   Unsupported proof remains a named verification gap.
-- Reuse requires fresh checks of the relevant build, environment, fixture and
-  native state. Mutation, drift, failure, interruption or a review pause expires
-  affected live assessments. Restoring bytes or holding a lease alone cannot
-  revive them. Retain valid captures and reviews across operations; obtain only
-  the fresh proof required by the verifier. Never add an ad hoc acceptance cache.
+- Reuse of live assessments follows [Reuse evidence safely](#reuse-evidence-safely).
+  Restoring bytes or holding a lease alone cannot revive an expired assessment.
 - For shared fixtures, distinguish an old client projection before ordinary
   entry from a failed fresh observation. Establish the expected state through
   the existing entry path, verify the resulting server and native state, and

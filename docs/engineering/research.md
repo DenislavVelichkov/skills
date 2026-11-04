@@ -7,7 +7,9 @@ code, specifications and first-party APIs own the facts it reports.
 
 It works in the current agent by default. A permitted background worker can
 handle one bounded task while independent work continues; that worker completes
-the research itself and does not delegate the same task again.
+the research itself and does not delegate the same task again. When it
+returns, the coordinator opens the saved note and applies the same checks before
+reporting.
 
 ## When to reach for it
 

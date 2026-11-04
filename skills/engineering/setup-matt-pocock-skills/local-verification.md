@@ -56,7 +56,7 @@ Use the selected device architecture for local builds. Respect the project's
 emulator launch profile, including headless operation when requested. Preserve
 required failure evidence while cleaning owned temporary resources.
 
-## Verification and recording
+## Verification and recording (omit when the repo has no evidence verifier)
 
 Separate checking retained evidence from creating or refreshing a receipt.
 Default verification to read-only operation; require an explicit recording
@@ -69,7 +69,7 @@ Honor transitive dependencies and stricter project gates. Keep the recorded
 capture revision truthful; a documentation edit does not authorize relabeling
 an earlier run. Preserve immutable historical receipts.
 
-## Current progress
+## Current progress (omit when the repo has no evidence verifier)
 
 Keep one compact current checkpoint with the scope, latest verified result,
 remaining blocker, next action and links to retained evidence and history.

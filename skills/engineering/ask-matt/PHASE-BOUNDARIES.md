@@ -12,13 +12,13 @@ The **phase boundary** is the gap between two phases. Prefer manual context chan
 | **`/clear`** | Empty the context window and start from nothing.                  |
 | **`/handoff`** | Write a portable markdown file and seed a session anywhere with it. |
 | **Subagent** | Send the task to its own context window and get a report back.     |
-| **`/compact`** | Compress this context and seed a fresh session with the summary.  |
+| **`/compact`** | Compress this context into a summary and keep working from it.  |
 
 ## The tree
 
 Work top to bottom at the boundary. The first **yes** wins. Use only commands supported by the current host.
 
-**1. Can you continue in this session?** Two things make the answer yes: the next phase needs this phase as a **primary source**, or the current host has enough usable context for the next phase to fit. The budget depends on the model and runtime. Grilling → implementation is the standard yes: the implementation wants the reasoning verbatim, not a summary of it. Continue costs nothing and loses nothing, so rule it out before anything else.
+**1. Can you continue in this session?** Only if the next phase stays on this host and in this directory; otherwise go to 3. Then two things make the answer yes: the next phase needs this phase as a **primary source**, or the current host has enough usable context for the next phase to fit. The budget depends on the model and runtime. Grilling → implementation is the standard yes: the implementation wants the reasoning verbatim, not a summary of it. Continue costs nothing and loses nothing, so rule it out before anything else.
 
 **2. Is the context irrelevant to what comes next?** Is everything in this session (the exploration, the decisions, the dead ends) disposable? If so, **`/clear`**. It is the cheapest move on the board: it takes no time and hands back the whole window. `/clear` also isn't terminal: the old session stays resumable.
 
@@ -37,11 +37,11 @@ That list is the whole clause. What `/handoff` buys is **portability**: a file t
 
 **5. Otherwise, `/compact`.** Relevant context, same harness, same directory, and you need to stay in the loop: this is where the tree lands, and it lands here often. Pass it an instruction (`/compact we're going to QA this area`) so the summary keeps what the next phase needs.
 
-`/compact` is the **default, not the first reach**. It sits at the bottom because the four questions above it are all cheaper or more precise. The failure mode when people start here is a fresh session that is confidently wrong about a decision the summary flattened.
+`/compact` is the **default, not the first reach**. It sits at the bottom because the four questions above it are all cheaper or more precise. The failure mode when people start here is a compacted context that is confidently wrong about a decision the summary flattened.
 
 ## Primary and secondary sources
 
-Every move except **Continue** turns a **primary source** into a **secondary source**: the session as it happened, replaced by a summary of it. The trade is always the same shape:
+`/compact` and `/handoff` turn a **primary source** into a **secondary source**: the session as it happened, replaced by a summary of it. `/clear` drops the context without a summary, and a subagent leaves this session's context intact and returns only its report. The summary trade has this shape:
 
 | Source                            | Information | Noise | Room to move |
 | --------------------------------- | ----------- | ----- | ------------ |

@@ -82,11 +82,14 @@ for (const [situation, file, actions] of [
 }
 
 test("implementation routes and public docs retain verification preparation", () => {
-  for (const name of ["implement", "implement-spec"]) {
+  for (const [name, preparation, diagnosis] of [
+    ["implement", /"Prepare\s+expensive\s+execution"/u, /"Diagnose before repeating expensive\s+work"/u],
+    ["implement-spec", /expensive-execution preparation/u, /recurring-failure diagnosis/u],
+  ]) {
     const skill = read(`skills/engineering/${name}/SKILL.md`);
     assert.match(skill, /VERIFICATION.md/u);
-    assert.match(skill, /expensive-execution preparation/u);
-    assert.match(skill, /recurring-failure diagnosis/u);
+    assert.match(skill, preparation);
+    assert.match(skill, diagnosis);
     assert.match(read(`skills/engineering/${name}/agents/openai.yaml`), /allow_implicit_invocation: false/u);
   }
   for (const [name, expected] of [
@@ -101,7 +104,7 @@ test("implementation routes and public docs retain verification preparation", ()
 
 test("an unrelated test edit cannot authorize visual evidence reuse", () => {
   const implement = read("skills/engineering/implement/SKILL.md");
-  assert.match(implement, /\[proportionate verification\]\(VERIFICATION.md\)/u);
+  assert.match(implement, /\[VERIFICATION.md\]\(VERIFICATION.md\)/u);
   const policy = read("skills/engineering/implement/VERIFICATION.md");
   assert.match(policy, /only when the project verifier supports it and proves/u);
   assert.match(policy, /direct\nand transitive source dependencies/u);
@@ -159,7 +162,7 @@ test("published specs must pass through an approved ticket split", () => {
 });
 
 test("visual acceptance stays local and human-approved", () => {
-  const toTickets = read("skills/engineering/to-tickets/SKILL.md");
+  const toTickets = read("skills/engineering/to-tickets/SKILL.md") + read("skills/engineering/to-tickets/VISUAL-PARITY.md");
   const visualAcceptance = read(
     "skills/engineering/setup-matt-pocock-skills/visual-acceptance.md",
   );
@@ -205,13 +208,13 @@ test("visual parity gates require an explicit reference comparison", () => {
     visualAcceptance,
     /A proposed manifest path or a\nrequest to create a new manifest does not establish it/u,
   );
-  assert.match(setup, /UI\s+work\s+without that comparison uses no manifest/u);
+  assert.match(setup, /links a visual-acceptance manifest, read `docs\/agents\/visual-acceptance.md`/u);
 
   for (const skill of [wayfinder, toSpec, toTickets, implement, codeReview]) {
     assert.match(skill, /visual parity action/u);
     assert.match(
       skill,
-      /existing\s+manifest that records\s+either obligation/u,
+      /existing\s+manifest (?:that records\s+either obligation|recording\s+either\.)/u,
     );
   }
 
@@ -225,9 +228,9 @@ test("applicable missing manifests are created before ticketing or implementatio
   const visualAcceptance = read(
     "skills/engineering/setup-matt-pocock-skills/visual-acceptance.md",
   );
-  const toSpec = read("skills/engineering/to-spec/SKILL.md");
-  const toTickets = read("skills/engineering/to-tickets/SKILL.md");
-  const implement = read("skills/engineering/implement/SKILL.md");
+  const toSpec = read("skills/engineering/to-spec/SKILL.md") + read("skills/engineering/to-spec/VISUAL-PARITY.md");
+  const toTickets = read("skills/engineering/to-tickets/SKILL.md") + read("skills/engineering/to-tickets/VISUAL-PARITY.md");
+  const implement = read("skills/engineering/implement/SKILL.md") + read("skills/engineering/implement/VISUAL-PARITY.md");
 
   assert.match(visualAcceptance, /before either phase begins/u);
   assert.match(toSpec, /Do not stop merely because it is absent/u);
@@ -334,5 +337,5 @@ test("planning and design selection cannot reopen or expand execution authority"
   assert.match(read("skills/engineering/implement/VERIFICATION.md"), /Publishing a plan does not authorize implementation/u);
   assert.match(read("skills/engineering/prototype/UI.md"), /explicit implementation authorization/u);
   assert.doesNotMatch(read("docs/engineering/tdd.md"), /Before any test exists/u);
-  assert.match(read("skills/engineering/ask-matt/SKILL.md"), /A published spec always goes through/u);
+  assert.match(read("skills/engineering/ask-matt/SKILL.md"), /a published spec always goes through `\/to-tickets` first/u);
 });

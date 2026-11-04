@@ -1,6 +1,6 @@
-When delegation is authorized, start each subagent with a fresh context window and pass a bounded brief instead of inheriting the conversation.
-
 # Design It Twice
+
+When delegation is authorized, start each subagent with a fresh context window and pass a bounded brief instead of inheriting the conversation.
 
 When the user wants to explore alternative interfaces for a chosen deepening candidate, use this comparison pattern. Based on "Design It Twice" (Ousterhout), it explores alternatives before selecting an interface.
 
@@ -33,7 +33,7 @@ Use a separate technical brief for each design, locally or through a worker: fil
 - Design 3: "Optimise for the most common caller: make the default case trivial."
 - Design 4 (if applicable): "Design around ports & adapters for cross-seam dependencies."
 
-Include both [SKILL.md](SKILL.md) vocabulary and GLOSSARY.md vocabulary in the brief so every design uses the architecture language and the project's domain language consistently.
+Include the [SKILL.md](SKILL.md) vocabulary in the brief. If the project has a GLOSSARY.md, include its terms too; otherwise use the domain terms found in the code and the user's request.
 
 Each design includes:
 
@@ -44,6 +44,8 @@ Each design includes:
 5. Trade-offs: where leverage is high, where it's thin
 
 ### 3. Present and compare
+
+Before comparing, check each design against the Step 1 constraints, including error modes and ordering rules. Mark any constraint a design leaves unmet instead of dropping it from the comparison.
 
 Present designs sequentially so the user can absorb each one, then compare them in prose. Contrast by **depth** (leverage at the interface), **locality** (where change concentrates), and **seam placement**.
 

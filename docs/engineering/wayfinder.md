@@ -37,7 +37,7 @@ The map has four sections:
 - **Not yet specified.** This is the **fog of war**: decisions you can tell are coming but cannot yet phrase sharply. The test for fog versus ticket is whether you can state the question precisely *now*, not whether you can answer it. When you resolve a ticket, the fog ahead of it clears, and anything you can now specify graduates into a new ticket.
 - **Out of scope.** Work beyond the destination. Fog only gathers *toward* the destination, so out-of-scope work stays closed and never graduates.
 
-The **frontier** is the set of open, unblocked, unclaimed tickets (the edge of the known). A session claims a ticket by assigning it to itself before it does any work. The assignee *is* the claim, so concurrent sessions skip that ticket. Sessions refer to tickets by name, never by a bare `#42`, because a wall of issue numbers is hard to read in narration.
+The **frontier** is the set of open, unblocked, unclaimed tickets (the edge of the known). A session claims a ticket before it does any work, with a claim identity unique to that session (an assignee alone cannot tell two sessions of one developer apart, so it adds a session tag such as a claim comment). Concurrent sessions skip claimed tickets. Sessions refer to tickets by name, never by a bare `#42`, because a wall of issue numbers is hard to read in narration.
 
 ## The four decision-ticket types
 
@@ -47,7 +47,7 @@ Every ticket carries a `wayfinder:<type>` label. Each ticket is either **[HITL](
 | --- | --- | --- | --- |
 | `grilling` | HITL | The default. The question can be settled by talking it through. | [grilling](https://aihero.dev/skills-grilling) plus [domain-modeling](https://aihero.dev/skills-domain-modeling), in a fresh session |
 | `prototype` | HITL | "How should this look" or "how should this behave": a question talking cannot settle. | [prototype](https://aihero.dev/skills-prototype), with a link from the ticket to the built artifact |
-| `research` | AFK | A fact outside the working directory is blocking a decision. | [research](https://aihero.dev/skills-research), locally or through an available worker when the host permits delegation, with a saved file and exact commit on a `research/<name>` branch |
+| `research` | AFK | A fact outside the working directory is blocking a decision. | [research](https://aihero.dev/skills-research), locally or through an available worker when the host permits delegation, with a saved file and exact commit on a `research/<name>` branch in a separate worktree, pushed only under explicit human authorization |
 | `task` | Either | Nothing to decide, but manual work blocks a decision, such as provisioning access, signing up for a service, or moving data so you can see its shape. | The agent alone where it can, otherwise a precise checklist for the human |
 
 `task` is the only type that *does* rather than decides. It belongs on the map only because it unblocks a decision, never because it delivers part of the destination. This type goes wrong most often in practice. Agents read it as an implementation step and start to write product code inside the map.
@@ -74,8 +74,8 @@ the exact candidate beside the frozen reference.
 
 Map Notes record human authorization; they cannot create it. Execution inside
 a map requires an explicit human instruction with its source and scope retained.
-The skill reads the configured tracker's claim operation, so remote assignment
-and local `Status: claimed` serve the same role. Without a known tracker it
+The skill reads the configured tracker's claim operation, so a session-tagged
+remote claim and local `Status: claimed by <session>` serve the same role. Without a known tracker it
 requests setup instead of silently switching to local files.
 
 ## Common questions

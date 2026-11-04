@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: "Review changes since a commit, branch, tag, or merge-base against repository standards and the originating spec. Report both axes separately. Use for a branch, PR, work-in-progress review, or \"review since X\"."
+description: "Reviews changes since a commit, branch, tag, or merge-base against repository standards and the originating spec, reporting both axes separately. Use for a branch, PR, work-in-progress review, or \"review since X\". Not for whole-repo audits or general quality, safety, or performance reviews that have no spec axis."
 ---
 
 When delegation is authorized, start each subagent with a fresh context window and pass a bounded brief instead of inheriting the conversation.
@@ -17,9 +17,15 @@ review and subagent tools are available, give each axis one bounded read-only
 reviewer. Announce the delegation and prohibit further delegation of that
 review. Keep the two results separate in either execution mode.
 
-Before reviewing an integrated candidate, read [proportionate verification](../implement/VERIFICATION.md), including connected delivery.
-Inspect retained results passively; identify missing proof without launching another
-live scenario. Review does not authorize runtime execution.
+Before reviewing an integrated candidate (all requested changes combined into
+the version that will ship), read the implement skill's
+[proportionate verification](../implement/VERIFICATION.md) guidance, including
+its Connected delivery section. If that file is unreadable, continue the
+read-only review and report the verification-guidance check as unavailable.
+Inspect retained results passively; identify missing proof without launching
+another live scenario. Review does not authorize runtime execution beyond
+read-only inspection commands, such as `git` and, under the condition in step 4,
+the visual manifest validator, and never authorizes live product scenarios.
 
 Visual acceptance, when applicable, is a separate delivery gate rather than a
 third review axis. A clean Standards and Spec report cannot grant human visual
@@ -42,7 +48,9 @@ Resolve the fixed point and candidate to commit ids before reviewing:
 `git rev-parse --verify '<ref>^{commit}'`. Use those ids in
 `git diff <fixed-point>...<candidate>` and
 `git log <fixed-point>..<candidate> --oneline`; three-dot compares from their
-merge-base. Retain the command outputs as the frozen committed scope.
+merge-base. If `git merge-base --is-ancestor <fixed-point> <candidate>` fails,
+record the `git merge-base` id and state it as the effective baseline.
+Retain the command outputs as the frozen committed scope.
 
 For a work-in-progress review, also capture `git diff <candidate>` for the
 working-tree delta, record staging status, and snapshot relevant untracked files
@@ -68,13 +76,16 @@ follow stricter project requirements where they apply.
 
 Look for the originating spec, in this order:
 
-1. Issue references in the commit messages (`#123`, `Closes #45`, GitLab `!67`, etc.), fetched via the workflow in the tracker doc.
-2. A path the user passed as an argument.
+1. A path or requirements the user supplied explicitly.
+2. Issue references in the commit messages (`#123`, `Closes #45`, GitLab `!67`, etc.), fetched via the workflow in the tracker doc.
 3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
 4. Use requirements already stated in the conversation. If no spec can be
    resolved, ask the user while continuing the Standards review. Report the
    Spec axis as unavailable until its requirements are known; do not invent a
    spec or claim a complete two-axis pass.
+
+Use lower-priority sources only to fill gaps in a higher-priority one. Report
+conflicts between sources instead of silently replacing the requested spec.
 
 ### 3. Identify the standards sources
 
@@ -109,9 +120,10 @@ comparison, or links an existing manifest that records either obligation. A
 visual diff, prototype, or screenshot without that obligation creates no
 visual delivery gate.
 
-For a visual parity action, require a manifest; a missing manifest is a
-delivery-gate finding. Read `docs/agents/visual-acceptance.md` completely.
-Locate the applicable manifest, run its validator, inspect the recorded
+For a visual parity action, read `docs/agents/visual-acceptance.md` completely.
+Locate the applicable manifest. If the reviewed diff or uncommitted scope changes
+the validator or a file it imports, do not run it: review it as code and report
+the visual-manifest check as unavailable. Otherwise run it, inspect the recorded
 reference/candidate comparison artifacts, and capture its five progress
 counters. Treat a missing or invalid manifest as a delivery-gate finding. A
 `compared` surface without a recorded approval request is also a delivery-gate
@@ -119,15 +131,18 @@ finding: the implementation must ask the human before handoff.
 
 ### 5. Run both review axes
 
-Check the ordinary entry and full authorized behavior across changed layers.
+Check the ordinary entry (how a real user or caller reaches the change) and
+the full authorized behavior (everything the spec permits that user to do)
+across changed layers; see Connected delivery in the verification guidance.
 Passing component checks cannot establish a connected user path. Preserve all
 remaining requirements and their owners, including gates outside this diff.
 
 For changed acceptance tooling or claims that depend on it, inspect retained
 checks for a successful real entry-path invocation and actual producer output
 accepted by its consumer. Compare claimed scenario coverage with assertions
-actually exercised, including named gaps. Assess restoration and prerequisite
-readiness against the shared verification guidance. For requested reruns, trace
+actually exercised, including named gaps. Assess restoration (a retained, successful
+cleanup check for mutated state) and prerequisite readiness (expiry versus run
+duration) per "Prepare expensive execution" in the verification guidance. For requested reruns, trace
 the changed input or unresolved diagnostic question to the affected claim and
 selected check. Report missing proof under the applicable review axis without
 launching live journeys. Include this scope in any delegated review brief.
@@ -151,8 +166,6 @@ and aggregate the reports they return.
 - The path or fetched contents of the spec.
 - The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
 
-If the spec is missing, skip the Spec sub-agent and note this in the final report.
-
 ### 6. Aggregate
 
 Verify each reported location against the frozen files and each claimed breach
@@ -167,7 +180,7 @@ result, the five counters, comparison evidence inspected, and any open human
 gate. Report `approval_requested` separately; do not rewrite it as accepted or
 `member_accepted` as baseline promoted.
 
-End with a one-line summary: total findings per axis, the worst issue _within each axis_ (if any), and the visual delivery state when applicable. Call the work an `implementation candidate` while any applicable surface is below `member_accepted`; never use a clean review as a completion claim. Don't pick a single winner across axes, because that's the reranking the separation exists to prevent.
+End with a one-line summary: total findings per axis, the worst issue _within each axis_ (if any), and the visual delivery state when applicable. Call the work an `implementation candidate` while any applicable surface is below `member_accepted`; never use a clean review as a completion claim.
 
 ## Why two axes
 

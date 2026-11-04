@@ -22,6 +22,7 @@ You invoke this by typing `/ask-matt`; the agent won't reach for it on its own.
 | Two skills that look interchangeable | The line between them, and it is usually one concrete test rather than a matter of taste. [grill-me](https://aihero.dev/skills-grill-me) or [grill-with-docs](https://aihero.dev/skills-grill-with-docs) turns on whether you are in a working directory; [grill-with-docs](https://aihero.dev/skills-grill-with-docs) or [wayfinder](https://aihero.dev/skills-wayfinder) turns on whether the effort fits one session |
 | A long session and a decision about the [context](https://www.aihero.dev/ai-coding-dictionary/context) | The ordered tree over the five options at a phase boundary |
 | A skill you have already picked | Nothing useful. Invoke that skill directly. |
+| A situation no skill fits | A plain statement that nothing fits, and a suggestion to proceed without a skill |
 
 For a known failure, the debugging route starts with an existing check. The full
 diagnostic loop is for unresolved causes; feature delivery does not automatically
@@ -35,7 +36,7 @@ The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assu
 
 ## Flows, not skills
 
-The skill's leading word is **flow**, a path *through* the skills rather than a single skill. When you name your situation, the router places you at a step on a flow. That is a different answer from "here is the skill that matches your keywords". There are five kinds of route, and the skill itself describes them in full:
+The skill's leading word is **flow**, a path *through* the skills rather than a single skill. When you name your situation, the router places you at a step on a flow. That is a different answer from "here is the skill that matches your keywords". There are five kinds of route. The skill keeps a compact map of them and reads the linked `FLOWS.md` for the detail (branches, tracker layout, verification rules, what each skill hands to the next) when you ask how a flow runs past the pick:
 
 - The main flow starts with grilling, then a spec, tickets, implementation and review. [implement-spec](https://aihero.dev/skills-implement-spec) can coordinate an approved ticket graph when the host supports it. [retro](https://aihero.dev/skills-retro) proposes environment changes after the build. A prototype can answer a design question before planning continues. Small unpublished plans can go directly to implementation; a published spec goes through ticket splitting.
 - **On-ramps**, for a situation that generates work and then merges onto the main flow: incoming bug reports, something broken, or an effort too foggy and too large to hold in one session.
@@ -84,9 +85,9 @@ Check the loaded plugin's selected set or registration, rather than treating the
 
 The router now requires reading the relevant `SKILL.md` as reference before describing or skipping its requirements. The skill's own instructions take precedence over this map's summary. Reading to verify a recommendation does not invoke an explicit-only workflow.
 
-**Why is it prose instead of a numbered checklist?**
+**Why is the flow detail prose instead of a numbered checklist?**
 
-It is a fair complaint. An open issue argues that most of the routing is deterministic and that the narrative makes it hard to scan. Nothing stops you asking for the compressed form: "just give me the sequence" gets you the sequence. The prose carries the conditional part: the branches, where a human decision is expected, and where to clear or compact between steps. A flat checklist drops exactly that.
+The routing map at the top is numbered. An open issue argued that most of the routing is deterministic and that the narrative made it hard to scan, so the skill now leads with a short numbered map that picks the skill. The prose moved to `FLOWS.md`, which still carries the conditional part: the branches, where a human decision is expected, and where to clear or compact between steps. The router reads it when you ask how a flow runs.
 
 **Can it route over my own skills, or another author's?**
 

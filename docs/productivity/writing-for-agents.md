@@ -14,7 +14,7 @@ Reach for it by hand for everything else an agent reads: your docs, specs and [t
 
 ## The two loads
 
-The central idea is two budgets that every document and pointer spends:
+The central idea is two budgets that every document and pointer spends. The skill keeps their definitions in a linked `LOADS.md` and reaches for it when deciding whether to split a document:
 
 - **Context load**: the cost of always-loaded material on the agent's window: an `AGENTS.md` line, a skill description, anything sitting in context every [turn](https://www.aihero.dev/ai-coding-dictionary/turn) whether or not it fires.
 - **Cognitive load**: the cost to you of remembering which documents exist and when to reach for each. You are the index. Do not try to minimise this cost, because it is the price of human agency.
@@ -22,6 +22,9 @@ The central idea is two budgets that every document and pointer spends:
 Once you think in these two loads, most authoring decisions (split or don't, inline or disclose, point or push) become the same trade made in different places.
 
 ## The levers
+
+The skill opens with a five-step editing workflow over these levers: verify every pointer's target, place each piece on the information hierarchy, end every step on an observable completion criterion, prune and collapse restatements into leading words, then check the edited document once and report what remains.
+
 
 - A [context pointer](https://www.aihero.dev/ai-coding-dictionary/context-pointer) names material and says when to read it. Check that the target exists and can be loaded before revising the wording. A skill description and an `AGENTS.md` link both need this check.
 - **Information hierarchy**: the ladder from in-file step, to in-file reference, to disclosed reference behind a pointer. **[Progressive disclosure](https://www.aihero.dev/ai-coding-dictionary/progressive-disclosure)** is moving material down that ladder so the top stays easy to read.

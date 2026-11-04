@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { isAbsolute, relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -74,7 +74,17 @@ const validateFile = (root, file, label, errors) => {
     errors.push(`${label}.path does not exist: ${file.path}`);
     return;
   }
-  const actual = sha256(readFileSync(absolute));
+  const real = realpathSync(absolute);
+  const fromRealRoot = relative(realpathSync(root), real);
+  if (fromRealRoot === ".." || fromRealRoot.startsWith(`..${sep}`) || isAbsolute(fromRealRoot)) {
+    errors.push(`${label}.path escapes the repository root`);
+    return;
+  }
+  if (!statSync(real).isFile()) {
+    errors.push(`${label}.path is not a regular file: ${file.path}`);
+    return;
+  }
+  const actual = sha256(readFileSync(real));
   if (file.sha256 !== actual) {
     errors.push(`${label}.sha256 is ${file.sha256}; file is ${actual}`);
   }

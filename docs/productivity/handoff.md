@@ -29,7 +29,7 @@ Three of the five options at a phase boundary preserve different things: `/compa
 
 ## What travels, and what doesn't
 
-The document carries the live thread (what's in flight, why, and what's next) plus a **suggested skills** section naming what the next agent should reach for. The skill redacts secrets before it writes the file.
+The document carries the live thread (what's in flight, why, and what's next) under fixed headings in this order: Objective, Authorization, Decisions, Done, State, Remaining, Blockers, Next action, and **Suggested skills**, which names what the next agent should reach for. The skill redacts secrets before it writes the file.
 
 It deliberately does not carry anything already written down. The document references specs, plans, ADRs, issues, commits and diffs by path or URL, and never copies them. That keeps the file small, and it keeps the settled detail in one place instead of two copies that drift apart.
 
@@ -51,7 +51,7 @@ Each one preserves something different. `/compact` compresses this context and c
 It goes to the temp directory, which is the most-reported problem with the skill. The paths are long, they differ per OS, and on Windows agents sometimes take several attempts to find the right one. The skill reports the absolute saved path; keep it before you move on. Temp is deliberate, because a handoff is a document in transit, not an artifact you maintain. Temp is also not durable, as the next question explains.
 
 **My handoff vanished between sessions.**
-Some environments clear temp between sessions (Codex is the reported case), and a reboot empties `/private/tmp`. If the next session isn't starting within the hour, or is starting under a different harness, copy the file somewhere durable yourself as soon as it's written. The same applies to anything the document *points at*: if a dispatch references other files in temp, the next agent can't follow it.
+Some environments clear temp between sessions (Codex is the reported case), and a reboot empties `/private/tmp`. If the next session isn't starting within the hour, or is starting under a different harness, keep it somewhere durable. When you say the next session may run elsewhere or after a restart, the skill warns that the temp path is ephemeral and offers to save to a location you choose. The same applies to anything the document *points at*: if a dispatch references other files in temp, the next agent can't follow it.
 
 **How do I actually hand it to the next agent?**
 Open the fresh session and point it at the path: read this file, then continue. Point at the file rather than pasting the summary into a shell command. The shell mangles a summary that contains backticks or `$(...)` when you interpolate it into `claude "<summary>"`. The usual result is silent truncation rather than an error, so the new agent starts with an incomplete brief and nothing tells you.

@@ -1,15 +1,23 @@
 ---
 name: writing-for-agents
-description: Writing documents for agents. Use when creating or editing skills, or modifying AGENTS.md or CLAUDE.md.
+description: Guides writing and editing documents an agent consumes. Use when creating or editing skills, AGENTS.md or CLAUDE.md files, or reference docs an agent reaches through a pointer. Not for prose written only for human readers.
 ---
 
 Reference for writing any document an agent consumes: a skill, an `AGENTS.md` / `CLAUDE.md`, or a doc reached by a pointer. Define an explicit process and observable completion criteria. These techniques aim for consistency; their effect depends on the model and runtime.
 
 When the document you're writing is a skill, read [`SKILL-MECHANICS.md`](SKILL-MECHANICS.md) for frontmatter, invocation choice, and router skills.
 
+## Editing workflow
+
+1. Verify every pointer's target exists and the host can read it; then word its trigger ([Context pointers](#context-pointers)).
+2. Place each piece on the [information hierarchy](#information-hierarchy): inline what every branch needs, disclose what only some reach.
+3. End every step on an observable [completion criterion](#steps-and-completion-criteria).
+4. [Prune](#pruning) and collapse restatements into [leading words](#leading-words).
+5. Check the edited document once against its scope, invocation mode, metadata, links, and whether each instruction has an observable result. Correct the faults found, recheck the corrected parts once, and report any issue still unresolved instead of starting another pass.
+
 ## Context pointers
 
-A **context pointer** is a reference held in the agent's context that names some out-of-context material and encodes the condition for reaching it. A skill's description is one; a line in `AGENTS.md` naming a doc is the same object. The pointer's wording helps the agent decide when to load the material. First verify that a required target exists and the host can discover and read it. Then clarify its loading condition; stronger wording cannot repair a broken path or unavailable tool.
+A **context pointer** is a reference held in the agent's context that names some out-of-context material and encodes the condition for reaching it. A skill's description is one; a line in `AGENTS.md` naming a doc is the same object. The pointer's wording helps the agent decide when to load the material. Stronger wording cannot repair a broken path or unavailable tool.
 
 A pointer does two jobs: state what the material is, and list the **branches** that should trigger reaching it (a branch is a distinct case the document handles, so different runs take different paths through it). When the host always loads a pointer, its words consume context on every turn, so prune it more closely than a body loaded only on demand:
 
@@ -17,30 +25,21 @@ A pointer does two jobs: state what the material is, and list the **branches** t
 - **One trigger per branch.** Synonyms that rename a single branch are one branch written twice; collapse them and keep only genuinely distinct branches.
 - **Cut identity the body already carries.**
 
-## The two loads
-
-Every document and pointer you add spends one of two budgets:
-
-- **Context load** is the cost of always-loaded material on the agent's window: an `AGENTS.md` line, a skill description, anything sitting in context every turn, spending tokens and attention whether or not it fires.
-- **Cognitive load** is the cost on the human: which documents exist and when to reach for each. The human is the index. Not a cost to minimise: it is the price of human agency; spend it where human judgement matters, remove it where it does not.
-
-Material reached only through a pointer escapes context load at the price of the pointer's own line; material with no pointer at all rides entirely on cognitive load.
-
 ## Information hierarchy
 
 A document is built from two content types: **steps** (the ordered actions the agent performs) and **reference** (definitions, rules, facts consulted on demand). The two mix freely: all steps (a recipe), all reference (a review's rules, this skill), or both. The core decision is where each piece sits on the **information hierarchy**, a ladder ranked by how immediately the agent needs the material:
 
 1. **In-file step** is the primary tier: what the agent does, in order.
 2. **In-file reference** is consulted on demand. Often a legitimately flat peer-set (every rule of a review on one rung), which is a fine arrangement, not a smell.
-3. **Disclosed reference** is pushed out into a separate file, reached by a context pointer, loaded only when the pointer fires. Spans a sibling file in the same folder through fully external reference that lives anywhere and any document can point at.
+3. **Disclosed reference** is pushed out into a separate file, reached by a context pointer, loaded only when the pointer fires. It ranges from a sibling file in the same folder to an external document any file can point to.
 
-Push too little down and the top bloats; push too much and you hide material the agent actually needs. That tension is the whole decision.
+Push too little down and the top bloats; push too much and you hide material the agent actually needs.
 
-**Progressive disclosure** is the move down the ladder (out of the main file and behind a pointer) so the top stays legible. Not primarily a token optimisation: it is how the hierarchy is protected. Branching is the cleanest disclosure test: inline what every branch needs, and push behind a pointer what only some branches reach. When a document has steps, in-file reference that should be disclosed buries them and turns attending to them into a coin-flip: a variance lever, not just a legibility one.
+**Progressive disclosure** is the move down the ladder (out of the main file and behind a pointer) so the top stays legible. Branching is the cleanest disclosure test: inline what every branch needs, and push behind a pointer what only some branches reach. When a document has steps, in-file reference that should be disclosed buries them and makes the agent less likely to attend to them.
 
 **Co-location** is the within-file companion: where the ladder decides _how far down_ a piece sits, co-location decides _what sits beside it_ once there. Keep a concept's definition, rules, and caveats under one heading rather than scattered, so reading one part brings its neighbours with it. The test: the document should read like documentation written for the agent. Grouped material reads that way; scattered material does not. (Distinct from duplication: that repeats one meaning in two places; scattering fragments one meaning across many.)
 
-**Sprawl** is the failure mode here: a document simply too long, even when every line is live and unique. Attention thins across the excess, and every extra line is one more to keep relevant. The cure is the ladder: disclose reference behind pointers, and split by branch or sequence so each path carries only what it needs.
+**Sprawl** is the failure mode here: a document simply too long, even when every line is live and unique. The cure is the ladder: disclose reference behind pointers, and split by branch or sequence so each path carries only what it needs.
 
 ## Steps and completion criteria
 
@@ -53,7 +52,7 @@ The strongest criteria are both checkable and exhaustive.
 
 ## When to split
 
-Splitting one document into two spends one of the two loads, so split only when the cut earns it:
+Splitting one document into two spends one of the [two loads](LOADS.md) (context or cognitive), so split only when the cut earns it:
 
 - **By sequence**: split a run of steps where the post-completion steps tempt the agent to rush the one in front of it. Keeping them out of view drives more legwork on the current task. Beware the reverse: merging sequences exposes each step's later steps to what follows, inviting premature completion.
 - **By invocation**, skill-specific: see [`SKILL-MECHANICS.md`](SKILL-MECHANICS.md).
@@ -69,7 +68,7 @@ Hunt for opportunities to refactor with leading words. A triad spelled out at th
 - "fast, deterministic, low-overhead" → _tight_ (a _tight_ loop).
 - "a loop you believe in" → _red_, turning a fuzzy gate into a binary observable state (the loop goes _red_ on the bug, or it doesn't).
 
-You win twice: fewer tokens, and a sharper hook for the agent to hang its thinking on. Assume every document is carrying restatements that leading words retire. Go find them.
+You win twice: fewer tokens, and a sharper hook for the agent to hang its thinking on. List the document's repeated multi-word phrases and replace each recurring one with a defined term; stop when none recurs undefined.
 
 State the **positive** action directly, such as "write one-line comments". Keep necessary prohibitions beside the permitted action, especially for scope, permissions, and correctness. Treat claims about how negation affects a particular model as hypotheses to test in that runtime, not as a reason to remove a required constraint.
 

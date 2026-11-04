@@ -2,7 +2,7 @@
 
 `implement-spec` takes a [spec](https://www.aihero.dev/ai-coding-dictionary/spec) and its [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) and lands the whole thing in one run. The orchestrating [agent](https://www.aihero.dev/ai-coding-dictionary/agent) hands each ticket to an implementer [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent) working in its own git worktree, merges each finished branch into a single **integration branch**, runs [code-review](https://aihero.dev/skills-code-review) over the result, and resolves the tickets.
 
-It reads the approved tickets as a task graph. A ticket becomes ready when its blockers have landed on the integration branch with their required acceptance evidence. Independent tickets can run concurrently within host limits. External blockers, human approval and an approved serial acceptance order still apply.
+It reads the approved tickets as a task graph. A ticket becomes ready when its blockers have landed on the integration branch with their required acceptance evidence. Independent tickets can run concurrently within host limits, but one merger subagent lands their work on the integration branch, one merge at a time. External blockers, human approval and an approved serial acceptance order still apply.
 
 Each implementer follows the shared preparation and failure-diagnosis rules before expensive acceptance runs. The coordinator retains applicable proof and requires a changed input or a bounded diagnostic reason for reruns. Failed tooling or environment checks remain separate from product failures.
 
@@ -21,7 +21,7 @@ You invoke this by typing `/implement-spec`, and the agent won't reach for it on
 
 - **An issue tracker.** The skill reads the tickets from, and resolves them on, the tracker [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) configured. If none has been configured, it stops and tells you to run that first rather than guessing.
 - Approved tickets with their blocking edges, as [to-tickets](https://aihero.dev/skills-to-tickets) writes them. A flat graph permits concurrent work within host limits and the required acceptance order.
-- A host that permits subagents and supports isolated worktrees. Missing capabilities stop dispatch; the skill recommends invoking `implement` per ticket instead. Each worker preserves existing checkout changes and commits.
+- A host that permits subagents and supports isolated worktrees. Typing `/implement-spec` is itself the request to delegate, but the host's permission check still applies. Missing capabilities stop dispatch; the skill recommends invoking `implement` per ticket instead. Each worker preserves existing checkout changes and commits.
 
 ## The integration branch
 

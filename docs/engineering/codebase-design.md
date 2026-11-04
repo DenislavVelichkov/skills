@@ -1,6 +1,6 @@
 ## What it does
 
-`codebase-design` fixes the words you use to design a module: **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**. It defines each one precisely, bans the loose substitutes ("component", "service", "API", "boundary"), and states the handful of principles that follow from them.
+`codebase-design` fixes the words you use to design a module: **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**. It defines each one precisely, bans the loose substitutes ("component", "service", "API", "boundary") for those design concepts while keeping existing domain names, framework terms and quoted identifiers such as `OrderService`, and states the handful of principles that follow from them.
 
 It is a reference, not a process. It runs no loop, produces no artifact, and never stops to ask you a question. Every other skill that touches design uses its vocabulary. On its own, it gives you the words and stops. Know this before you invoke it. If you point a [session](https://www.aihero.dev/ai-coding-dictionary/session) at a skill with no process and no stopping rule and say "go", the agent invents a process. The questions below show what that looks like.
 
@@ -34,7 +34,7 @@ The glossary is the skill. The skill defines every term against the others, and 
 | **Leverage** | What callers get from depth: more capability per unit of interface learned. | none |
 | **Locality** | What maintainers get from depth: changes, bugs and verification stay in one place, so one fix covers every caller. | none |
 
-The skill does *not* define depth as the ratio of implementation lines to interface lines, which is Ousterhout's own definition. That metric rewards padding the implementation, so the skill uses depth-as-leverage instead.
+The skill does *not* define depth as the ratio of implementation lines to interface lines, a common shorthand for depth. That metric rewards padding the implementation, so the skill uses depth-as-leverage instead.
 
 ## The four principles
 

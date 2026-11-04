@@ -8,9 +8,9 @@ invocation policy, dependencies, and routers.
 Preserve the target's existing invocation mode unless the user requests a change.
 
 - A **model-invoked** skill is available to the model and user. Its description
-  names the distinct tasks that should trigger it. In this repository, omit
-  `disable-model-invocation` from frontmatter and the `policy` block from
-  `agents/openai.yaml`.
+  names the distinct tasks that should trigger it. For Claude Code and Codex
+  hosts, omit `disable-model-invocation` from frontmatter and the `policy`
+  block from `agents/openai.yaml`.
 - A **user-invoked** skill requires the human to invoke it. Keep its description
   as a human-facing summary. Set `disable-model-invocation: true` for Claude
   Code and `policy.allow_implicit_invocation: false` in `agents/openai.yaml`
@@ -37,7 +37,7 @@ the main file; disclose branch-specific detail behind conditional pointers.
 ## Router skills
 
 A user-invoked router recommends skills and explains their trigger boundaries.
-It verifies relevant skill behavior as reference material before describing or
-skipping a step. It never executes an explicit-only skill. Check the plugin's
+Before describing or skipping a step, it reads that target skill's `SKILL.md`
+as reference. It never executes an explicit-only skill. Check the plugin's
 selected set or registration before recommending a route; mark unavailable
 steps honestly.

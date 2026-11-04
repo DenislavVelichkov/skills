@@ -1,7 +1,6 @@
 ---
 name: implement-spec
-description: "Implements an approved spec and ticket graph with subagents in isolated worktrees, then validates their combined work on one integration branch. Use after /to-spec and /to-tickets."
-disable-model-invocation: true
+description: "Implements an approved spec and ticket graph with subagents in isolated worktrees, then validates their combined work on one integration branch. Use after /to-spec and /to-tickets. Not for a single ticket (use /implement)."
 ---
 
 Require a spec and its approved implementation tickets. If the ticket set is missing or unapproved, tell the user to run `/to-tickets` and stop before implementation. Verify ticket identities, blocking edges and any external blockers from the configured tracker. Report cycles or unresolved dependencies before dispatching affected tickets.
@@ -16,36 +15,57 @@ The goal is the entire spec implemented on a single **integration branch**, with
 
 The tickets form a **task graph**. Its **frontier** contains tickets whose blockers have landed on the integration branch with their required acceptance evidence. Track those results during the run; remote issues may remain open until the final PR merges. Preserve external blockers and any approved serial acceptance order. If unfinished tickets remain but none is ready, report their blockers rather than claiming completion.
 
-Read [proportionate verification](../implement/VERIFICATION.md) before choosing checks. Require each implementer to apply its expensive-execution preparation and recurring-failure diagnosis before costly runs or retries. For a ticket with a visual parity action, read the repository's `docs/agents/visual-acceptance.md` and follow its design, comparison, human-approval and baseline gates. A worker cannot satisfy a human gate on the user's behalf.
+This skill depends on the sibling `implement` skill's [proportionate verification](../implement/VERIFICATION.md) and [model execution verification](../implement/MODEL-EXECUTION.md). If either file is unreadable, stop and report the missing path before dispatching any ticket.
+
+Read proportionate verification before choosing checks. Require each implementer to apply its expensive-execution preparation and recurring-failure diagnosis before costly runs or retries. For a ticket with a visual parity action, read the repository's `docs/agents/visual-acceptance.md` and follow its design, comparison, human-approval and baseline gates. A worker cannot satisfy a human gate on the user's behalf.
 
 If the approved acceptance order requires review before the next ticket can start, review the integrated ticket scope at that checkpoint. Retain that coverage for the final spec review; do not report still-blocked tickets as missing implementation in the checkpoint review.
 
-When delegation is authorized, start every subagent with a fresh context window and pass a bounded brief instead of inheriting the conversation.
+The user's `/implement-spec` request is the delegation request; the host permission check above still applies. Start every subagent with a fresh context window and a bounded brief instead of inheriting the conversation.
 
-Communication to and from subagents should be sparse. Communicate primarily through **context pointers**: to the spec, tickets, research notes, and previous commits. Don't duplicate information already available via pointers.
+Keep communication with subagents sparse: pass **context pointers** to the spec, tickets, research notes and previous commits instead of duplicating their content.
 
-**Implementer subagents** should be run in the background where possible for maximum concurrency.
+Run **implementer subagents** in the background where possible for maximum concurrency.
+
+## Model gate
+
+Read [model execution verification](../implement/MODEL-EXECUTION.md) to distinguish assessed and unassessed tickets. For each ticket, use an applicable assessment from the ticket, plan, or conversation. A mixed graph does not require every ticket to be assessed.
+
+- **Unassessed ticket:** proceed with current or inherited model and effort. Do not invoke the selector, request a model choice, or probe or bind the gate. Identify the ticket as unassessed in every handoff. It needs no gate receipt at any step, and merges or fixes involving only unassessed tickets use existing settings and the ordinary fix workflow.
+- **Assessed ticket:**
+  1. Resolve the current client's available-now model and effort; an incomplete or stale assessment blocks that ticket.
+  2. Pass exact model and reasoning effort through supported runtime controls, accounting for fixed role overrides, with the recommendation snapshot, revision, and model-gate reference.
+  3. Every worker that implements, merges with code changes or conflict resolution, or fixes it (including a resumed or replacement worker) probes and binds the recommendation in its own session first.
+  4. That worker returns the verified native runtime receipt. A parent receipt does not verify a worker, a self-reported model name is insufficient, and missing access to that evidence blocks acceptance.
+  5. Incompatible ticket settings require separate workers. An unbound coordinator cannot implement fixes for an assessed ticket.
+  6. On resume, recheck assessment status so newly recorded recommendations take effect.
 
 ## Steps
 
-1. Read the spec and tickets to understand the task graph. Read [model execution verification](../implement/MODEL-EXECUTION.md) to distinguish assessed and unassessed work. For each ticket, use an applicable assessment from the ticket, plan, or conversation. Unassessed tickets proceed with current or inherited settings without invoking the selector, requesting a model choice, or probing/binding the gate. For assessed tickets, resolve the current client's available-now model and effort; incomplete or stale assessments block that ticket. A mixed graph does not require every ticket to be assessed.
+1. Read the spec and tickets to understand the task graph, and classify each ticket under [Model gate](#model-gate).
 
-2. (optional) Use an **exploration subagent** to conduct any exploration required by the tickets - relevant codebase files or external documentation. Ensure the exploration subagent can save files - it should save its markdown notes in a directory outside the repo, accessible by all future subagents. This lets **implementer subagents** focus on implementation rather than exploration.
+2. (optional) Use an **exploration subagent** for exploration the tickets need (codebase files or external docs), so implementers can focus on implementation. It must be able to save its markdown notes in a directory outside the repo that all later subagents can read. Done when the notes path is in each implementer brief.
 
 3. Record the task-start commit and create the integration branch from the agreed base. On resume, verify and reuse this effort's existing branch and PR. If the issue tracker closes work through PRs, or the user asks for one, open a draft PR after the first merge in step 5, marked as closing the spec and tickets. Check for an existing PR before retrying an uncertain creation.
 
-4. Use a fresh **implementer subagent** for each ticket, each in its own worktree on its own branch. For assessed tickets, pass both exact model and reasoning effort through supported runtime controls, accounting for fixed role overrides; include the recommendation snapshot, revision, and model-gate reference. For unassessed tickets, leave model and effort at the existing or inherited settings and identify the ticket as unassessed in the handoff. Each implementer subagent:
-   - for an assessed ticket, probes and binds its recommendation in its own session before implementation and returns the verified native runtime receipt; a parent receipt does not verify a worker. An unassessed ticket needs no gate receipt;
+4. Use a fresh **implementer subagent** for each ticket, each in its own worktree on its own branch, with model settings and gate duties per [Model gate](#model-gate). Each implementer subagent:
+   - for an assessed ticket, binds its recommendation and returns the receipt before implementation;
    - confirms its worktree is based on the integration branch before starting; preserves existing changes and commits if it is not, then uses a fresh worktree from the correct base;
    - follows the loaded `tdd` skill to build the ticket within its assigned scope, preserving other workers' changes;
    - merges the integration branch tip into its own branch and rechecks affected behavior before reporting its commits, actual checks and unresolved acceptance gates.
 
-5. Require the usual acceptance evidence from every implementer. For assessed tickets, also require the final verified model-gate receipt in the worker's native tool output; a self-reported model name is insufficient, and missing access to that evidence blocks acceptance. Unassessed tickets require no model-gate receipt. Merge its work to the integration branch with a **merger subagent**. A merger that changes code or resolves conflicts for an assessed ticket must bind its recommendation first; incompatible ticket settings require separate workers. Merges involving only unassessed tickets use existing settings without a gate. A blocked worker cannot make its dependents ready.
+   If an implementer fails or a merge conflict stays unresolved, start one fresh replacement worker for that ticket (or follow the repository's retry limit). When that also fails, mark the ticket blocked, preserve its branch and report it, keep its dependents not ready, and continue the rest of the frontier.
 
-6. If this changes the **frontier** of available tickets, kick off more **implementer subagents** to work on the new tickets. This allows for maximum concurrency.
+5. Require the usual acceptance evidence from every implementer, plus the [Model gate](#model-gate) receipt for assessed tickets. Merge its work to the integration branch with a **merger subagent**, bound per [Model gate](#model-gate) when it changes code or resolves conflicts for an assessed ticket. One merger owns the integration checkout at a time: run merges sequentially, never two at once, and record the integration head each merge verified. Implementers stay parallel. A blocked worker cannot make its dependents ready.
 
-7. Once all ticket implementations have landed, run required checks on the integrated candidate and follow the loaded `code-review` skill against the task-start commit and full spec. Route accepted fixes to the affected ticket implementers, then validate and review their delta with affected callers. For assessed tickets, re-probe and rebind every resumed or replacement worker to the recommended pair; an unbound coordinator cannot implement those fixes. Unassessed tickets retain the ordinary fix workflow without model verification. Recheck assessment status on resume so newly recorded recommendations take effect.
+6. If this changes the **frontier**, start **implementer subagents** for the new tickets. Done when every ready ticket has a running implementer or the frontier is empty.
+
+7. Once all ticket implementations have landed, run required checks on the integrated candidate and follow the loaded `code-review` skill against the task-start commit and full spec. Route accepted fixes to the affected ticket implementers, bound per [Model gate](#model-gate), then validate and review their delta with affected callers. Run at most two review-fix passes unless the repository defines another limit. At the limit, preserve the integration candidate and report the recurring findings or acceptance blockers instead of looping.
 
 8. Mark a draft PR ready or resolve tickets through the configured tracker only after all required checks, review fixes and acceptance gates pass. While a human response or other gate remains pending, preserve the draft and open tickets, report the implementation candidate and exact blocker, and follow the project's approval-request format.
 
-9. Finish each active successful model gate, abort unfinished bindings, and remove temporary ticket snapshots. Remove only this run's worktrees after verifying their needed work is committed and retained on the integration branch or another recovery branch. Preserve unfinished work and report its location. Record expected and observed model/effort and any mismatches for assessed tickets; report unassessed tickets without inventing recommendations or verification receipts.
+9. Finish each active successful model gate, abort unfinished bindings, and remove temporary ticket snapshots. Remove only this run's worktrees after verifying their needed work is committed and retained on the integration branch or another recovery branch. Preserve unfinished work and report its location.
+
+## Closing report
+
+End with: each ticket's status (landed, blocked with its blocker, or pending a human gate); the integration branch; the PR URL, if any; the checks run and their results; remaining blockers; and, for assessed tickets, expected and observed model/effort and any mismatches. Report unassessed tickets without inventing recommendations or verification receipts.

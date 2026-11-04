@@ -1,25 +1,13 @@
 ---
 name: setup-matt-pocock-skills
-description: "Configure repository issue tracking, domain docs, review guidance and local commit checks. Run before the engineering workflow, or to update an existing setup."
-disable-model-invocation: true
+description: "Configures a repository's issue tracking, triage labels, domain docs, visual-acceptance support, review guidance and local commit checks for the engineering skills (to-tickets, triage, to-spec, implement). Use before the engineering workflow, or to update an existing setup. Not for triaging individual issues or writing tickets."
 ---
 
 # Setup Matt Pocock's Skills
 
-Scaffold the per-repo configuration that the engineering skills assume:
-
-- **Issue tracker**: where issues live (GitHub by default; local markdown is also supported out of the box)
-- **Triage labels**: the strings used for two category roles and five state roles
-- **Domain docs**: where `GLOSSARY.md` and ADRs live, and the consumer rules for reading them
-- **Visual acceptance**: the fail-closed creation and approval rules used
-  only for a visual parity action
-- **Local verification**: repository-owned lint and link checks, review criteria,
-  and proportionate evidence and progress recording
-
-Explore the repository and reuse choices already supplied by the user or
-recorded in its configuration. Ask about unresolved choices, then complete the
-authorized setup. Show a concrete draft before any still-required approval;
-do not request the same approval again for the same scope.
+Scaffold the per-repo configuration that the engineering skills assume. Reuse
+choices already supplied by the user or recorded in the repository's
+configuration, and ask only about unresolved ones.
 
 ## Process
 
@@ -47,7 +35,10 @@ Summarise what's present and what's missing. Resolve each section from existing
 answers and repository conventions first. Ask one question at a time only for
 choices that remain unresolved, and continue independent preparation.
 
-Lead each section with the recommended answer so the user can accept it in a word. Give a one-line explainer only when the choice genuinely branches; skip the section entirely when exploration already settled it (Section B when `triage` isn't installed, Section C when there's no monorepo).
+Lead each section with the recommended answer so the user can accept it in a word. Give a one-line explainer only when the choice genuinely branches. Skip what exploration already settled:
+
+- No `triage` installed: skip all of Section B.
+- No monorepo: skip only the Section C question; still prepare the single-context `docs/agents/domain.md`.
 
 **Section A: Issue tracker.**
 
@@ -62,7 +53,7 @@ Default posture: these skills were designed for GitHub. If a `git remote` points
 
 Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off**. Leave it off and don't raise it: a user who wants external PRs in the triage queue can flip the flag in the file later.
 
-A GitHub or GitLab tracker needs a reachable repo. When the user picks one and no `git remote` points at that host, get the repo URL from them and wire it up (`git init` if needed, `git remote add origin <url>`) before going further. Done when `gh repo view` / `glab repo view` prints the project from inside this directory; if it can't, stop and tell the user what's missing.
+A GitHub or GitLab tracker needs a reachable repo. When the user picks one and no `git remote` points at that host, get the repo URL from them and wire it up before going further: `git init` if needed, then add the remote. Check `git remote -v` first. If `origin` already points at another host, add the new remote under an unused name (for example the host name) or get the user's explicit decision before changing `origin`, and pass that remote or repo explicitly to `gh`/`glab`. These commands are part of the step 3 draft. Done when `gh repo view` / `glab repo view` prints the project from inside this directory; if it can't, stop and tell the user what's missing.
 
 **Section B: Triage label vocabulary.** Skip this section entirely if the `triage` skill isn't installed (exploration told you), since an uninstalled skill needs no labels.
 
@@ -82,8 +73,8 @@ the user's recorded choices. Recommend fast, offline staged lint and local
 documentation link checks that block a commit on failure. Resolve only
 unanswered choices about check coverage and blocking behavior. Preserve a
 local-only choice without proposing GitHub Actions or another hosted pipeline.
-Load [local verification](local-verification.md) to configure and verify the
-hook, then record the actual commands and applicable workflow guidance.
+Load [local verification](local-verification.md) to configure the hook, verify
+it with the staged cases in step 4, then record the actual commands and applicable workflow guidance.
 
 ### 3. Prepare the changes
 
@@ -96,10 +87,13 @@ Show the user a draft of:
 - The local hook and check commands, `docs/agents/local-verification.md`, and
   updates to existing review, native, evidence and progress guidance where
   applicable
+- Every repository or tracker command setup will run: `git init`,
+  `git remote add`, `git mv` of legacy glossary files, and each
+  `gh label create` / `glab label create`
 
-Use any corrections already supplied. When setup is authorized and the choices
-are settled, apply the draft. If approval for a remaining decision is required,
-show that concrete change and wait only on the dependent work.
+Show this as one combined draft that already includes any corrections the user
+supplied. Apply it only after the user approves that draft. Later, ask again
+only for a change the approved draft did not contain.
 
 ### 4. Write
 
@@ -133,13 +127,9 @@ The block:
 
 ### Visual acceptance
 
-A visual parity action exists only when the source requires a named production
-surface to be compared against a visual reference, requires selecting and
-freezing that reference for the later comparison, or links an existing manifest
-that records either obligation. Only then create and validate an initiative
-manifest before drafting implementation tickets or editing production code. UI
-work without that comparison uses no manifest. See
-`docs/agents/visual-acceptance.md`.
+Before drafting tickets or editing production code for work that compares, or
+selects and freezes, a visual reference for a named production surface, or that
+links a visual-acceptance manifest, read `docs/agents/visual-acceptance.md`.
 
 ### Local verification
 
@@ -149,7 +139,7 @@ read `CODING_STANDARDS.md` when it exists.
 
 Include the `### Triage labels` sub-block only when `triage` is installed and Section B ran. Reuse an existing triage-label mapping file and its pointer; otherwise write `docs/agents/triage-labels.md`. When `triage` isn't installed, omit both.
 
-When Section B ran on GitHub or GitLab, create each configured label the tracker lacks (`gh label create` / `glab label create`).
+When Section B ran on GitHub or GitLab and the user approved the draft that lists them, create each configured label the tracker lacks (`gh label create` / `glab label create`).
 
 Then write the docs files using the seed templates in this skill folder as a starting point. Validate tracker commands against the installed CLI's help before relying on version-specific flags; report a missing required capability. On a rerun, update existing files in place: preserve the project's tracker, labels, PR or MR policy, and other local guidance. Add missing conventions without replacing an equivalent existing section. Ensure the tracker document tells agents how to record implementation progress and when an issue can close.
 
@@ -166,7 +156,7 @@ Install the visual-acceptance assets in the target repository:
 - [visual-acceptance.template.json](./visual-acceptance.template.json) →
   `docs/agents/visual-acceptance.template.json`
 - [validate-visual-acceptance.mjs](./validate-visual-acceptance.mjs) →
-  `scripts/validate-visual-acceptance.mjs`
+  `./scripts/validate-visual-acceptance.mjs` (target repository root)
 
 Copy the template and validator byte-for-byte from their bundled sources.
 Apply any user-approved prose edits only to the installed protocol.
@@ -183,8 +173,11 @@ commit candidate passes, a lint failure and a broken local link each block,
 and an unstaged repair cannot hide either staged failure. Verify renamed or
 deleted link targets, run from a subdirectory, and confirm index/worktree bytes
 and unrelated hooks remain unchanged. Use the project's temporary directory
-and remove only these owned examples. Report hook activation separately from
-source files or a successful manual check.
+and remove only these owned examples. A blocked case must exit non-zero and a
+passing case zero; record the actual commands used and their exit statuses.
+If a case fails, make one repair and rerun the cases. If it still fails, report
+the failing case and do not claim the hook is active. Report hook activation
+separately from source files or a successful manual check.
 
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
 
