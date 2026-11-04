@@ -22,7 +22,7 @@ Greenfield is not a requirement. People use wayfinder routinely on legacy and ha
 
 ## Prerequisites
 
-The map and its tickets live on the repo's issue tracker, so wayfinder needs the tracker setup from [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills). That step writes a "Wayfinding operations" section. The section describes how to express the map, its child tickets, blocking edges, and frontier queries on GitHub, GitLab, or local markdown. Wayfinder finds that doc through the pointer in your `CLAUDE.md` / `AGENTS.md`, or at `docs/agents/issue-tracker.md` when no pointer exists. Claiming a ticket uses the tracker's own operation: assignment on a remote tracker, `Status: claimed` in local markdown. With no tracker configured, it asks you to run setup instead of switching to local files.
+The map and its tickets live on the repo's issue tracker, so wayfinder needs the tracker setup from [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills). That step writes a "Wayfinding operations" section. The section describes how to express the map, its child tickets, blocking edges, and frontier queries on GitHub, GitLab, or local markdown. Wayfinder finds that doc through the pointer in your `CLAUDE.md` / `AGENTS.md`, or at `docs/agents/issue-tracker.md` when no pointer exists. Claiming a ticket uses the tracker's own operation (assigning the developer on a remote tracker, `Status: claimed` in local markdown) plus a claim comment naming the session and the claim time. With no tracker configured, it asks you to run setup instead of switching to local files.
 
 The tracker does real work. Its native blocking links show the frontier in the tracker's own UI. On a tracker without native dependency links (a self-hosted Gitea, say), wayfinder infers blockers from the map text. That works, but you must supervise it more closely.
 
@@ -37,7 +37,7 @@ The map has four sections:
 - **Not yet specified.** This is the **fog of war**: decisions you can tell are coming but cannot yet phrase sharply. The test for fog versus ticket is whether you can state the question precisely *now*, not whether you can answer it. When you resolve a ticket, the fog ahead of it clears, and anything you can now specify graduates into a new ticket.
 - **Out of scope.** Work beyond the destination. Fog only gathers *toward* the destination, so out-of-scope work stays closed and never graduates.
 
-The **frontier** is the set of open, unblocked, unclaimed tickets (the edge of the known). A session claims a ticket by assigning it to itself before it does any work. The assignee *is* the claim, so concurrent sessions skip that ticket. Sessions refer to tickets by name, never by a bare `#42`, because a wall of issue numbers is hard to read in narration.
+The **frontier** is the set of open, unblocked, unclaimed tickets (the edge of the known). Before any work, a session rechecks that the ticket is still open, unblocked and unclaimed, then claims it with the tracker operation and a claim comment naming the session and the claim time. Concurrent sessions skip claimed tickets. On resume, a session looks for its own claim first, and it releases a claim that looks stale only when you confirm it is abandoned. Sessions refer to tickets by name, never by a bare `#42`, because a wall of issue numbers is hard to read in narration.
 
 ## The four decision-ticket types
 
@@ -112,7 +112,7 @@ It is this skill. v1.1 renamed it to `wayfinder`, and you invoke it as `/wayfind
 - A session resolves one ticket, posts the answer as a resolution comment, closes it, and adds one line to the map's *Decisions so far*. Then it stops.
 - **Not yet specified** shrinks over time. When fog graduates into a ticket, it leaves that section and does not appear in both places.
 - When the opening breadth-first grill finds no fog at all, the skill stops and tells you the effort is small enough to skip the map.
-- The session that finishes the map points you toward a spec, not a pull request.
+- The session that finishes the map summarises the route in it, closes the map issue, and points you toward a spec, not a pull request.
 - A map with a visual parity action cannot clear while its comparison target
   lacks a durable, hashed reference in the acceptance manifest.
 

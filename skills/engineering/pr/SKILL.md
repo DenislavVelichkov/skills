@@ -1,6 +1,6 @@
 ---
 name: pr
-description: "Shapes a pull request body: the smallest visual that shows the change, before/after evidence that it works, and a merge-danger call (one-way or two-way door, blast radius). Use when writing a PR body."
+description: "Shapes a pull request body: the smallest visual that shows the change, before/after evidence that it works, and a merge-danger call (one-way or two-way door, blast radius). Use when writing a PR body or PR description. Returns the body text; not for opening the PR or reviewing the code."
 metadata:
   credits:
     skill: show-me
@@ -8,6 +8,8 @@ metadata:
     organisation: Humanlayer
     url: "https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md"
 ---
+
+Determine the base (the branch or commit the user names, otherwise the repository's default branch) and read `git diff <base>...HEAD` before writing. For the default branch, use `git symbolic-ref --short refs/remotes/origin/HEAD`, then `git merge-base` with `HEAD`; if either fails, ask the user for the base. If the diff is empty, say so and stop instead of writing a body. If `git status --porcelain` shows uncommitted changes, tell the user the body covers committed work only and list those paths; do not describe them as part of the PR. Return the PR body to the user unless they name a destination.
 
 Use this template for writing the PR body:
 
@@ -18,8 +20,8 @@ Use this template for writing the PR body:
 
 ## Evidence
 
-- **Before:** <screenshot/output/failing test run>
-  **After:** <screenshot/output/passing test run>
+- **Before:** <observed|static|proposed> <screenshot/output/failing test run>
+  **After:** <observed|static|proposed> <screenshot/output/passing test run>
 
 ## Merge Danger
 
@@ -27,96 +29,20 @@ Use this template for writing the PR body:
 
 <optional: description>
 
-**Blast Radius:** <one-word description>
+**Blast Radius:** <short phrase naming the main impact area>
 
 <optional: potential ramifications of merge>
 ```
 
 ## Sections
 
-Skip all preambles and keep prose brief. Use the user's domain language from `GLOSSARY.md`.
+Skip all preambles and keep prose brief. Use the user's domain language from `GLOSSARY.md`; if there is no `GLOSSARY.md`, use the terms in the diff.
 
 ### Summary
 
 Pick the smallest view that makes the key point clear.
 
-- Show logic or an algorithm as pseudocode:
-
-```text
-on(save)
-  if content is unchanged
-    return cached result
-  write new content
-  return fresh result
-```
-
-- Show runtime control flow as a call tree:
-
-```text
-submitForm
-  createSession
-    persistPrompt
-    launchAgent
-  navigateToSession
-```
-
-- Show UI structure as a component tree, including state and module boundaries that matter:
-
-```text
-<SessionPage> (apps/example/src/routes/session.tsx)
-  useSessionEvents()
-  <SessionToolbar>
-    <RunSkillButton> (packages/ui)
-```
-
-- Show file responsibility or a broad refactor as a shallow file tree:
-
-```text
-src/
-├── commands/       # parses user actions
-├── sessions/       # owns session state
-└── transport/      # sends API requests
-```
-
-- Show component interaction, control flow, or data flow with Mermaid:
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant UI
-    participant Daemon
-    User->>UI: choose command
-    UI->>Daemon: send expanded prompt
-    Daemon-->>UI: stream result
-```
-
-- Use `diff` when the point is what changes and the surrounding shape already exists. Match the diff shape to the topic.
-
-For a component change:
-
-```diff
- <SessionPage>
-   useSessionEvents()
-   <SessionToolbar>
-+    <RunSkillButton />
-   <SessionTimeline>
-+    <SkillResultCard />
-```
-
-For a file-layout change:
-
-```diff
- src/
- ├── commands/
-+│   └── show-me.ts       # expands the slash command
- ├── sessions/
--└── transport.ts
-+└── transport/
-+    ├── client.ts
-+    └── stream.ts
-```
-
-For a call-tree or call-stack change:
+Visual types: pseudocode for logic, a call tree for runtime control flow, a component tree for UI structure, a shallow file tree for file responsibility, Mermaid for interaction or data flow, a `diff` of any of these when the surrounding shape already exists, or the whole block when most of it is new. For example, a call-tree change:
 
 ```diff
  submitForm
@@ -124,47 +50,32 @@ For a call-tree or call-stack change:
      persistPrompt
 +    expandSkillMention
      launchAgent
--  navigateToSession
-+  navigateToSession
-+    subscribeToEvents
 ```
 
-For a state or control-flow change:
-
-```diff
- on(save)
--  write content
-+  if content is unchanged
-+    return cached result
-+  write new content
-+  invalidate cache
-```
-
-- Show the whole block when most of it is new, when omitted context would hide ownership or order, or when the user needs a copyable target shape:
-
-```ts
-function expandSkill(command: string): string {
-  const skillName = command.slice(1);
-  return `use the ${skillName} skill`;
-}
-```
+When choosing a visual other than this one, read [references/visuals.md](references/visuals.md) for an example of each type.
 
 #### Guidance
 
-Place each visual next to the short text it supports. Keep only the calls, files, props, states, and boundaries needed to answer the user's current question or the options to resolve the current discussion point.
+Place each visual next to the short text it supports. Keep only the calls, files, props, states, and boundaries needed to show the change.
 
-You may use one of these, you may use several, it is unlikely you will use all of them. Use your judgement and don't overwhelm the user.
+Default to one visual; add a second only when the first leaves the key point unclear.
 
 ### Evidence
 
-Concrete evidence that the change works. Show a before and after.
+Concrete evidence that the change works.
 
-Screenshots are S-tier - when the environment is set up for it and the change is visual.
+Prefer screenshots for a visual change when the environment can take them; otherwise use execution evidence such as test results or console output. Quote the exact test command or name and its observed result before and after. Use pseudocode only to explain what a test checks, and label it as pseudocode.
 
-Execution-based evidence is A-tier. Test results, console output. Show the exact test that now fails and passes, using pseudocode.
+Include only evidence you observed in this session. When a screenshot, baseline, or test run is unavailable, write `Not captured` with the reason; never present unrun evidence as a result. When before-evidence needs a run on the base, propose the command labelled `proposed`, or run it in a separate worktree only with the user's agreement. Label each item `observed`, `static` (read from code, not run), or `proposed` (a check the reviewer could run).
+
+Before including a screenshot, log, or test output, check it for credentials, tokens, and private data, and redact them.
 
 ### Merge Danger
 
-Describe whether it's a one-way or two-way door. You can walk back through two-way doors, but not one-way doors. A PR that is cheap to roll back is lower risk. Changes that involve destructive actions or hard-to-reverse decisions are one-way doors.
+Describe whether it's a one-way or two-way door. You can walk back through two-way doors, but not one-way doors. Changes that involve destructive actions or hard-to-reverse decisions are one-way doors.
 
-The blast radius is the potential impact or scope of the changes introduced by this PR. Consider all possibilities. Examples are layout shift, breakages for consumers, mobile responsiveness, etc.
+The blast radius is the potential impact of this PR. Name the consumers or surfaces that break if the change is wrong. Examples are layout shift, breakages for consumers, mobile responsiveness, etc.
+
+### Final check
+
+Before returning the body, check each section against the diff: every claimed change appears in it, and no significant change in it is missing from the Summary. Revise once; then remove or qualify any claim still unsupported and tell the user which.

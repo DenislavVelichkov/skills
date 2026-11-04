@@ -4,7 +4,7 @@
 
 It never changes the code. The whole run produces a conversation and one HTML file in your OS temp directory. You do the refactor later, in a separate [session](https://www.aihero.dev/ai-coding-dictionary/session), through the normal build flow. This makes it a survey, not a refactoring tool, so you can run it on a codebase you are not ready to touch yet.
 
-Two filters stop the report from becoming generic cleanup advice. First, every candidate must pass the **deletion test**: if you removed this module, would its complexity move behind a smaller interface, or spread across the callers? Only the first case gets a card. Second, unless you point it at a specific area, it reads recent commit history first and focuses the scan on paths that change often. A deepening in code that nobody touches is a refactor that never pays back.
+Two filters stop the report from becoming generic cleanup advice. First, every candidate must pass the **deletion test**: if you removed this module, would its complexity vanish, or reappear across the callers? A module whose complexity vanishes is a pass-through and gets a card; one whose complexity reappears earns its keep. Second, unless you point it at a specific area, it reads recent commit history first and focuses the scan on paths that change often. A deepening in code that nobody touches is a refactor that never pays back.
 
 ## When to reach for it
 
@@ -49,7 +49,7 @@ Each candidate is a card with the files involved, the friction, a plain-English 
 | `Worth exploring` | Plausible deepening, but the payoff depends on where the code is going next. |
 | `Speculative` | Included for completeness. You can ignore most of these. |
 
-The report ends with a **Top recommendation**, the candidate it would do first. Then the skill stops and asks which candidate you want to explore. At that point you have decided nothing, and no code has changed.
+The report ends with a **Top recommendation**, the candidate it would do first, or a statement that no candidate passed the deletion test. Then the skill stops and asks which candidate you want to explore. At that point you have decided nothing, and no code has changed.
 
 ## What happens after you pick one
 

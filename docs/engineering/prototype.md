@@ -32,7 +32,7 @@ A finished prototype leaves two things, and they go to different places.
 
 You record the **answer** (the verdict plus the question it settled) somewhere permanent: a commit message, an ADR, the implementation issue. The owning ticket applies that answer during authorized implementation.
 
-The **prototype** is the runnable evidence the answer came from, and you do not delete it. It doesn't belong in main either, because nobody maintains it and it goes stale fast. So you commit it to a throwaway `prototype/<name>` branch out of main, never merge it, and leave a [context pointer](https://www.aihero.dev/ai-coding-dictionary/context-pointer) to that branch on the implementation issue. Main stays clean, and whoever picks the work up next can find and re-run the prototype.
+The **prototype** is the runnable evidence the answer came from, and you do not delete it. It doesn't belong in main either, because nobody maintains it and it goes stale fast. So the skill creates a throwaway `prototype/<name>` branch from the default branch (`origin/HEAD`, else a base you approve), preferably in a separate worktree, before it writes any prototype code. It commits only the prototype's paths there, reports what it left uncommitted, and never merges the branch. If switching would conflict with your uncommitted work, it stops and asks; an approved stash is restored afterwards. Outside a git repo it uses a clearly named prototype directory instead. After you confirm, it pushes the branch and leaves a [context pointer](https://www.aihero.dev/ai-coding-dictionary/context-pointer) to that branch on the implementation issue. Main stays clean, and whoever picks the work up next can find and re-run the prototype.
 
 ## Common questions
 

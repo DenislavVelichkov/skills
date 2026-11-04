@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Compact the current conversation into a handoff document for another agent to pick up.
+description: Compacts the current conversation into a handoff document for another agent.
 argument-hint: "What will the next session be used for?"
 disable-model-invocation: true
 ---
@@ -25,4 +25,6 @@ If the user passed arguments, treat them as a description of what the next sessi
 
 Before finishing, check that the file exists, its artifact references identify
 the correct work, and the next agent can see what is done and what remains.
-Report inaccessible or temporary dependencies explicitly.
+If the check finds an omission, fix the file once and check again. Report
+inaccessible or temporary dependencies, and any omission still present,
+explicitly.

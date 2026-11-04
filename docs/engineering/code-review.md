@@ -14,6 +14,9 @@ For acceptance tooling and its dependent claims, review checks retained evidence
 ## When to reach for it
 
 The first review covers the complete requested diff on a frozen candidate.
+The candidate is HEAD, or the PR head commit for a PR, unless you name one; both
+ends resolve to commit ids, and diffs run with `--no-ext-diff --no-textconv` so
+the read-only review executes no configured diff tools.
 Follow-up reviews cover accepted fixes and their affected behavior, retaining
 the original review coverage. Once both axes and required checks pass, an
 unchanged scope does not need another review round.
@@ -63,7 +66,8 @@ against a visual reference, requires selecting that reference for the later
 comparison, or links an existing manifest that records either obligation. A
 visual diff without that obligation gets no visual-acceptance block. For an
 applicable action, the review verifies hashes, reads the reference/candidate
-comparison, and reports the five delivery counters. It cannot advance a human
+comparison, and reports the five delivery counters defined in
+`docs/agents/visual-acceptance.md`. It cannot advance a human
 gate.
 
 ## Common questions

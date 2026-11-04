@@ -1,6 +1,6 @@
 ---
 name: to-questionnaire
-description: Turn a decision you can't fully answer into a questionnaire for someone else to fill in.
+description: Turns a decision the user cannot answer alone into a questionnaire for someone else to fill in.
 disable-model-invocation: true
 ---
 
@@ -8,12 +8,11 @@ Turn something the user can't answer alone into a **questionnaire**: a Markdown 
 
 **Grill the send, not the subject.** Interview the user only about the _send_, which they can always answer: who it goes to, and what they need back. The questions in the document then target the **gap** between what the recipient knows and what the user needs.
 
+1. **Who is it going to?** Ask, in one exchange and only for what the user hasn't already said, the recipient's role, expertise, and relationship to the user. This fixes the questionnaire's tone and how much context it must carry. Done when you know who the recipient is and what they know that the user doesn't.
 
-1. **Who is it going to?** Ask, in one exchange, the recipient's role, expertise, and relationship to the user. This fixes the questionnaire's tone and how much context it must carry. Done when you know who the recipient is and what they know that the user doesn't.
+2. **What do you need back?** Ask, in one exchange and only for what the user hasn't already said, the specific decisions or facts the user can't resolve alone and needs from this person, and whether the recipient must answer by a deadline. Done when you have a concrete list of what the user must walk away able to do or decide.
 
-2. **What do you need back?** Ask, in one exchange, the specific decisions or facts the user can't resolve alone and needs from this person. Done when you have a concrete list of what the user must walk away able to do or decide.
-
-3. **Write the questionnaire.** Draft questions aimed at the gap from steps 1–2, following the Document structure below. Write it to `to-questionnaire-<slug>.md` in the current directory (slug from the topic) and report the path. Done when the file exists and every item the user named in step 2 is covered by a question.
+3. **Write the questionnaire.** Draft questions aimed at the gap from steps 1–2, following the Document structure below. Write it to `to-questionnaire-<slug>.md` in the current directory (slug from the topic). If that file exists, update it only when the user asked to revise that questionnaire; otherwise add a numeric suffix (`-2`, `-3`) until the name is unused. Then reread it once: split any compound question, give every question its answer stub, and keep the template's sections. Fix failures in one pass. Report the path and the heading list, and ask whether the user wants changes before sending. Done when the file exists, every item the user named in step 2 is covered by a question, and the user has seen the headings.
 
 ## Document structure
 
@@ -33,7 +32,7 @@ One paragraph orienting a recipient who wasn't in the user's head. Enough to ans
 
 ## How to answer
 
-Deadline and rough effort. Partial answers and "I don't know" are useful: flag anything you're unsure of rather than skipping it.
+Estimated effort (label it an estimate), and the deadline only if the user gave one. Partial answers and "I don't know" are useful: flag anything you're unsure of rather than skipping it.
 
 ## <Theme heading>
 

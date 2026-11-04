@@ -89,8 +89,8 @@ confirm() {
   [[ "$reply" =~ ^[Yy] ]]
 }
 
-# _existing KEY: current value of KEY in ENV_FILE, if any, with write_env's single
-# quotes or a plain dotenv double-quoted value undone.
+# _existing KEY: current value of KEY in ENV_FILE, if any, with single quotes
+# (including an older '\'' escape) or a plain dotenv double-quoted value undone.
 _existing() {
   [[ -f "$ENV_FILE" ]] || return 1
   local line value sq="'\\''"; line=$(grep -E "^${1}=" "$ENV_FILE" | tail -n1) || return 1
@@ -99,6 +99,9 @@ _existing() {
   elif [[ "$value" == \"*\" ]]; then
     value="${value:1:${#value}-2}"
     [[ "$value" == *[\\\$\"]* ]] && return 1   # escapes, $ or ": can't decode safely; ask again
+  else
+    value="${value%%[[:space:]]#*}"                  # drop a trailing " # comment"
+    value="${value%"${value##*[![:space:]]}"}"       # and trailing whitespace
   fi
   printf '%s' "$value"
 }
@@ -134,17 +137,50 @@ ask_secret() {
   printf -v "$key" '%s' "$input"
 }
 
+# _env_git_guard: once per run, refuse an ENV_FILE that git tracks, and one git
+# does not ignore until the human adds it to .gitignore. Passes outside a git work tree.
+_env_git_guard() {
+  [[ -n "${_ENV_GIT_CHECKED:-}" ]] && return 0
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    if git ls-files --error-unmatch -- "$ENV_FILE" >/dev/null 2>&1; then
+      warn "$ENV_FILE is tracked by git; refusing to write secrets to it"; return 1
+    fi
+    if ! git check-ignore -q -- "$ENV_FILE"; then
+      warn "$ENV_FILE is not ignored by git; add it to .gitignore before any secret is written."
+      pause "Press Enter once it is in .gitignore"
+      git check-ignore -q -- "$ENV_FILE" || { warn "$ENV_FILE is still not ignored; refusing to write secrets to it"; return 1; }
+    fi
+  fi
+  _ENV_GIT_CHECKED=1
+}
+
 # write_env KEY VALUE upserts KEY='VALUE' into ENV_FILE (replaces any existing
-# line) and sets $KEY. Idempotent. Creates ENV_FILE at mode 0600; writes through
-# a symlink and keeps an existing file's mode.
+# line) and sets $KEY. Idempotent. Creates ENV_FILE at mode 0600, keeps an
+# existing file's mode, offers chmod 600 when other users can read it, and
+# replaces it atomically. Refuses a symlinked ENV_FILE, a git-tracked or
+# unignored one, and a value containing a single quote. On failure the file is unchanged.
 write_env() {
-  local key="$1" value="$2" tmp sq="'\\''"
-  [[ -e "$ENV_FILE" ]] || (umask 077 && : > "$ENV_FILE")
-  tmp=$(mktemp)
-  grep -vE "^${key}=" "$ENV_FILE" > "$tmp" || true
-  printf "%s='%s'\n" "$key" "${value//\'/$sq}" >> "$tmp"
-  cat "$tmp" > "$ENV_FILE"
-  rm -f "$tmp"
+  local key="$1" value="$2" target="$ENV_FILE" tmp perms rc=0
+  if [[ -L "$target" ]]; then
+    warn "$target is a symlink; point ENV_FILE at the real file. $key not written"; return 1
+  fi
+  if [[ "$value" == *\'* ]]; then
+    warn "$key contains a single quote, which write_env cannot store; add it to $target by hand"; return 1
+  fi
+  _env_git_guard || { warn "$key not written"; return 1; }
+  [[ -e "$target" ]] || (umask 077 && : > "$target")
+  perms=$(ls -ld "$target")
+  if [[ -z "${_ENV_MODE_CHECKED:-}" && ( "${perms:4:1}" == r || "${perms:7:1}" == r ) ]]; then
+    _ENV_MODE_CHECKED=1
+    warn "$target is readable by other users."
+    confirm "Restrict it to you (chmod 600)?" && chmod 600 "$target"
+  fi
+  tmp=$(mktemp "$(dirname "$target")/.wizard-env.XXXXXX") || return 1
+  cp -p "$target" "$tmp" || { rm -f "$tmp"; return 1; }   # copies the mode
+  grep -vE "^${key}=" "$target" > "$tmp" || rc=$?         # 1 = no other lines, 2 = read error
+  if (( rc > 1 )) || ! printf "%s='%s'\n" "$key" "$value" >> "$tmp" || ! mv -f "$tmp" "$target"; then
+    rm -f "$tmp"; warn "couldn't write $key to $target; it is unchanged"; return 1
+  fi
   printf -v "$key" '%s' "$value"
   WRITTEN_ENV+=("$key")
   printf '  %s✓ wrote%s %s → %s\n' "$GREEN" "$RESET" "$key" "$ENV_FILE"
@@ -174,14 +210,18 @@ set_var() {
       return
     fi
   fi
-  SKIPPED+=("GitHub variable $name")
+  SKIPPED+=("GitHub variable $name (set it manually: gh variable set $name)")
   warn "skipped GitHub variable $name, gh not ready; set it later"
 }
 
 # finish clears, then shows a closing summary of everything configured.
 finish() {
   _clear
-  printf '\n%s%s  ✓ Setup complete%s\n' "$BOLD" "$GREEN" "$RESET"
+  if (( ${#SKIPPED[@]} )); then
+    printf '\n%s%s  ⚠ Setup incomplete%s\n' "$BOLD" "$YELLOW" "$RESET"
+  else
+    printf '\n%s%s  ✓ Setup complete%s\n' "$BOLD" "$GREEN" "$RESET"
+  fi
   (( ${#WRITTEN_ENV[@]} ))    && note "wrote ${#WRITTEN_ENV[@]} value(s) to $ENV_FILE: ${WRITTEN_ENV[*]}"
   (( ${#WRITTEN_SECRET[@]} )) && note "set ${#WRITTEN_SECRET[@]} GitHub secret(s): ${WRITTEN_SECRET[*]}"
   if (( ${#SKIPPED[@]} )); then

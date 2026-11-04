@@ -1,6 +1,6 @@
 ---
 name: setup-matt-pocock-skills
-description: "Configure repository issue tracking, domain docs, review guidance and local commit checks. Run before the engineering workflow, or to update an existing setup."
+description: "Configures repository issue tracking, domain docs, review guidance and local commit checks. Run before the engineering workflow, or to update an existing setup."
 disable-model-invocation: true
 ---
 
@@ -39,7 +39,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
   progress records and their history. Read their configuration before proposing
   another tool or duplicating guidance.
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
-- Monorepo signals: a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. These are present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
+- Monorepo signals: a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. Offer multi-context only when one of these exists; otherwise use single-context.
 
 ### 2. Present findings and ask
 
@@ -89,15 +89,19 @@ Show the user a draft of:
 
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
 - The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
-- The conditional visual-acceptance pointer and
-  `docs/agents/visual-acceptance.md`
+- The conditional visual-acceptance pointer, `docs/agents/visual-acceptance.md`,
+  `docs/agents/visual-acceptance.template.json` and
+  `./scripts/validate-visual-acceptance.mjs` (target repository root)
+- When Section B ran on GitHub or GitLab, the labels to create on the remote
+  tracker
 - The local hook and check commands, `docs/agents/local-verification.md`, and
   updates to existing review, native, evidence and progress guidance where
   applicable
 
 Apply any corrections the user already supplied. Show this draft once and let
-the user edit it before writing; on a rerun, the draft shows the in-place
-updates to existing files.
+the user edit it; on a rerun, the draft shows the in-place updates to existing
+files. Write nothing, and create no labels, until the user accepts the draft.
+An acceptance covers only the scope shown; show any added file or label again.
 
 ### 4. Write
 
@@ -154,6 +158,7 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [issue-tracker-github.md](./issue-tracker-github.md): GitHub issue tracker
 - [issue-tracker-gitlab.md](./issue-tracker-gitlab.md): GitLab issue tracker
 - [issue-tracker-local.md](./issue-tracker-local.md): local-markdown issue tracker
+- "Other" tracker: write `docs/agents/issue-tracker.md` from scratch using the user's description
 - [triage-labels.md](./triage-labels.md): label mapping (only if `triage` is installed)
 - [domain.md](./domain.md): domain doc consumer rules + layout
 
@@ -164,9 +169,11 @@ Install the visual-acceptance assets in the target repository:
 - [visual-acceptance.template.json](./visual-acceptance.template.json) →
   `docs/agents/visual-acceptance.template.json`
 - [validate-visual-acceptance.mjs](./validate-visual-acceptance.mjs) →
-  `scripts/validate-visual-acceptance.mjs`
+  `./scripts/validate-visual-acceptance.mjs` (target repository root)
 
-Copy the template and validator byte-for-byte from their bundled sources.
+Copy the template and validator byte-for-byte from their bundled sources. On a
+rerun, compare any installed copy first: leave an identical copy alone, and for
+a customized copy show the difference and replace it only when the user agrees.
 Apply any user-approved prose edits only to the installed protocol.
 
 Use [local verification](local-verification.md) as the seed for
@@ -181,10 +188,9 @@ commit candidate passes, a lint failure and a broken local link each block,
 and an unstaged repair cannot hide either staged failure. Verify renamed or
 deleted link targets, run from a subdirectory, and confirm index/worktree bytes
 and unrelated hooks remain unchanged. Use the project's temporary directory
-and remove only these owned examples. Report hook activation separately from
-source files or a successful manual check.
-
-For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
+and remove only these owned examples. If a case fails, make one focused fix,
+rerun the cases once, and report any remaining failures as blockers. Report hook
+activation separately from source files or a successful manual check.
 
 ### 5. Done
 

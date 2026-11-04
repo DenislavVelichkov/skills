@@ -1,14 +1,16 @@
 ---
 name: ask-matt
-description: Ask which skill or flow fits your situation. A router over the skills in this repo.
+description: Recommends the next skill or flow for the user's situation and does not run it. A router over the skills in this repo.
 disable-model-invocation: true
 ---
 
 # Ask Matt
 
-You don't remember every skill, so ask.
-
 Recommend the next skill or flow and stop; this router does not execute it.
+Reply with: the recommended skill or flow, a one-line reason, the result of the
+availability and precondition check, and one alternative when the situation is
+ambiguous. If nothing fits, say so and name the closest skill with what it does
+not cover.
 Before recommending, check the loaded plugin's selection and the relevant
 `SKILL.md` as reference material: the summaries here are for orientation only.
 In this Claude plugin, `.claude-plugin/plugin.json` lists the selected skills. A
@@ -30,26 +32,19 @@ The route most work travels. You have an idea and want it built.
    - **`/handoff`** back what you learned, and reference it from the original idea thread.
 3. **Branch: is this a multi-session build?**
    - **Yes** → **`/to-spec`** (turn the thread into a spec), then **`/to-tickets`** to split it into tracer-bullet tickets, each declaring its **blocking edges**. A local spec at `.scratch/<feature>/spec.md` gets a fresh implementation set under `.scratch/<feature>/implementation/issues/`. The spec is not executable work. Then work the tickets one of two ways:
-     - **`/implement`** per ticket, **`/clear`ing context between each one**. On a local tracker that's one file per ticket under `.scratch/<feature>/implementation/issues/`, worked blockers-first by hand; on a real tracker the edges become native blocking links, so any ticket whose blockers are done can be grabbed. Carry settled decisions, authorization and remaining requirements into each ticket; compaction does not end an authorized objective.
-     - **`/implement-spec`** for the whole spec in one run when the host supports the required subagents and isolated worktrees. It reads the approved tickets as a **task graph**, runs implementer subagents across the ready **frontier** in parallel, and lands their work on one **integration branch**. Required checks and human acceptance still govern ticket completion.
+     - **`/implement`** per ticket, blockers first, deciding context between tickets with [Phase boundaries](#phase-boundaries); preserve settled decisions, authorization and remaining requirements before any clear.
+     - **`/implement-spec`** for the whole spec in one run, only when the host supports the required subagents and isolated worktrees.
    - **No, and the small plan is still unpublished** → **`/implement`** right here. A published spec always goes through **`/to-tickets`** first.
 
-   Model selection is optional in both implementation paths: unassessed tickets, plans, and conversations continue with current or inherited settings. An existing recommendation for the current client requires a verified runtime gate before edits, including every worker and resumed fix; mismatches stop that ticket. See [model execution verification](../implement/MODEL-EXECUTION.md).
+   Model selection rules live in [model execution verification](../implement/MODEL-EXECUTION.md).
 
-   Both implementation paths use **`/tdd`** and **`/code-review`**. They share expensive-execution preparation and recurring-failure diagnosis in [proportionate verification](../implement/VERIFICATION.md). `/implement` reviews each committed ticket candidate and related fix deltas with affected callers. `/implement-spec` reviews the integrated branch against the full spec, with earlier ticket reviews only when the approved acceptance order requires them. Use `/tdd` directly for a concrete behavior to build test-first, or `/code-review` to assess a branch or PR against a fixed point.
+   Both implementation paths use **`/tdd`** and **`/code-review`**. Use `/tdd` directly for a concrete behavior to build test-first, or `/code-review` to assess a branch or PR against a fixed point.
 
-   A visual parity action adds one fail-closed boundary. It exists only when the
-   source requires a production surface to be compared against a visual
-   reference, requires selecting that reference for the later comparison, or
-   links an existing manifest that records either obligation. Its manifest
-   follows the work through `/to-spec` and `/to-tickets`.
-   `/implement` requires frozen references, then ends the comparison turn by
-   asking the human to approve or reject the displayed candidate hash. UI work
-   without that comparison uses the normal flow and no manifest.
+   If the source requires a visual reference comparison, carry its visual parity manifest through `/to-spec` and `/to-tickets`.
 
-   When the work goes up as a pull request, **`/pr`** shapes the body: the smallest visual that shows the change, before/after evidence that it works, and a one-way or two-way door call. It's model-invoked, so the agent reaches for it whenever it writes a PR.
+   When the work goes up as a pull request, the agent reaches for the model-invoked **`/pr`**.
 
-4. **`/retro`** reviews the completed session and proposes changes to the agent's environment. Workflow lessons name their existing skill owner, overlapping guidance and an observable evaluation. It recommends automated checks for mechanical mistakes and coding standards for judgement calls. It stops after presenting the recommendations unless the user has authorized their implementation.
+4. **`/retro`** reviews the completed session and proposes changes to the agent's environment. It stops after presenting the recommendations unless the user has authorized their implementation.
 
 ### Context hygiene
 
@@ -70,7 +65,7 @@ A starting situation that generates work, then merges onto the main flow.
 
 - **Something's broken** → **`/diagnosing-bugs`**. For the hard ones: the bug that resists a first glance, the intermittent flake, the regression that crept in between two known-good states. It starts with the error, owning code and smallest existing check. A clear cause gets a direct fix; uncertain failures use a **tight feedback loop** that exposes the actual bug. Shared-tooling repairs follow the bounded scope in [proportionate verification](../implement/VERIFICATION.md). Once the fix is in, recommend **`/retro`** to examine what would have prevented the bug. If there is no suitable seam for a regression test, recommend **`/improve-codebase-architecture`**.
 
-- **A huge, foggy effort: a greenfield project or a huge feature build, too big for one session** → **`/wayfinder`**, the most cognitively demanding flow here. When the way from here to the destination isn't visible yet, it charts a **shared map** of **decision tickets** on the issue tracker and resolves them one at a time, producing **decisions, not deliverables**, until the fog is pushed back and the way is clear. Where **`/grill-with-docs`** sharpens an idea you can hold in one session, wayfinder is for the idea you can't, and it's slower and denser, so save it for exactly that, never a well-scoped feature.
+- **A huge, foggy effort: a greenfield project or a huge feature build, too big for one session** → **`/wayfinder`**. It charts a **shared map** of **decision tickets** on the issue tracker and resolves them one at a time, producing **decisions, not deliverables**. Use **`/grill-with-docs`** instead for an idea that fits one session; never use wayfinder for a well-scoped feature.
 
   When the map clears, **it hands off, it doesn't build**: merge onto the main flow at **`/to-spec`**, which collapses the map's linked decisions into a buildable plan, then `/to-tickets` and `/implement` as usual. `/implement` must not build directly from the map or parent spec.
 
@@ -89,30 +84,26 @@ Two model-invoked references that run *beneath* the other skills, each the singl
 
 ## Phase boundaries
 
-A **phase** is a chunk of work inside a session: the grilling, the implementation, the QA. At the **boundary** between two of them you have five options, and picking between them is the fuzziest decision in this whole map:
+A **phase** is a chunk of work inside a session: the grilling, the implementation, the QA. At the **boundary** between two of them the options are Continue, `/clear`, `/handoff`, a subagent, or `/compact`.
 
-- **Continue**: stay put. Costs nothing, loses nothing.
-- **`/clear`**: empty the window, when nothing here matters to what's next.
-- **`/handoff`** writes a portable markdown file. Narrow: only for a **new harness**, a **new directory**, a **colleague**, or forking a side task **mid-phase**. What it buys is portability.
-- **Subagent**: send a tightly-scoped task to its own window and get a report back.
-- **`/compact`** compresses this context and seeds a fresh session with it. The **default**, at the bottom of the tree rather than the first reach.
-
-Read [PHASE-BOUNDARIES.md](PHASE-BOUNDARIES.md) for the ordered tree: the five questions, the reasoning behind each branch, and why the primary-source cost makes **Continue** the one to rule out first. Make a manual context decision **at** a boundary; mid-phase, continue or split the rest into subagents. Preserve the work across any automatic compaction.
+At a phase boundary, read [PHASE-BOUNDARIES.md](PHASE-BOUNDARIES.md) for the ordered tree: the five questions, the reasoning behind each branch, and why the primary-source cost makes **Continue** the one to rule out first. Make a manual context decision **at** a boundary; mid-phase, continue or split the rest into subagents. Preserve the work across any automatic compaction.
 
 ## Standalone
 
 Off the main flow entirely.
 
-- **`/chief-of-staff`** coordinates a long-running goal through background subagents and a dated, commit-cited wiki. It is selected in this Claude plugin but remains in-progress and user-invoked. Recommend it when ongoing coordination and durable memory are needed; only the user invokes it. Agree on the goal, wiki location, delegation scope, and limits on environment improvements. Use `/implement-spec` for execution of one approved spec.
-- **`/grill-me`**: the same relentless interview as `/grill-with-docs`, but **stateless**: it saves nothing locally and builds no `GLOSSARY.md`. Reach for it when you are **not working in a working directory** (sharpening a plan, a design, a piece of writing, anything with no repo under it). If you are in a working directory, use `/grill-with-docs` instead: it runs the same interview and leaves a paper trail, so it is strictly the better one.
-- **`/grilling`** is the interview primitive itself: rounds, the frontier, facts are the agent's job and decisions are yours. `/grill-me` and `/grill-with-docs` are the two named ways in, and `/triage`, `/wayfinder` and `/improve-codebase-architecture` all run it internally. Reach for it directly only when you want the interview with no wrapper around it.
-- **`/prototype`** is a small, throwaway program that answers one design question: does this state model feel right, or what should this UI look like. Throwaway is a constraint on how the code is written, not a promise to destroy it: the answer folds into the real code, and the prototype itself is kept as a **primary source** on a `prototype/<name>` branch out of main, pointed at from the implementation issue. It's the detour in step 2 of the main flow, but reach for it any time a design question is hard to settle on paper.
-- **`/research`**: delegate reading legwork to a **background agent**: it investigates a question against **primary sources**, then leaves a cited Markdown file in the repo. Keep working while it reads. The file it produces is something to take *into* the main flow at `/grill-with-docs`, since research feeds the thinking rather than replacing it.
-- **`/to-questionnaire`** comes in when the thing blocking you isn't in your head or the codebase but in **someone else's**, and it writes them a questionnaire to fill in. It's the inverse of `/grill-me`: instead of interviewing you about the subject, it interviews you about the **send** (who it's going to, what you need back) and aims the questions at the gap. What comes back is material for `/grill-with-docs` or `/to-spec`.
-- **`/wizard`** is for the steps only a **human** can take: provisioning infrastructure, setting up credentials or CI secrets, clicking through an unfamiliar third-party dashboard, running a one-off migration or cutover. It generates an interactive bash script that opens each URL, captures each value, and writes it into `.env` and GitHub secrets, so the procedure stops being something you re-explain to an agent every time. Model-invoked, so the agent reaches for it the moment it hits a wall only you can pass. If the agent could just do it itself, it should; this is for where a human is genuinely in the loop.
-- **`/wait-what`** is the corrective for a message that didn't land. Use it mid-conversation, inside any other skill, and the agent re-pitches what it just said with the context you were missing, in plain English, using the `GLOSSARY.md` vocabulary. It works after the fact; `/grill-with-docs` is the upfront cure, because a shared language agreed early is what stops the jargon arriving at all.
-- **`/teach`**: learn a concept over multiple sessions, using the current directory as a stateful workspace.
-- **`/writing-for-agents`** is the reference for writing documents agents consume: skills, AGENTS.md, pointed-at docs.
+| Situation | Skill |
+|---|---|
+| Long-running goal that needs background subagents and durable, commit-cited memory (in-progress; only the user invokes it) | `/chief-of-staff` |
+| Interview with no working directory (a plan, a design, a piece of writing) | `/grill-me` |
+| The bare interview, with no wrapper | `/grilling` |
+| A design question that needs runnable, throwaway code | `/prototype` |
+| Reading legwork against primary sources, delegated to a background agent | `/research` |
+| The blocker is in someone else's head; write them a questionnaire | `/to-questionnaire` |
+| Steps only a human can take (infrastructure, credentials, dashboards, cutovers) | `/wizard` |
+| A message that didn't land; re-pitch it with the missing context | `/wait-what` |
+| Learn a concept over multiple sessions | `/teach` |
+| Writing skills, AGENTS.md or other documents agents consume | `/writing-for-agents` |
 
 ## Precondition
 

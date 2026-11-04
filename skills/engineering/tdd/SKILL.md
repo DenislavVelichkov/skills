@@ -1,16 +1,15 @@
 ---
 name: tdd
-description: Test-driven development. Use when the user wants to build features or fix bugs test-first, mentions "red-green-refactor", or wants integration tests.
+description: Test-driven development (red-green; code-review reports refactoring candidates and the implementer applies accepted ones). Use when the user wants to build features or fix bugs test-first, mentions "red-green-refactor", or wants integration tests written test-first. Not for adding coverage to existing code, prototypes, or diagnosing unknown bugs.
 ---
-
-For desktop versus focused native checks, minimum extraction, and complete final
-proof, read [proportionate verification](../implement/VERIFICATION.md) before
-selecting validation or starting a connected batch. Keep red-green cycles inside
-that batch; they are not separate delivery or review checkpoints.
 
 # Test-Driven Development
 
-TDD is the red → green loop. This skill is the reference that makes that loop produce tests worth keeping: what a good test is, where tests go, the anti-patterns, and the rules of the loop. Every section applies on every cycle: consult them before and during the loop, not after.
+For desktop versus focused native checks, minimum extraction, and complete final
+proof, read [proportionate verification](../implement/VERIFICATION.md) before
+selecting validation. If that file is missing, use the project's focused test
+command and final suite, and report the missing file. Red-green cycles are not
+separate delivery or review checkpoints.
 
 When exploring the codebase, read `GLOSSARY.md` (if it exists) so test names and interface vocabulary match the project's domain language, and respect ADRs in the area you're touching.
 
@@ -18,14 +17,18 @@ When exploring the codebase, read `GLOSSARY.md` (if it exists) so test names and
 
 Tests verify behavior through public interfaces, not implementation details. Code can change entirely; tests shouldn't. A good test reads like a specification: "user can checkout with valid cart" tells you exactly what capability exists, and it survives refactors because it doesn't care about internal structure.
 
-See [tests.md](tests.md) for examples and [mocking.md](mocking.md) for mocking guidelines.
+Read [tests.md](tests.md) when you need examples of good and bad tests, and [mocking.md](mocking.md) when a test needs a test double or touches an external service.
 
-For generated artifacts, test actual producer output through the actual consumer
-at the agreed public boundary. Assert a successful consumed result against the
-contract, then cover incomplete and incompatible outputs. Handwritten consumer
-fixtures alone do not prove producer compatibility. Check rejection before
-runtime mutation or ownership acquisition where possible; use isolated state
-and verify restoration when the boundary requires mutation.
+For generated artifacts (a codegen output, a built config, an emitted file),
+test actual producer output through the actual consumer at the agreed public
+boundary:
+
+- Assert a successful consumed result against the contract, then cover
+  incomplete and incompatible outputs. A handwritten fixture alone does not
+  prove the producer is compatible. Example: generate the OpenAPI client, then
+  call it from the app's own loader.
+- Check rejection before runtime mutation or ownership acquisition where
+  possible; otherwise run in isolated state and assert it is restored.
 
 ## Seams: where tests go
 
@@ -42,17 +45,26 @@ When the shape of that interface is itself in question (how deep the module is, 
 ## Anti-patterns
 
 - **Implementation-coupled**: mocks internal collaborators, tests private methods, or verifies through a side channel (querying the database instead of using the interface). The tell: the test breaks when you refactor but behavior hasn't changed.
-- **Tautological**: the assertion recomputes the expected value the way the code does (`expect(add(a, b)).toBe(a + b)`, a snapshot derived by hand the same way, a constant asserted equal to itself), so it passes by construction and can never disagree with the code. Expected values must come from an independent source of truth: a known-good literal, a worked example, the spec.
+- **Tautological**: expected and actual are the same computation (a constant asserted equal to itself, a snapshot regenerated from the code under test), so the assertion cannot fail.
+- **Duplicated expectation logic**: the test recomputes the expected value the way the code does, so a shared mistake passes in both. Prefer expected values from an independent source of truth: a known-good literal, a worked example, the spec.
 - **Horizontal slicing**: writing all tests first, then all implementation. Bulk tests verify _imagined_ behavior: you test the _shape_ of things rather than user-facing behavior, the tests go insensitive to real changes, and you commit to test structure before understanding the implementation. Work in **vertical slices** instead: one test → one implementation → repeat, each test a **tracer bullet** that responds to what the last cycle taught you.
 
 ## Rules of the loop
 
-- **Red before green.** Write the failing test first, then only enough code to pass it. Don't anticipate future tests or add speculative features.
+- **Baseline first.** Before the first cycle, run the focused tests and record any pre-existing failures as the baseline; don't count them as your red.
+- **Red before green.** Write the failing test first and confirm it fails on the intended assertion, not on a setup, import or syntax error (fix those first). If it cannot fail on that assertion (the behavior already exists, or no seam reaches it), stop and report that instead of forcing red. Then write only enough code to pass it. Don't anticipate future tests or add speculative features.
 - **One slice at a time.** One seam, one test, one minimal implementation per cycle.
-- **Keep feedback narrow.** Run the focused test during red-green. After a
-  meaningful change, run the affected tests and relevant type checks. Run the
-  project's required final suite on the stable candidate, without replaying it
-  after unrelated documentation or reporting edits. Reuse requires unchanged
-  relevant inputs; failures, uncertain impact, and project gates can require
-  broader checks. Test results do not substitute for runtime or visual proof.
-- **Refactoring is not part of the loop.** It belongs to the review stage (see the `code-review` skill), not the red → green implementation cycle.
+- **Keep feedback narrow.**
+  - Run the focused test during red-green.
+  - After a meaningful change, run the affected tests and relevant type checks.
+  - Run the project's required final suite on the stable candidate; don't replay
+    it after unrelated documentation or reporting edits.
+  - Reuse a result only while its relevant inputs are unchanged; failures,
+    uncertain impact, and project gates can require broader checks.
+  - Test results do not substitute for runtime or visual proof.
+- **Bounded repair.** If the same test stays red after three focused fix attempts, or the required suite cannot run, stop and report a blocker: the test, the last failure output, what you tried, and what is needed.
+- **Refactoring is not part of the loop.** `code-review` reports refactoring candidates after the loop; the implementer applies the accepted ones.
+
+## Done
+
+When used directly: every requested behaviour has a passing test, the project's final suite passes, and you report the tests added and the final suite result.

@@ -1,11 +1,11 @@
 ---
 name: domain-modeling
-description: Build and sharpen a project's domain model. Use when discussing codebase terminology, writing or editing a GLOSSARY.md, or recording or editing an ADR.
+description: Builds and sharpens a codebase's domain model by challenging terms and writing GLOSSARY.md entries and ADRs. Use when actively changing that model, such as resolving codebase terminology, writing or editing a codebase GLOSSARY.md, or recording or editing an ADR. Not for merely reading GLOSSARY.md for vocabulary, or for non-software glossaries.
 ---
 
 # Domain Modeling
 
-Actively build and sharpen the project's domain model as you design. This is the *active* discipline: challenging terms, inventing edge-case scenarios, and writing the glossary and decisions down the moment they crystallise. (Merely *reading* `GLOSSARY.md` for vocabulary is not this skill: that's a one-line habit any skill can do. This skill is for when you're changing the model, not just consuming it.)
+Challenge terms, invent edge-case scenarios, and write glossary entries and decisions down the moment they crystallise.
 
 ## File structure
 
@@ -21,7 +21,7 @@ Most repos have a single context:
 └── src/
 ```
 
-If a `GLOSSARY-MAP.md` exists at the root, the repo has multiple contexts. The map points to where each one lives:
+A root `GLOSSARY-MAP.md` means multiple contexts and points to where each lives. Infer the topic's context; if unclear, ask:
 
 ```
 /
@@ -59,16 +59,14 @@ When the user states how something works, check whether the code agrees. If you 
 
 ### Update GLOSSARY.md inline
 
-When a term is resolved, update `GLOSSARY.md` right there. Don't batch these up: capture them as they happen. Use the format in [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md).
+When a term is resolved, update `GLOSSARY.md` right there. Use the format in [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md).
 
 `GLOSSARY.md` should be totally devoid of implementation details. Do not treat `GLOSSARY.md` as a spec, a scratch pad, or a repository for implementation decisions. It is a glossary and nothing else.
 
 ### Offer ADRs sparingly
 
-Only offer to create an ADR when all three are true:
+Offer to create an ADR only when the decision meets all three criteria in [ADR-FORMAT.md](./ADR-FORMAT.md) (hard to reverse, surprising without context, a real trade-off). Read that file before offering one, and use its format and numbering.
 
-1. **Hard to reverse**: the cost of changing your mind later is meaningful
-2. **Surprising without context**: a future reader will wonder "why did they do it this way?"
-3. **The result of a real trade-off**: there were genuine alternatives and you picked one for specific reasons
+## Finish
 
-If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
+When the discussion ends, check the glossary and ADR entries you touched for conflicting definitions, terms placed in the wrong context's `GLOSSARY.md`, and duplicate ADR numbers. Correct what you can once and recheck the corrected entries against the same checks. Then list the glossary terms and ADRs written or changed, and any conflict left unresolved.

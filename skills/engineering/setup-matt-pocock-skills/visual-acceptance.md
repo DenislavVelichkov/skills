@@ -161,7 +161,7 @@ Candidate set: <sha256 digest>
 Deviations: <None or concise list>
 
 Do you approve this exact production candidate?
-Reply “Approve” or “Reject”.
+Reply "Approve" or "Reject".
 ```
 
 Generate that block after validation and copy its stdout verbatim:

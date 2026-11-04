@@ -24,7 +24,7 @@ When completing or pausing work on an existing issue, comment on that issue with
 
 When set to `yes`, PRs run through the same labels and states as issues, using the `gh pr` equivalents:
 
-- **Read a PR**: `gh pr view <number> --comments` and `gh pr diff <number>` for the diff.
+- **Read a PR**: `gh pr view <number> --json number,title,body,author,state,labels,comments,reviews` and `gh pr diff <number>` for the diff; fetch inline review comments separately with `gh api 'repos/{owner}/{repo}/pulls/<number>/comments'`.
 - **List external PRs for triage**: use the [pull-request REST endpoint](https://docs.github.com/en/rest/pulls/pulls#list-pull-requests), because `authorAssociation` is not a supported `gh pr list --json` field. Run `gh api --method GET --paginate 'repos/{owner}/{repo}/pulls?state=open&per_page=100' --jq '.[] | select(.author_association == "CONTRIBUTOR" or .author_association == "FIRST_TIME_CONTRIBUTOR" or .author_association == "NONE")'`; fetch each selected PR's full discussion separately.
 - **Comment / label / close**: `gh pr comment`, `gh pr edit --add-label`/`--remove-label`, `gh pr close`.
 

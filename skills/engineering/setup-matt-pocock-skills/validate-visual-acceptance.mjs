@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, realpathSync } from "node:fs";
 import { isAbsolute, relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -74,6 +74,12 @@ const validateFile = (root, file, label, errors) => {
     errors.push(`${label}.path does not exist: ${file.path}`);
     return;
   }
+  // Lexical containment above misses symlinks whose target leaves the repository.
+  const fromRealRoot = relative(realpathSync(root), realpathSync(absolute));
+  if (fromRealRoot === ".." || fromRealRoot.startsWith(`..${sep}`) || isAbsolute(fromRealRoot)) {
+    errors.push(`${label}.path resolves outside the repository root: ${file.path}`);
+    return;
+  }
   const actual = sha256(readFileSync(absolute));
   if (file.sha256 !== actual) {
     errors.push(`${label}.sha256 is ${file.sha256}; file is ${actual}`);
@@ -144,7 +150,7 @@ const validateApproval = (approval, candidates, deviations, label, errors) => {
       `${label}.approval.candidateSetSha256 is ${approval.candidateSetSha256}; expected ${expected}`,
     );
   }
-  if (deviations.some((deviation) => deviation.approved !== true))
+  if (deviations.some((deviation) => !isRecord(deviation) || deviation.approved !== true))
     errors.push(`${label} has an unapproved deviation`);
 };
 

@@ -29,9 +29,9 @@ Characteristics:
 ```typescript
 // BAD: Tests implementation details
 test("checkout calls paymentService.process", async () => {
-  const mockPayment = jest.mock(paymentService);
+  const processSpy = jest.spyOn(paymentService, "process");
   await checkout(cart, payment);
-  expect(mockPayment.process).toHaveBeenCalledWith(cart.total);
+  expect(processSpy).toHaveBeenCalledWith(cart.total);
 });
 ```
 
@@ -60,7 +60,7 @@ test("createUser makes user retrievable", async () => {
 });
 ```
 
-**Tautological tests**: Expected value restates the implementation, so the test passes by construction.
+**Duplicated expectation logic**: The test recomputes the expected value the way the code does, so a shared mistake passes in both.
 
 ```typescript
 // BAD: Expected value is recomputed the way the code computes it

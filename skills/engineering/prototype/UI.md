@@ -17,7 +17,7 @@ A UI prototype is much easier to judge when it's **butting up against the rest o
 
 ### Sub-shape A: adjustment to an existing page (preferred)
 
-The route already exists. Variants are rendered **on the same route**, gated by a `?variant=` URL search param. The existing data fetching, params, and auth all stay. Only the rendering swaps. This is the default; pick it unless there's a specific reason not to.
+The route already exists. Variants are rendered **on the same route**, gated by a `?variant=` URL search param. The existing data fetching, params, and auth all stay. Only the rendering swaps.
 
 If the prototype is for something that doesn't yet have a page but *would naturally live inside one* (a new section of the dashboard, a new card on the settings screen, a new step in an existing flow), it's still sub-shape A. Mount the variants inside the host page.
 
@@ -26,8 +26,6 @@ If the prototype is for something that doesn't yet have a page but *would natura
 Only use this when the thing being prototyped genuinely has no existing page to live inside (e.g. an entirely new top-level surface, or a flow that can't be embedded anywhere sensible).
 
 Create a **throwaway route** following whatever routing convention the project already uses. Don't invent a new top-level structure. Name it so it's obviously a prototype (e.g. include the word `prototype` in the path or filename). Same `?variant=` pattern.
-
-Before committing to sub-shape B, sanity-check: is there really no existing page this could be embedded in? An empty route hides design problems that a populated one would expose.
 
 In both sub-shapes the floating bottom bar is identical.
 
@@ -40,8 +38,6 @@ Default to **3 variants**. More than 5 stops being radically different and start
 Write down the plan in one line, in the prototype's location or a top-of-file comment:
 
 > "Three variants of the settings page, switchable via `?variant=`, on the existing `/settings` route."
-
-This works whether the user is here to push back or not.
 
 ### 2. Generate radically different variants
 
@@ -59,20 +55,22 @@ Create a single switcher component on the route:
 
 ```tsx
 // pseudo-code, adapt to the project's framework
-const variant = searchParams.get('variant') ?? 'A';
+const VARIANTS = { A: VariantA, B: VariantB, C: VariantC };
+if (process.env.NODE_ENV === 'production') return <OriginalPage {...data} />;
+const key = searchParams.get('variant');
+const variant = key != null && Object.hasOwn(VARIANTS, key) ? key : 'A'; // unknown or empty values fall back to A
+const Variant = VARIANTS[variant];
 return (
   <>
-    {variant === 'A' && <VariantA {...data} />}
-    {variant === 'B' && <VariantB {...data} />}
-    {variant === 'C' && <VariantC {...data} />}
-    <PrototypeSwitcher variants={['A','B','C']} current={variant} />
+    <Variant {...data} />
+    <PrototypeSwitcher variants={Object.keys(VARIANTS)} current={variant} />
   </>
 );
 ```
 
 For sub-shape A (existing page): keep all the existing data fetching above the switcher; only the rendered subtree changes per variant.
 
-For sub-shape B (new page): the throwaway route under `/prototype/<name>` mounts the same switcher.
+For sub-shape B (new page): the throwaway route created in sub-shape B mounts the same switcher.
 
 ### 4. Build the floating switcher
 
@@ -87,13 +85,15 @@ Behaviour:
 - Clicking an arrow updates the URL search param (use the framework's router, e.g. `router.replace` on Next, `navigate` on React Router, etc) so the variant is shareable and reload-stable.
 - Keyboard: `←` and `→` arrow keys also cycle. Don't intercept arrow keys when an `<input>`, `<textarea>`, or `[contenteditable]` is focused.
 - Visually distinct from the page (e.g. high-contrast pill, subtle shadow) so it's obviously not part of the design being evaluated.
-- Hidden in production builds: gate on `process.env.NODE_ENV !== 'production'` or an equivalent check, so a stray prototype merge can't ship the bar to users.
+- Hidden in production builds, together with the variant renderer: gate both on `process.env.NODE_ENV !== 'production'` or an equivalent check, and render the original page in production, so a stray prototype merge can't ship variants to users.
 
 Put the switcher in a single shared component so both sub-shapes can reuse it. Locate it wherever shared UI lives in the project.
 
 ### 5. Hand it over
 
-Surface the URL (and the `?variant=` keys). The user will flip through whenever they get to it. The interesting feedback is usually **"I want the header from B with the sidebar from C"**, which is the actual design they want.
+First, smoke-check it: open the route, load each `?variant=` key once, and confirm each renders without console errors. Click both arrows and press `←`/`→` with no input focused, and confirm the variant and URL change. Read the code to confirm the production gate wraps both the switcher and the renderer. Fix a failure once and recheck; report anything still broken, or that you could not open a browser.
+
+Surface the URL (and the `?variant=` keys). Feedback like "the header from B with the sidebar from C" is the actual design they want.
 
 ### 6. Capture the answer and clean up
 
@@ -101,10 +101,8 @@ Once a variant has won, record which variant and why, then capture the prototype
 as the [SKILL](SKILL.md) describes. Leave the chosen design and existing-page or
 new-route destination on the owning implementation ticket. Apply it to real
 code only under that ticket's explicit implementation authorization, with its
-required tests and production acceptance. Keep prototype variants and the
-switcher on the throwaway branch.
-
-The full set of variants is the primary source, so it lands on the throwaway branch, not the bin, since variant components and the switcher left in the main branch rot fast and confuse the next reader.
+required tests and production acceptance. Keep the full set of variants and the
+switcher on the throwaway branch as the primary source, not in the default branch.
 
 ## Anti-patterns
 

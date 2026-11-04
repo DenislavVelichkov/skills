@@ -2,7 +2,7 @@
 
 `codebase-design` fixes the words you use to design a module: **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**. It defines each one precisely, bans the loose substitutes ("component", "service", "API", "boundary"), and states the handful of principles that follow from them.
 
-It is a reference, not a process. It runs no loop, produces no artifact, and never stops to ask you a question. Every other skill that touches design uses its vocabulary. On its own, it gives you the words and stops. Know this before you invoke it. If you point a [session](https://www.aihero.dev/ai-coding-dictionary/session) at a skill with no process and no stopping rule and say "go", the agent invents a process. The questions below show what that looks like.
+It is mostly a reference. Every other skill that touches design uses its vocabulary. Its only process is a short one for designing one module: read the callers and constraints, classify the dependencies, place the seam, write the interface, check it against representative callers, and return the interface, seam, tests and unresolved decisions. It has no checkpoints and never stops to ask you a question, so know this before you invoke it: if you point a [session](https://www.aihero.dev/ai-coding-dictionary/session) at it with an open-ended "go", the agent can still invent a bigger process. The questions below show what that looks like.
 
 ## When to reach for it
 
@@ -34,7 +34,7 @@ The glossary is the skill. The skill defines every term against the others, and 
 | **Leverage** | What callers get from depth: more capability per unit of interface learned. | none |
 | **Locality** | What maintainers get from depth: changes, bugs and verification stay in one place, so one fix covers every caller. | none |
 
-The skill does *not* define depth as the ratio of implementation lines to interface lines, which is Ousterhout's own definition. That metric rewards padding the implementation, so the skill uses depth-as-leverage instead.
+The skill does *not* define depth as the ratio of implementation lines to interface lines, a common shorthand for depth. That metric rewards padding the implementation, so the skill uses depth-as-leverage instead.
 
 ## The four principles
 
@@ -53,7 +53,7 @@ This is the most-asked question about the skill and the skill does not answer it
 
 **I pointed a session at it and it burned 100k [tokens](https://www.aihero.dev/ai-coding-dictionary/token) redesigning things I never asked about.**
 
-This is a known problem, filed as [issue #449](https://github.com/mattpocock/skills/issues/449). The skill is model-invoked and describes itself as vocabulary, but nothing in it hard-stops an agent from treating it as a runnable process. Told to "resume in /codebase-design and drive the open decisions", an agent picked the part of the skill closest to a process: the parallel sub-agents in `DESIGN-IT-TWICE.md`. It re-explored code a previous session had already mapped, and worked for a long time before it asked anything. This skill has none of the guardrails a driver skill has (checkpoints, one question at a time, no auto-advance), because it is a reference. The workaround is to invoke a driver skill (`/grill-with-docs`, `/improve-codebase-architecture` or `/tdd`) and use `codebase-design` as its vocabulary. The issue is open.
+This is a known problem, filed as [issue #449](https://github.com/mattpocock/skills/issues/449). The skill is model-invoked and describes itself as vocabulary for designing one module at a time, and its one-module process ends by returning the design, but nothing in it hard-stops an agent from widening that into a larger process. Told to "resume in /codebase-design and drive the open decisions", an agent picked the part of the skill closest to a process: the parallel sub-agents in `DESIGN-IT-TWICE.md`. It re-explored code a previous session had already mapped, and worked for a long time before it asked anything. This skill has none of the guardrails a driver skill has (checkpoints, one question at a time, no auto-advance). The workaround is to invoke a driver skill (`/grill-with-docs`, `/improve-codebase-architecture` or `/tdd`) and use `codebase-design` as its vocabulary. The issue is open.
 
 **Where did `design-an-interface` go? And is there an `/interface-design` skill?**
 
@@ -69,11 +69,11 @@ It does now, but for a long time it did not. v1.0 removed the inline deep-module
 
 **Does the design-it-twice pattern work outside Claude Code?**
 
-Not cleanly. `DESIGN-IT-TWICE.md` says "spawn 3+ sub-agents in parallel using the Agent tool", and "Agent" is the name of a Claude Code [tool](https://www.aihero.dev/ai-coding-dictionary/tool). The repo ships metadata for other [harnesses](https://www.aihero.dev/ai-coding-dictionary/harness), including Codex, and those may have no tool with that name. So the parallel-design phase is less portable than the skill's metadata suggests. [Issue #564](https://github.com/mattpocock/skills/issues/564) tracks this, and it is open.
+Yes, with a fallback. `DESIGN-IT-TWICE.md` no longer names a Claude Code [tool](https://www.aihero.dev/ai-coding-dictionary/tool); it first checks that the host can run sub-agents. If it cannot, the agent tells you and, with your agreement, drafts the designs itself one after another; if you decline, it reports that the comparison was not run. A sub-agent result that never arrives is named as missing. [Issue #564](https://github.com/mattpocock/skills/issues/564) raised the original portability problem.
 
 **Can I add my own concepts to the glossary, such as connascence, module secrets, [progressive disclosure](https://www.aihero.dev/ai-coding-dictionary/progressive-disclosure)?**
 
-People have proposed those. [Issue #180](https://github.com/mattpocock/skills/issues/180) adds Parnas's module secrets and Page-Jones's connascence as a naming layer for *what* is leaking across a seam, with a working diff attached; [issue #303](https://github.com/mattpocock/skills/issues/303) proposes progressive disclosure inside the implementation, so a module that is deep at its public interface also has structure inside it. Both are open and unmerged. The shipped glossary is small on purpose, and the skill itself gives the reason: consistent language is the whole point, and a term nobody uses consistently is worse than no term.
+People have proposed those. [Issue #180](https://github.com/mattpocock/skills/issues/180) adds Parnas's module secrets and Page-Jones's connascence as a naming layer for *what* is leaking across a seam, with a working diff attached; [issue #303](https://github.com/mattpocock/skills/issues/303) proposes progressive disclosure inside the implementation, so a module that is deep at its public interface also has structure inside it. Both are open and unmerged. The shipped glossary is small on purpose, and the skill tells agents to use its terms exactly: a term nobody uses consistently is worse than no term.
 
 ## It's working if
 

@@ -82,11 +82,14 @@ for (const [situation, file, actions] of [
 }
 
 test("implementation routes and public docs retain verification preparation", () => {
-  for (const name of ["implement", "implement-spec"]) {
+  for (const [name, preparation, diagnosis] of [
+    ["implement", /"Prepare\s+expensive\s+execution"/u, /"Diagnose before repeating expensive\s+work"/u],
+    ["implement-spec", /expensive-execution preparation/u, /recurring-failure diagnosis/u],
+  ]) {
     const skill = read(`skills/engineering/${name}/SKILL.md`);
     assert.match(skill, /VERIFICATION.md/u);
-    assert.match(skill, /expensive-execution preparation/u);
-    assert.match(skill, /recurring-failure diagnosis/u);
+    assert.match(skill, preparation);
+    assert.match(skill, diagnosis);
   }
   for (const [name, expected] of [
     ["implement", "Routine edits need no separate preparation record"],
@@ -123,7 +126,7 @@ test("a stable fix ends verification while retaining full initial review coverag
   const review = read("skills/engineering/code-review/SKILL.md");
   assert.match(tdd, /Run the focused test during red-green/u);
   assert.match(tdd, /required final suite on the stable candidate/u);
-  assert.match(tdd, /failures, uncertain impact, and project gates/u);
+  assert.match(tdd, /failures,\s+uncertain impact, and project gates/u);
   assert.match(review, /first review covers the full requested diff/u);
   assert.match(review, /affected callers, contracts,/u);
   assert.match(review, /delta review alone cannot stand in for a missing initial review/u);
@@ -158,12 +161,13 @@ test("published specs must pass through an approved ticket split", () => {
 });
 
 test("visual acceptance stays local and human-approved", () => {
-  const toTickets = read("skills/engineering/to-tickets/SKILL.md");
+  // The visual parity rules moved to the skill's VISUAL-PARITY.md reference.
+  const toTickets = read("skills/engineering/to-tickets/SKILL.md") + read("skills/engineering/to-tickets/VISUAL-PARITY.md");
   const visualAcceptance = read(
     "skills/engineering/setup-matt-pocock-skills/visual-acceptance.md",
   );
 
-  assert.match(toTickets, /repo-local validator/u);
+  assert.match(toTickets, /Setup installs `scripts\/validate-visual-acceptance.mjs`/u);
   assert.doesNotMatch(
     `${toTickets}\n${visualAcceptance}`,
     /required CI|CODEOWNERS|branch protection/u,
@@ -225,8 +229,9 @@ test("applicable missing manifests are created before ticketing or implementatio
     "skills/engineering/setup-matt-pocock-skills/visual-acceptance.md",
   );
   const toSpec = read("skills/engineering/to-spec/SKILL.md");
-  const toTickets = read("skills/engineering/to-tickets/SKILL.md");
-  const implement = read("skills/engineering/implement/SKILL.md");
+  // The visual parity rules moved to the skill's VISUAL-PARITY.md reference.
+  const toTickets = read("skills/engineering/to-tickets/SKILL.md") + read("skills/engineering/to-tickets/VISUAL-PARITY.md");
+  const implement = read("skills/engineering/implement/SKILL.md") + read("skills/engineering/implement/VISUAL-PARITY.md");
 
   assert.match(visualAcceptance, /before either phase begins/u);
   assert.match(toSpec, /Do not stop merely because it is absent/u);
@@ -324,7 +329,7 @@ test("public workflow docs retain connected delivery and settled decisions", () 
     ["ask-matt", "reviews committed integrated candidates"],
   ]) assert.ok(read(`docs/engineering/${file}.md`).replace(/\s+/gu, " ").includes(expected), file);
   assert.ok(read("docs/productivity/grilling.md").includes("Only consequential unresolved decisions"));
-  assert.ok(read("skills/productivity/grilling/SKILL.md").includes("A prior answer"));
+  assert.ok(read("skills/productivity/grilling/SKILL.md").includes("Do not re-ask decisions already settled for this scope"));
   assert.ok(read("skills/engineering/prototype/SKILL.md").includes("Reuse settled design answers"));
 });
 

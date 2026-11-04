@@ -36,7 +36,7 @@ The same-session case is worth naming because no tracker artifact exists. If the
 
 ## Prerequisites
 
-`implement` commits to the branch you are on. It does not create one, and it does not ask. Check you are on the branch you want the work on before you start.
+`implement` commits to the branch you are on. On the default branch it first creates a feature branch named after the ticket. It asks only when project instructions name a branch convention it cannot satisfy.
 
 If the tickets came from [to-tickets](https://aihero.dev/skills-to-tickets), [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) configured the tracker they live on. `code-review` reads the same configuration to find the originating spec at close-out.
 

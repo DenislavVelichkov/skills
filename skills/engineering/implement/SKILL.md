@@ -1,6 +1,6 @@
 ---
 name: implement
-description: "Implement one approved ticket or a small plan retained in the current conversation. Never implement a published spec before to-tickets splits it."
+description: "Implements one approved ticket or a small plan retained in the current conversation. Never implement a published spec before to-tickets splits it."
 disable-model-invocation: true
 ---
 
@@ -22,27 +22,29 @@ ask for the missing input before dependent work. State the resolved identity,
 title and scope without asking again for settled approval.
 For conversation-only work, restate the agreed scope.
 
-Before implementation, follow [model execution verification](MODEL-EXECUTION.md).
-If this ticket, plan, or conversation has no applicable model assessment, continue
-with the current or inherited settings; do not require the selector, a model choice,
-or a gate receipt. If a recommendation exists for this client and scope, bind it
-in this actual session and verify the runtime model and reasoning level. Stop on
-mismatches or missing evidence, keep the gate active through fixes and checks,
-and finish it before reporting completion.
+Before implementation, follow [model execution verification](MODEL-EXECUTION.md);
+with no applicable model assessment, continue with the current settings.
 
 Record the current branch and task-start commit before editing, preserving
-unrelated changes.
+unrelated changes. If the current branch is the default branch, create a
+feature branch named after the ticket before the first commit. Ask only when
+project instructions name a branch convention you cannot satisfy.
 
-Call the Skill tool with "tdd" where possible, at pre-agreed seams.
+Call the Skill tool with "tdd" for any behavior change; it chooses the seams.
+Skip it only for changes with no behavior change, such as config- or docs-only edits.
 
-Read [proportionate verification](VERIFICATION.md), including connected delivery,
-before planning batches, choosing checks, reusing evidence, changing verification
-tooling, or starting live validation. Apply its expensive-execution preparation
-and recurring-failure diagnosis before costly runs or retries. Keep reports passive and share verified
-assessments through the existing controller. Run the smallest relevant check
-after a meaningful change. Run the required final suite once on the stable
-candidate; repeat only checks affected by later changes or required by the
-project contract.
+Read the [proportionate verification](VERIFICATION.md) section that matches the
+moment: "Connected delivery" before planning batches; "Choose the check" before
+choosing checks; "Bound verification tooling work" before changing verification
+tooling; "Prepare expensive execution" and "Diagnose before repeating expensive
+work" before a long, native or stateful run or a retry; "Reuse evidence safely"
+before reusing evidence; "Separate reports from execution" and "Schedule without
+repeated work" before live validation or a report. Checklist:
+
+- Run the smallest relevant check after each meaningful change.
+- Diagnose a failure before rerunning an expensive run.
+- Run the required final suite once on the stable candidate; repeat only checks
+  affected by later changes or required by the project contract.
 
 First decide whether the ticket or parent spec contains a visual parity action.
 It does only when either document requires a named production surface to be
@@ -51,69 +53,15 @@ reference for the later comparison, or links an existing manifest that records
 either obligation. UI work without that obligation uses the normal
 implementation path and no manifest.
 
-For a visual parity action, read `docs/agents/visual-acceptance.md` completely.
-Always report its five progress counters for visual work.
-If the installed protocol, template or validator is missing, tell the user to
-run `/setup-matt-pocock-skills`, report the blocked prerequisite, and stop.
-Before editing production code, locate the manifest and the ticket's surface
-row. If either is missing or invalid, create or repair it from the installed
-template, the exact ticket, and its parent spec, following the protocol's
-Planning prerequisite.
-Use the protocol's bounded validation and correction step. If validation still
-fails or missing input or tooling prevents it, report the blocker and stop
-before production edits. Never invent references, hashes, state transitions,
-or approval.
-
-A valid `planned` manifest permits ticket drafting, not implementation. Require
-the ticket's surface to be at least `design_selected`, with durable reference
-files and verified hashes, before editing production code. If it is still
-`planned`, leave the newly created or repaired manifest valid, report the exact
-design evidence still required, and stop. Work only the confirmed surface.
-
-For `approval_requested`, handle a bound human response before redisplaying
-the pending request.
-An immediate `Approve` response is bound to the displayed surface and hash. On
-approval, verify the candidate files and hashes are unchanged, record it, and
-set `member_accepted`. On rejection or a candidate-changing edit, clear the
-surface's `approvalRequest`, `approval`, and `baselines` entries and return to
-`compared` before revising and recapturing. Preserve existing baseline files
-until new approval. Never infer
-approval from "continue", prototype selection, green tests, or a clean review.
-
-For `member_accepted`, verify the recorded approval and candidate hashes,
-promote the accepted bytes to the regression baselines, rerun the visual suite,
-and set `baseline_promoted`. For an unchanged `baseline_promoted` surface,
-validate the retained evidence and completion gates without rebuilding or
-requesting approval again.
-
-If `approval_requested` remains unresolved, verify its candidates and request
-hash, report all five progress counters, and end the response with the verbatim
-stdout of the validator's `--print-request=<surface-id>` command and no text
-after it. Do no other work until the human replies `Approve` or `Reject`.
-
-For a surface below `approval_requested`, resume at the first unfinished or
-invalidated step. Reuse completed steps only when the project verifier proves
-their evidence applies to the current candidate:
-
-1. Implement and validate the real application without changing visual
-   baselines; set the surface to `implemented`.
-2. Complete the committed-candidate review below, including accepted fixes,
-   before capturing final candidates.
-3. Supply every required candidate and side-by-side comparison. Reuse existing
-   evidence only through project-supported validation of its applicability to
-   the current candidate; capture missing or invalidated evidence. Record the
-   hashes, set `compared`, and run the manifest validator.
-4. Record the approval request with its candidate-set hash, set
-   `approval_requested`, and validate again.
-5. Report all five progress counters. End the final response with the
-   verbatim output of the validator's `--print-request=<surface-id>` command
-   and no text after it.
+For a visual parity action, follow [VISUAL-PARITY.md](VISUAL-PARITY.md) from
+its prerequisite before editing production code.
 
 For either implementation path, commit the integrated candidate so the full
 change is visible, then call the Skill tool with "code-review" to review the
 work. Supply the task-start commit and ticket scope. Batch accepted fixes, validate them, commit
 and review their delta plus affected callers, retaining the original review
-coverage. Report an unavailable required review rather than claiming it ran.
+coverage. Run at most one fix batch and one delta review; report findings that
+remain after that as blockers. Report an unavailable required review rather than claiming it ran.
 
 Commit your work to the current branch.
 Record the commits, actual checks and review outcomes, acceptance evidence and

@@ -7,6 +7,8 @@ Mock at **system boundaries** only:
 - Time/randomness
 - File system (sometimes)
 
+A test that runs against a real external service and changes its state (a payment, an email, stored data) needs sandbox endpoints, test credentials and isolated data first. Without them, mock the boundary or stop and ask.
+
 Don't mock:
 
 - Your own classes/modules
