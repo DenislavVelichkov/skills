@@ -42,7 +42,10 @@ before reusing evidence; "Separate reports from execution" and "Schedule without
 repeated work" before live validation or a report. Checklist:
 
 - Run the smallest relevant check after each meaningful change.
-- Diagnose a failure before rerunning an expensive run.
+- After each batch or result, follow [Select the next action](VERIFICATION.md#select-the-next-action)
+  through the remaining authorized work.
+- Apply the preparation and diagnosis sections above before an expensive run
+  or retry.
 - Run the required final suite once on the stable candidate; repeat only checks
   affected by later changes or required by the project contract.
 

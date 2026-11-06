@@ -32,8 +32,9 @@ For `approval_requested`, handle a bound human response before redisplaying
 the pending request.
 An immediate `Approve` response is bound to the displayed surface and hash. On
 approval, verify the candidate files and hashes are unchanged, record it, and
-set `member_accepted`. On rejection or a candidate-changing edit, clear the
-surface's `approvalRequest`, `approval`, and `baselines` entries and return to
+set `member_accepted`. On rejection or a candidate-changing edit, including
+after acceptance, clear the surface's `approvalRequest`, `approval`, and
+`baselines` entries and return to
 `compared` before revising and recapturing. Preserve existing baseline files
 until new approval. Never infer
 approval from "continue", prototype selection, green tests, or a clean review.
@@ -55,9 +56,18 @@ their evidence applies to the current candidate:
 
 1. Implement and validate the real application without changing visual
    baselines; set the surface to `implemented`.
-2. Complete the committed-candidate review in SKILL.md ("For either implementation path"), including accepted fixes,
-   before capturing final candidates.
-3. Supply every required candidate and side-by-side comparison. Reuse existing
+   Inspect focused rendered comparisons against the selected reference during
+   implementation, including relevant enabled controls and
+   normal and enlarged text. Check the affected platform; a mock cannot prove
+   native rendering. Correct feasible mismatches and inspect related shared
+   components. Batch feasible related fixes before final review and affected
+   captures. Use supported diagnostic paths with their existing state prerequisites.
+2. Complete the committed-candidate review required by the invoking workflow,
+   including accepted fixes, before capturing final candidates.
+3. Supply every required candidate and side-by-side comparison. Diagnostic
+   images replace no final coverage or acceptance and add no manifest state.
+   Where the project requires a complete native parent, keep that requirement;
+   focused checks and partial captures cannot satisfy it. Reuse existing
    evidence only through project-supported validation of its applicability to
    the current candidate; capture missing or invalidated evidence. Record the
    hashes, set `compared`, and run the manifest validator.

@@ -16,15 +16,42 @@ The goal is the entire spec implemented on a single **integration branch**, with
 
 The tickets form a **task graph**. Its **frontier** contains tickets whose blockers have landed on the integration branch with their required acceptance evidence. Track those results during the run; remote issues may remain open until the final PR merges. Preserve external blockers and any approved serial acceptance order. If unfinished tickets remain but none is ready, report their blockers rather than claiming completion.
 
-Read [proportionate verification](../implement/VERIFICATION.md) before choosing checks. Require each implementer to apply its expensive-execution preparation and recurring-failure diagnosis before costly runs or retries. For a ticket with a visual parity action, read the repository's `docs/agents/visual-acceptance.md` and follow its design, comparison, human-approval and baseline gates. A worker cannot satisfy a human gate on the user's behalf.
+Read [proportionate verification](../implement/VERIFICATION.md) before choosing
+checks. Require each implementer to apply its expensive-execution preparation
+and recurring-failure diagnosis before costly runs or retries.
+After each worker result, integration batch, check or review, follow
+[Select the next action](../implement/VERIFICATION.md#select-the-next-action).
+
+For a ticket with a visual parity action, read and follow the owning
+[visual sequence](../implement/VISUAL-PARITY.md) and the repository's
+`docs/agents/visual-acceptance.md`. Each visual worker brief includes that
+sequence, the surface and manifest, selected reference, required coverage,
+current evidence and invalidations, and serial acceptance authority. Require
+early focused rendered comparisons and related fixes before final review and
+capture. A worker with a pending human gate returns an implementation candidate
+and the exact request; it cannot satisfy that gate on the user's behalf.
+
+Integration follows the same visual sequence on the merged candidate. Complete
+the required integrated ticket review before final capture, revalidate evidence
+applicability and candidate hashes after integration, and handle invalidation
+before a dependent ticket becomes ready. A merge, passing check or review
+cannot approve a candidate. Preserve exact human approval and accepted-byte
+promotion before advancing an approved serial chain. Include the visual
+sequence and current evidence in a visual merger's brief.
+
+The graph grants no parallel implementation permission. Concurrency requires
+project authorization and isolated mutable resources; preserve approved serial
+acceptance order even when graph edges alone would permit dispatch.
 
 If the approved acceptance order requires review before the next ticket can start, review the integrated ticket scope at that checkpoint. Retain that coverage for the final spec review; do not report still-blocked tickets as missing implementation in the checkpoint review.
 
 Communication to and from subagents should be sparse. Communicate primarily through **context pointers**: to the spec, tickets, research notes, and previous commits.
 
-**Implementer subagents** should be run in the background where possible. Run at most the host's subagent limit at once (3 if the host states none) and queue the rest of the frontier.
+Run **implementer subagents** in the background where supported and concurrency
+is authorized. Run at most the host's subagent limit at once (3 if the host
+states none) and queue the rest of the authorized frontier.
 
-**Model gate.** A ticket is *assessed* when the ticket, plan or conversation records an applicable model recommendation; otherwise it is *unassessed*. Any agent that changes code for an assessed ticket first binds its recommendation in its own session and returns the verified native runtime receipt ("bind" and "receipt" are defined in [Before code changes](../implement/MODEL-EXECUTION.md#before-code-changes)); a parent's receipt does not verify a worker, and a self-reported model name is not a receipt. Unassessed tickets use current or inherited settings with no selector, probe, binding or receipt. Steps 1, 4, 5 and 7 apply this rule.
+**Model gate.** A ticket is _assessed_ when the ticket, plan or conversation records an applicable model recommendation; otherwise it is _unassessed_. Any agent that changes code for an assessed ticket first binds its recommendation in its own session and returns the verified native runtime receipt ("bind" and "receipt" are defined in [Before code changes](../implement/MODEL-EXECUTION.md#before-code-changes)); a parent's receipt does not verify a worker, and a self-reported model name is not a receipt. Unassessed tickets use current or inherited settings with no selector, probe, binding or receipt. Steps 1, 4, 5 and 7 apply this rule.
 
 ## Steps
 
@@ -42,7 +69,10 @@ Communication to and from subagents should be sparse. Communicate primarily thro
 
 5. Require the usual acceptance evidence from every implementer. For assessed tickets, also require the worker's final **model gate** receipt in its native tool output; missing access to that evidence blocks acceptance. Merge its work to the integration branch with a **merger subagent**. Run one merger at a time: each starts from the current integration tip, and the coordinator confirms the tip it reports before the next merge or any frontier update. Give the merger the integration branch, the worker branch and commits, and the ticket; it may merge only into the integration branch and resolve conflicts within the ticket's scope, then rerun the affected checks and report the merge commit, conflicts resolved and check results. A merger that changes code or resolves conflicts for an assessed ticket applies the **model gate** first; incompatible ticket settings require separate workers. A blocked worker cannot make its dependents ready.
 
-6. If this changes the **frontier** of available tickets, kick off more **implementer subagents** to work on the new tickets, within the concurrency cap above.
+6. If this changes the **frontier**, start **implementer subagents** for tickets
+   whose dispatch is authorized by the project order, within the concurrency
+   cap above. Continue other authorized checks and integration; a pending serial
+   gate keeps its dependents blocked.
 
 7. Once all ticket implementations have landed, run required checks on the integrated candidate and run `code-review` on the integration branch against the task-start commit and full spec. Route accepted fixes to the affected ticket implementers, then validate and review their delta with affected callers. Run this correction pass once; if accepted findings remain after it, keep the PR in draft and report them as blockers. For assessed tickets, every resumed or replacement worker applies the **model gate** again; an unbound coordinator cannot implement those fixes. Recheck assessment status on resume so newly recorded recommendations take effect.
 

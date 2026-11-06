@@ -23,6 +23,12 @@ A **flow** is a path through the skills. Most paths run along one **main flow**,
 
 ## The main flow: idea → ship
 
+Both implementation routes select the next authorized action after each batch.
+For visual parity, worker briefs and integration follow the owning
+[visual sequence](../implement/VISUAL-PARITY.md) for early comparison and exact
+human approval. A ticket graph does not authorize parallel implementation or
+override an approved serial acceptance order.
+
 The route most work travels. You have an idea and want it built.
 
 1. **`/grill-with-docs`** sharpens the idea by interview. Start here whenever you are **working in a working directory**: it's stateful, retaining what it learns in `GLOSSARY.md` and ADRs. (No working directory? Use `/grill-me` instead, covered under Standalone. Both run the same `/grilling` primitive; `grill-with-docs` is the one that leaves a paper trail, which makes it the better of the two whenever a repo is there to leave it in.)
@@ -77,10 +83,10 @@ Not feature work, just upkeep.
 
 ## Vocabulary underneath
 
-Two model-invoked references that run *beneath* the other skills, each the single source of truth for its vocabulary. Reach for them directly when the **words**, not the process, are the problem; or let the skills above pull them in.
+Two model-invoked references that run _beneath_ the other skills, each the single source of truth for its vocabulary. Reach for them directly when the **words**, not the process, are the problem; or let the skills above pull them in.
 
-- **`/domain-modeling`**: sharpen the project's *domain* language: challenge a fuzzy term, resolve an overloaded word ("account" doing three jobs), record a hard-to-reverse decision as an ADR. It's the active discipline `/grill-with-docs` drives to keep `GLOSSARY.md` a clean glossary.
-- **`/codebase-design`** is the deep-module vocabulary (module, interface, depth, seam, adapter, leverage, locality) for designing a module's *shape*: a lot of behaviour behind a small interface at a clean seam. `/tdd` and `/improve-codebase-architecture` both speak it.
+- **`/domain-modeling`**: sharpen the project's _domain_ language: challenge a fuzzy term, resolve an overloaded word ("account" doing three jobs), record a hard-to-reverse decision as an ADR. It's the active discipline `/grill-with-docs` drives to keep `GLOSSARY.md` a clean glossary.
+- **`/codebase-design`** is the deep-module vocabulary (module, interface, depth, seam, adapter, leverage, locality) for designing a module's _shape_: a lot of behaviour behind a small interface at a clean seam. `/tdd` and `/improve-codebase-architecture` both speak it.
 
 ## Phase boundaries
 
@@ -92,18 +98,18 @@ At a phase boundary, read [PHASE-BOUNDARIES.md](PHASE-BOUNDARIES.md) for the ord
 
 Off the main flow entirely.
 
-| Situation | Skill |
-|---|---|
-| Long-running goal that needs background subagents and durable, commit-cited memory (in-progress; only the user invokes it) | `/chief-of-staff` |
-| Interview with no working directory (a plan, a design, a piece of writing) | `/grill-me` |
-| The bare interview, with no wrapper | `/grilling` |
-| A design question that needs runnable, throwaway code | `/prototype` |
-| Reading legwork against primary sources, delegated to a background agent | `/research` |
-| The blocker is in someone else's head; write them a questionnaire | `/to-questionnaire` |
-| Steps only a human can take (infrastructure, credentials, dashboards, cutovers) | `/wizard` |
-| A message that didn't land; re-pitch it with the missing context | `/wait-what` |
-| Learn a concept over multiple sessions | `/teach` |
-| Writing skills, AGENTS.md or other documents agents consume | `/writing-for-agents` |
+| Situation                                                                                                                  | Skill                 |
+| -------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Long-running goal that needs background subagents and durable, commit-cited memory (in-progress; only the user invokes it) | `/chief-of-staff`     |
+| Interview with no working directory (a plan, a design, a piece of writing)                                                 | `/grill-me`           |
+| The bare interview, with no wrapper                                                                                        | `/grilling`           |
+| A design question that needs runnable, throwaway code                                                                      | `/prototype`          |
+| Reading legwork against primary sources, delegated to a background agent                                                   | `/research`           |
+| The blocker is in someone else's head; write them a questionnaire                                                          | `/to-questionnaire`   |
+| Steps only a human can take (infrastructure, credentials, dashboards, cutovers)                                            | `/wizard`             |
+| A message that didn't land; re-pitch it with the missing context                                                           | `/wait-what`          |
+| Learn a concept over multiple sessions                                                                                     | `/teach`              |
+| Writing skills, AGENTS.md or other documents agents consume                                                                | `/writing-for-agents` |
 
 ## Precondition
 

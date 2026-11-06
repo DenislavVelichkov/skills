@@ -2,25 +2,36 @@
 
 `implement-spec` takes a [spec](https://www.aihero.dev/ai-coding-dictionary/spec) and its [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) and lands the whole thing in one run. The orchestrating [agent](https://www.aihero.dev/ai-coding-dictionary/agent) hands each ticket to an implementer [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent) working in its own git worktree, merges each finished branch into a single **integration branch**, runs [code-review](https://aihero.dev/skills-code-review) over the result, and resolves the tickets.
 
-It reads the approved tickets as a task graph. A ticket becomes ready when its blockers have landed on the integration branch with their required acceptance evidence. Independent tickets can run concurrently, up to the host's subagent limit (3 when the host states none). External blockers, human approval and an approved serial acceptance order still apply.
+It reads the approved tickets as a task graph. A ticket becomes ready when its
+blockers have landed on the integration branch with their required acceptance
+evidence. The graph grants no parallel implementation permission. Project
+authorization, isolated mutable resources, host limits and approved serial
+acceptance order govern concurrency. One merger lands work at a time.
 
 Each implementer follows the shared preparation and failure-diagnosis rules before expensive acceptance runs. The coordinator retains applicable proof and requires a changed input or a bounded diagnostic reason for reruns. Failed tooling or environment checks remain separate from product failures.
+
+After a worker result, integration batch, check or review, the coordinator takes
+the next authorized action. Visual worker and merger briefs use the same owning
+sequence for early rendered comparisons, related fixes, final review and
+capture. Integration rechecks evidence applicability and candidate hashes.
+Pending exact human approval keeps the serial chain blocked; passing checks
+and reviews grant no approval.
 
 ## When to reach for it
 
 You invoke this by typing `/implement-spec`, and the agent won't reach for it on its own.
 
-| Your situation | Reach for |
-| --- | --- |
-| A spec, split into tickets with blocking edges, that you want landed in one run | `/implement-spec` |
-| One ticket at a time, in your own [context window](https://www.aihero.dev/ai-coding-dictionary/context-window), [clearing](https://www.aihero.dev/ai-coding-dictionary/clearing) between tickets | [implement](https://aihero.dev/skills-implement) |
-| A spec that isn't split into tickets yet | [to-tickets](https://aihero.dev/skills-to-tickets) first |
-| A small piece of work with no real graph to it | [implement](https://aihero.dev/skills-implement) directly |
+| Your situation                                                                                                                                                                                   | Reach for                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| A spec, split into tickets with blocking edges, that you want landed in one run                                                                                                                  | `/implement-spec`                                         |
+| One ticket at a time, in your own [context window](https://www.aihero.dev/ai-coding-dictionary/context-window), [clearing](https://www.aihero.dev/ai-coding-dictionary/clearing) between tickets | [implement](https://aihero.dev/skills-implement)          |
+| A spec that isn't split into tickets yet                                                                                                                                                         | [to-tickets](https://aihero.dev/skills-to-tickets) first  |
+| A small piece of work with no real graph to it                                                                                                                                                   | [implement](https://aihero.dev/skills-implement) directly |
 
 ## Prerequisites
 
 - **An issue tracker.** The skill reads the tickets from, and resolves them on, the tracker [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) configured. If none has been configured, it stops and tells you to run that first rather than guessing.
-- Approved tickets with their blocking edges, as [to-tickets](https://aihero.dev/skills-to-tickets) writes them. A flat graph permits concurrent work within host limits and the required acceptance order.
+- Approved tickets with their blocking edges, as [to-tickets](https://aihero.dev/skills-to-tickets) writes them. A flat graph does not change project concurrency or acceptance authority.
 - **A [harness](https://www.aihero.dev/ai-coding-dictionary/harness) that runs subagents in the background and gives each one a git worktree.** The skill exists to run tickets at the same time, so on a harness that runs subagents one at a time, it is only a slower `implement`. Missing capabilities stop dispatch; the skill recommends invoking `implement` per ticket instead. Each worker preserves existing checkout changes and commits.
 
 ## The integration branch
@@ -63,7 +74,7 @@ provide enforcement; the skill must stop on those errors too.
 
 **How is this different from running `/implement` on each ticket myself?**
 
-This is the question the skill exists to answer. Before it shipped, people kept building their own versions, and one user described the need: they wanted "subagents implement the tickets" instead of having "to individually create new session and tell them to implement a ticket one by one, when a spec may contain over 5 tickets." With `implement` you are the dispatcher: one [session](https://www.aihero.dev/ai-coding-dictionary/session) per ticket, clearing in between, and keeping track yourself of which tickets are unblocked. `implement-spec` hands that job to one orchestrating session. The price is that you no longer read each ticket's work as it lands; you review the integration branch at the end. To start a run, clear the context and type `/implement-spec` with a pointer to the spec (an issue number or a file path). For a small change with no real graph, skip it and use `implement` directly.
+This is the question the skill exists to answer. Before it shipped, people kept building their own versions, and one user described the need: they wanted "subagents implement the tickets" instead of having "to individually create new session and tell them to implement a ticket one by one, when a spec may contain over 5 tickets." With `implement` you are the dispatcher: one [session](https://www.aihero.dev/ai-coding-dictionary/session) per ticket, clearing in between, and keeping track yourself of which tickets are unblocked. `implement-spec` hands that job to one orchestrating session. Required serial reviews and human acceptance still happen before dependent work. The final review covers the complete integration branch. To start a run, clear the context and type `/implement-spec` with a pointer to the spec (an issue number or a file path). For a small change with no real graph, skip it and use `implement` directly.
 
 **Does it need GitHub? I want it to stop at the branch.**
 
@@ -96,15 +107,16 @@ A worktree holds only what git tracks. Tests that read gitignored fixtures, loca
 ## It's working if
 
 - Unassessed work proceeds with existing settings; assessed work verifies the ticket's model and effort before edits, and a mismatch stops that ticket.
-- Several implementers are running at once whenever the graph allows, not one after another.
-- A ticket starts as soon as its last blocker lands on the integration branch, not when the whole run ends.
+- Implementers run concurrently only within project authorization and host limits.
+- A ticket starts after its blockers and required serial acceptance gates pass on the integration branch.
 - Every ticket's trace shows `tdd` running, with a failing test before the code.
 - The integrated candidate passes its required checks after merges and conflict fixes.
 - Complete work ends on one branch with every ticket resolved and a PR only if your tracker wanted one. Pending gates remain visible, with unfinished work preserved.
 
 ## Where it fits
 
-`implement-spec` is the build step of the main chain, as the parallel alternative to running [implement](https://aihero.dev/skills-implement) once per ticket:
+`implement-spec` coordinates the build step of the main chain across tickets,
+as an alternative to running [implement](https://aihero.dev/skills-implement) once per ticket:
 
 ```txt
 grill-with-docs → to-spec → to-tickets → implement-spec → retro

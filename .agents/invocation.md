@@ -13,7 +13,11 @@ Bucket `README.md`s and the top-level `README.md` group entries into **User-invo
 
 ## Dependencies between them
 
-Dependencies are expressed as an explicit instruction to **call the Skill tool** with the named skill (`Call the Skill tool with "grilling"`), not deep `../other-skill/FILE.md` cross-references, and not a bare `/skill`-style mention left for the model to interpret. Naming the tool is what gets it fired: most harnesses expose skill invocation as a tool the model calls, and spelling that out gets a higher hit rate than dropping a `/name` into prose and hoping it's read as a command. Dropping the leading `/` also keeps this harness-neutral rather than less: a skill name on its own carries no assumption about which harness's trigger syntax it belongs to. Shared reference docs live inside the skill that owns them; other skills reach that material by calling the Skill tool with it, not by linking across folders.
+For an active model-invoked dependency, explicitly call the Skill tool with its
+registered name, such as `grilling`. A bare `/skill` mention recommends a command
+to the human. Shared reference files stay with their existing owner; read a
+direct relative link such as `implement/VERIFICATION.md` without invoking the
+owning explicit-only skill. Reference loading grants no execution permission.
 
 This is about **operative** instructions: a skill's own steps telling the agent to go run another skill right now. Router prose that just names skills for a human to pick from (`ask-matt`, bucket `README.md`s) isn't invoking anything, so it keeps `/skill`-style names as plain labels.
 
@@ -24,3 +28,22 @@ This whole convention only holds when the named skill is **model-invoked**. A us
 ## Passive vs active domain work
 
 Merely _reading_ `GLOSSARY.md` for vocabulary is a one-line prose pointer, not the `domain-modeling` skill. Only the active build/sharpen discipline (challenge terms, edge-case scenarios, write ADRs, update `GLOSSARY.md` inline) is `domain-modeling`.
+
+## Runtime authoring record
+
+Checked 2026-11-06 against Anthropic's
+[skill authoring guidance](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)
+and the [Claude Code skill contract](https://code.claude.com/docs/en/skills).
+Keep descriptions specific and steps concise, with conditional references
+directly reachable from SKILL.md. The shared visual and verification references
+remain in `implement`; reading them does not invoke that manual-only skill.
+This resolves the older dependency wording above without broadening invocation.
+
+Preserve actual frontmatter, arguments and tool names. Keep existing
+`disable-model-invocation`, `user-invocable`, `allowed-tools`, `context` and
+`agent` fields where present; do not add Codex metadata or new permissions.
+`allowed-tools` affects permission, and `context: fork` supplies an isolated
+subagent without conversation history. Give any authorized delegated task its
+required inputs; this refactor changes neither delegation nor model gates.
+Text-contract checks establish consistency only. Verify routing and an
+authorized isolated workflow separately before claiming runtime adoption.
