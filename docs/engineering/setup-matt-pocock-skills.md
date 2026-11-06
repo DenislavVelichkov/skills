@@ -70,6 +70,9 @@ either obligation. Only that visual parity action creates a manifest. Ordinary
 UI work uses the normal workflow. The validator keeps
 reference selection, production comparison, human acceptance, and baseline
 promotion as separate states.
+The bundled protocol also requires numbered difference pointers and accessible
+explanations through each project's existing comparison producer. Original image
+bytes and the human approval boundary stay unchanged.
 
 "Other" is a full option too. It is how Jira, Linear, Azure DevOps and Beads all work. You describe the workflow, the skill records your prose in `docs/agents/issue-tracker.md`, and the downstream skills follow the prose. Users have already built this: a Jira-over-[MCP](https://www.aihero.dev/ai-coding-dictionary/mcp) variant, a Gitea CLI shaped like `gh`, a hand-built local dashboard.
 

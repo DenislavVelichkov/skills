@@ -166,8 +166,9 @@ order.
    accepted fixes before capturing approval candidates.
 4. Capture final candidates using the same locale, viewport, scenario, and
    deterministic data as each reference.
-5. Record candidate hashes and a side-by-side comparison artifact; set the
-   surface to `compared` and validate the manifest.
+5. Record candidate hashes and a side-by-side comparison artifact following
+   [Comparison presentation](#comparison-presentation); set the surface to
+   `compared` and validate the manifest.
 6. Record an approval request bound to that candidate-set hash, set
    `approval_requested`, validate again, and end the turn with the mandatory
    request printed by the validator below.
@@ -188,6 +189,27 @@ unintended mismatch or record a deliberate adaptation for the human to assess.
 Keep corrections scoped to the feedback; fixing an arrow's alignment preserves
 the surrounding link unless a broader change is requested. Passing behavioral
 checks does not establish visual fidelity or human acceptance.
+
+## Comparison presentation
+
+Use the project's existing comparison-build entry and reviewed-pair selector.
+For each inspected difference, add numbered arrows anchored to image coordinates
+and matching explanations beside the pair. Name the affected reference or
+candidate image; use the same number for corresponding locations across both
+images when applicable. Keep numbers readable with high contrast, arrows off
+the inspected detail, accessible text, and an unobstructed original view.
+Label deliberate adaptations without implying approval. For an inspected pair
+with no identified differences, state "No differences identified" and add no marker.
+
+Use HTML or SVG overlays and preserve original image bytes and hashes, all
+required pairs, their order and pair identities. Bind inspections to the exact
+pair; reject stale annotations and regenerate them after a pair changes.
+Keep the HTML self-contained and open it directly from disk without a server
+or adjacent-data fetch. Check ordinary and narrow layouts, image zoom, pointer
+alignment, navigation and accessible explanations through the actual producer
+and consumer. Follow existing comparison-file hash and approval rules.
+Presentation checks grant no product or native approval; retain the existing
+owners of capture identity and proof applicability.
 
 ## Approval boundary
 

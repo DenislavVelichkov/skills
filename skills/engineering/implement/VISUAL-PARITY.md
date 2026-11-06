@@ -57,8 +57,10 @@ their evidence applies to the current candidate:
    captures. Use supported diagnostic paths with their existing state prerequisites.
 2. Complete the committed-candidate review required by the invoking workflow,
    including accepted fixes, before capturing final candidates.
-3. Supply every required candidate and side-by-side comparison. Diagnostic
-   images replace no final coverage or acceptance and add no manifest state.
+3. Supply every required candidate and side-by-side comparison. Apply the
+   repository protocol's "Comparison presentation" through the existing producer
+   and consumer, including numbered difference pointers and pair-bound inspection.
+   Diagnostic images replace no final coverage or acceptance and add no manifest state.
    Where the project requires a complete native parent, keep that requirement;
    focused checks and partial captures cannot satisfy it. Reuse existing
    evidence only through project-supported validation of its applicability to
