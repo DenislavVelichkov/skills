@@ -6,7 +6,12 @@ Every ticket is a **tracer bullet**: a narrow complete user path through the req
 
 Validation follows the behavior being changed. Existing desktop tests provide
 feedback during editing; platform-owned behavior needs focused native checks.
-Required final proof still runs on the stable candidate.
+Required final proof still runs on the stable candidate. Each ticket keeps its
+behavior, focused checks, final gates, immutable requirement links and mandatory
+own-body text. Shared policy links replace repeated procedure without removing
+requirements that must remain in each body. Existing tickets change only for an
+identified conflicting or missing clause; an old pinned link alone is no reason
+to amend them.
 
 ## When to reach for it
 
@@ -17,13 +22,13 @@ when an existing serial chain would otherwise hold up independent work.
 
 You invoke this by typing `/to-tickets`. The [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own.
 
-| Where you are | What to run |
-| --- | --- |
-| You have a spec issue and the build spans several sessions | `/to-tickets`, or `/to-tickets #<spec_issue>` |
-| The plan is only in the conversation, never written up | `/to-tickets` reads the thread directly, no spec needed |
-| A small unpublished plan remains in the current conversation | [implement](https://aihero.dev/skills-implement), skip the tickets |
-| Nothing is decided yet | [grill-with-docs](https://aihero.dev/skills-grill-with-docs), then [to-spec](https://aihero.dev/skills-to-spec) |
-| A [wayfinder](https://aihero.dev/skills-wayfinder) map has cleared | [to-spec](https://aihero.dev/skills-to-spec) first, to collapse the map, then `/to-tickets` |
+| Where you are                                                      | What to run                                                                                                     |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| You have a spec issue and the build spans several sessions         | `/to-tickets`, or `/to-tickets #<spec_issue>`                                                                   |
+| The plan is only in the conversation, never written up             | `/to-tickets` reads the thread directly, no spec needed                                                         |
+| A small unpublished plan remains in the current conversation       | [implement](https://aihero.dev/skills-implement), skip the tickets                                              |
+| Nothing is decided yet                                             | [grill-with-docs](https://aihero.dev/skills-grill-with-docs), then [to-spec](https://aihero.dev/skills-to-spec) |
+| A [wayfinder](https://aihero.dev/skills-wayfinder) map has cleared | [to-spec](https://aihero.dev/skills-to-spec) first, to collapse the map, then `/to-tickets`                     |
 
 Implementation tickets that `to-tickets` produces are agent-ready by construction. A visual design-selection blocker may instead be `ready-for-human` when the choice is still open. Don't run [triage](https://aihero.dev/skills-triage) over either kind; triage is for work that arrived from someone else.
 
@@ -50,12 +55,25 @@ Two things happen before anything is published. `to-tickets` looks for prefactor
 
 The edges are the point of the artifact. They work in two ways, depending on the tracker:
 
-| Tracker | Where the edges live | How you work them |
-| --- | --- | --- |
-| Local markdown spec | Text in one file per ticket under `.scratch/<feature>/implementation/issues/<NN>-<slug>.md`, numbered blockers-first from `01` | Top to bottom, by hand |
+| Tracker                         | Where the edges live                                                                                                            | How you work them                                                            |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Local markdown spec             | Text in one file per ticket under `.scratch/<feature>/implementation/issues/<NN>-<slug>.md`, numbered blockers-first from `01`  | Top to bottom, by hand                                                       |
 | A real tracker (GitHub, Linear) | Native blocking links where the tracker has them, otherwise a "Blocked by" list. A sub-issue link never records a blocking edge | Any ticket whose blockers are done is on the **frontier** and can be grabbed |
 
 The edges live in the ticket either way. The tracker only decides whether anything can act on them in parallel. `to-tickets` produces the artifact; running it (one session at a time, or a fleet) is your job, not the skill's.
+
+GitHub publication verifies each child's native parent, separate blockers and
+configured category/state labels through complete paginated read-back. Large
+sets use configured grouping without changing leaf totals, closed history or
+serial order. Planning containers stay separate from executable tickets; a fully
+specified blocked child remains agent-ready. Partial or uncertain writes reuse
+existing issues and repair missing operations before any retry.
+
+For a visual parity action, tickets require early rendered comparisons and
+annotated HTML with numbered difference pointers before exact human acceptance.
+Browser parity retains browser proof without adding native-only proof; native
+parity retains its required native evidence. Ordinary UI without a named
+comparison obligation needs no parity manifest.
 
 For a visual parity action, the manifest defines one extra edge the tracker must show:
 the next surface stays blocked until the current one has been compared,
@@ -102,10 +120,10 @@ Group work by demonstrable behavior instead of one ticket per helper, test or UI
 This is the failure the vertical-slice rule is written against, and the skill still produces it sometimes. Catch it at the quiz step by asking one question per ticket: what can I demo when this is done? A ticket with no answer is a horizontal slice. Some people add a "demo path" line to each ticket for this reason, and report that it pushes the model toward vertical slices.
 
 **On GitHub the tickets weren't created as sub-issues of the spec issue.**
-This was reported across a dozen runs and several models, [most fully in issue #554](https://github.com/mattpocock/skills/issues/554). Fixed: `to-tickets` now makes each ticket a sub-issue of its source issue, and the GitHub tracker template gives the command (`gh issue create --parent <n>`, `gh` 2.94+). Re-run [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) to refresh an older `docs/agents/issue-tracker.md`.
+This was reported across a dozen runs and several models, [most fully in issue #554](https://github.com/mattpocock/skills/issues/554). The skill checks the installed CLI help before choosing the configured operation or documented API. It then verifies each child's native parent and every page of the parent's child list. A body link alone does not establish ownership. If a link is missing or wrong, it repairs the existing approved issue instead of creating another one.
 
 **"Blocked by" was written into the issue body instead of a real blocking link.**
-This is the same kind of problem, [reported in issue #513](https://github.com/mattpocock/skills/issues/513), where the agent even stated that GitHub has no native blocking relationship at all. It does: `gh issue create --blocked-by 12,15`. Because the skill publishes blockers first, their numbers are always available at creation time. The body text is meant to be the fallback for trackers with no native edge, not the default. The ticket template now omits `## Blocked by` when the edges are native.
+This is the same kind of problem, [reported in issue #513](https://github.com/mattpocock/skills/issues/513), where the agent even stated that GitHub has no native blocking relationship at all. GitHub has native dependencies. The skill checks the installed CLI for supported blocker operations and uses the documented API when needed. It publishes blockers first and verifies every page of the child's blockers after writing. Text is a configured fallback only when native edges are unavailable; a parent link cannot substitute for a blocker.
 
 **Where do local tickets from a spec go?**
 A spec at `.scratch/<feature-slug>/spec.md` produces a fresh set under `.scratch/<feature-slug>/implementation/issues/<NN>-<slug>.md`, numbered from `01` in dependency order. The parent `issues/` directory remains the planning and decision record. Plans without a parent feature spec still use `.scratch/<feature-slug>/issues/`.

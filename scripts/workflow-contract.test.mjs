@@ -502,3 +502,46 @@ test("comparison presentation reaches both visual callers without changing appro
     assert.ok(read(`docs/engineering/${name}.md`).includes("numbered difference pointers"), name);
   }
 });
+
+// These checks inspect authoring contracts, not registered skill execution.
+test("ticket publication retains requirements while sharing execution procedure", () => {
+  const instructions = read("skills/engineering/to-tickets/SKILL.md").replace(/\s+/gu, " ");
+  for (const requirement of [
+    "mandatory own-body text", "immutable requirement links", "focused checks and final gates",
+    "An old pinned requirement link alone is not a conflict",
+    "exact issue-to-clause map", "existing progress records", "PUBLICATION.md",
+    "regardless of age", "unavailable updates", "exact-byte scanning",
+  ]) assert.ok(instructions.includes(requirement), requirement);
+});
+
+for (const [situation, actions] of [
+  ["missing or wrong native parent", ["Read each child's native parent", "missing or wrong parent", "missing or extra blockers", "approved parent", "replace_parent", "sub_issue_id"]],
+  ["child or blocker on a later page", ["complete paginated child list", "complete paginated blocker list", "--paginate --slurp", "Follow every next page", "closed issues"]],
+  ["custom category and state roles", ["configured category and state roles", "specification and group containers", "fully specified blocked child", "ready-for-agent", "read back its labels"]],
+  ["parent capacity and grouping", ["100 direct children", "eight levels", "configured grouping convention", "approved leaf-ticket total", "preserve existing issue states and serial order", "Reparent existing issues"]],
+  ["uncertain create or partial relationships", ["uncertain create", "reuse the saved issue identity", "complete only missing operations", "Do not create a duplicate", "stop dependent publication", "existing progress record"]],
+]) {
+  test(`ticket publication: ${situation}`, () => {
+    const instructions = read("skills/engineering/to-tickets/PUBLICATION.md").replace(/\s+/gu, " ");
+    for (const action of actions) assert.ok(instructions.includes(action), action);
+  });
+}
+
+for (const [kind, obligations] of [
+  ["browser parity", ["early rendered comparisons", "numbered difference pointers", "Browser work adds no native-only proof requirement"]],
+  ["native parity", ["early rendered comparisons", "numbered difference pointers", "complete native parent", "candidate-set hash"]],
+  ["ordinary UI", ["UI work without that obligation", "no manifest"]],
+]) {
+  test(`ticket publication UI applicability: ${kind}`, () => {
+    const instructions = (read("skills/engineering/to-tickets/SKILL.md") + read("skills/engineering/to-tickets/VISUAL-PARITY.md")).replace(/\s+/gu, " ");
+    for (const obligation of obligations) assert.ok(instructions.includes(obligation), obligation);
+  });
+}
+
+test("ticket publication public guidance explains verified ownership and safe recovery", () => {
+  const page = read("docs/engineering/to-tickets.md").replace(/\s+/gu, " ");
+  for (const text of ["mandatory own-body text", "immutable requirement links", "complete paginated", "configured grouping", "installed CLI", "numbered difference pointers", "native-only proof"]) {
+    assert.ok(page.includes(text), text);
+  }
+  assert.doesNotMatch(page, /`gh` 2\.94\+/u);
+});
