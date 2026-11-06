@@ -88,6 +88,12 @@ and enlarged text belong in those focused checks. Related fixes finish before
 final committed-candidate review and capture. Diagnostic images replace no final
 coverage, complete native-parent requirement or acceptance.
 
+The comparison uses numbered difference pointers and nearby accessible explanations
+for inspected differences, with an unobstructed original view. Inspected pairs
+without identified differences say so. The page preserves original bytes, binds
+annotations to the exact pair, and works directly from disk at narrow widths and
+with image zoom. These presentation checks grant no approval.
+
 The run then supplies every required candidate, the side-by-side comparison and
 candidate-set hash, and asks for exact human approval. No snapshot baseline moves.
 An immediate `Approve` reply binds to the displayed surface and hash without

@@ -485,3 +485,20 @@ test("planning and design selection cannot reopen or expand execution authority"
   assert.doesNotMatch(read("docs/engineering/tdd.md"), /Before any test exists/u);
   assert.match(read("skills/engineering/ask-matt/SKILL.md"), /A published spec always goes through/u);
 });
+
+// Issue 190 checks the presentation instructions; browser observations stay separate.
+test("comparison presentation reaches both visual callers without changing approval authority", () => {
+  const protocol = read("skills/engineering/setup-matt-pocock-skills/visual-acceptance.md").replace(/\s+/gu, " ");
+  for (const requirement of [
+    "existing comparison-build entry", "numbered arrows", "matching explanations",
+    "image coordinates", "unobstructed original view", "No differences identified",
+    "deliberate adaptations", "original image bytes", "all required pairs",
+    "pair identities", "regenerate", "directly from disk", "comparison-file hash",
+  ]) assert.ok(protocol.includes(requirement), requirement);
+  assert.ok(protocol.includes("## Comparison presentation"));
+  const visual = read("skills/engineering/implement/VISUAL-PARITY.md");
+  assert.ok(visual.includes("Comparison presentation"));
+  for (const name of ["implement", "implement-spec", "ask-matt", "setup-matt-pocock-skills"]) {
+    assert.ok(read(`docs/engineering/${name}.md`).includes("numbered difference pointers"), name);
+  }
+});

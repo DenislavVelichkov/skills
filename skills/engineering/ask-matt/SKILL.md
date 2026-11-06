@@ -26,7 +26,8 @@ A **flow** is a path through the skills. Most paths run along one **main flow**,
 Both implementation routes select the next authorized action after each batch.
 For visual parity, worker briefs and integration follow the owning
 [visual sequence](../implement/VISUAL-PARITY.md) for early comparison and exact
-human approval. A ticket graph does not authorize parallel implementation or
+human approval. That sequence includes numbered difference pointers through the
+project comparison producer. A ticket graph does not authorize parallel implementation or
 override an approved serial acceptance order.
 
 The route most work travels. You have an idea and want it built.
