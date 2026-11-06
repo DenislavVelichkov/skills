@@ -2,10 +2,10 @@
 
 Preserve the selected skill's invocation policy in both platforms.
 
-| Invocation | Claude Code `SKILL.md` | Codex `agents/openai.yaml` | Description |
-| --- | --- | --- | --- |
-| User-invoked | `disable-model-invocation: true` | `policy.allow_implicit_invocation: false` | Human-facing summary |
-| Model-invoked | Omit `disable-model-invocation` | Omit the `policy` block | Model-facing trigger branches |
+| Invocation    | Claude Code `SKILL.md`           | Codex `agents/openai.yaml`                | Description                   |
+| ------------- | -------------------------------- | ----------------------------------------- | ----------------------------- |
+| User-invoked  | `disable-model-invocation: true` | `policy.allow_implicit_invocation: false` | Human-facing summary          |
+| Model-invoked | Omit `disable-model-invocation`  | Omit the `policy` block                   | Model-facing trigger branches |
 
 Both kinds retain a `name` and `description`. Invocation is controlled by the
 host's policy, not by deleting descriptions. Each skill also has
@@ -46,3 +46,19 @@ Do not silently run it as a dependency.
 Reading `GLOSSARY.md` for vocabulary is a prose pointer, not `domain-modeling`.
 Use `domain-modeling` for active work: challenging terms, exploring edge cases,
 writing ADRs, and updating the glossary as decisions resolve.
+
+## Runtime authoring record
+
+Checked 2026-11-06 for #189 against OpenAI's
+[Codex skill guidance](https://developers.openai.com/codex/skills/), now resolved
+to [Build skills](https://learn.chatgpt.com/docs/build-skills).
+Keep the job focused, the discovery description specific, and the steps
+imperative with explicit inputs and outputs. Keep conditional references
+directly reachable from SKILL.md; prefer instructions over new scripts.
+
+This refactor preserves the Codex manifest's selected skills and every existing
+`agents/openai.yaml` policy and tool dependency. Model-invoked dependencies use
+the supported loading mechanism above; reading a shared reference does not
+invoke its explicit-only owner. Keep runtime tool names and model gates intact.
+Text-contract checks establish consistency only. Verify routing and an
+authorized isolated workflow separately before claiming runtime adoption.

@@ -29,6 +29,12 @@ A **flow** is a path through the skills. Most paths run along one **main flow**,
 
 ## The main flow: idea → ship
 
+Both implementation routes select the next authorized action after each batch.
+For visual parity, worker briefs and integration follow the owning
+[visual sequence](../implement/VISUAL-PARITY.md) for early comparison and exact
+human approval. A ticket graph does not authorize parallel implementation or
+override an approved serial acceptance order.
+
 1. **`/grill-with-docs`** sharpens the idea by interview when there is a repository or an agreed documentation workspace it may write to. Neither? **`/grill-me`**.
 2. A question that needs a runnable answer (state, business logic, a UI you have to see): **`/handoff`** out, **`/prototype`**, **`/handoff`** back.
 3. A multi-session build: **`/to-spec`**, then **`/to-tickets`**, then either **`/implement`** per ticket (by default `/clear` between tickets; decide at each boundary with Phase boundaries below) or **`/implement-spec`** for the whole spec when the host supports the required subagents and isolated worktrees. Work that fits one session with no published spec: **`/implement`** directly; a published spec always goes through `/to-tickets` first. Both paths use **`/tdd`** and **`/code-review`**; **`/pr`** shapes a pull request body.

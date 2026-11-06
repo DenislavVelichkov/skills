@@ -2,7 +2,11 @@
 
 `implement` builds work that has already been decided. You point it at one [ticket](https://www.aihero.dev/ai-coding-dictionary/ticket), or at a small plan still present in the current conversation, and it writes the code, drives [tdd](https://aihero.dev/skills-tdd) at the seams, typechecks as it goes, commits the integrated candidate to the current branch, and runs [code-review](https://aihero.dev/skills-code-review) against it.
 
-It carries settled scope, decisions and test boundaries forward. Only consequential unresolved decisions need a new question; independent authorized work continues while those answers are pending. Planning still requires a separate implementation request.
+It carries settled scope, decisions and test boundaries forward. After each batch,
+check or review, it takes the next authorized action until completion, a real
+blocker or a required human decision. Independent work continues while input is
+pending only where project order and approval rules permit it. Planning still
+requires a separate implementation request.
 
 Validation follows the behavior being changed. Existing desktop tests provide
 feedback during editing; platform-owned behavior needs focused native checks.
@@ -15,22 +19,33 @@ Explicit validation shares verified assessments within the project's supported
 operation, expires them after relevant changes, and records failed work as well
 as successful reuse. Existing native and human acceptance gates still apply.
 
-Before expensive acceptance runs, it checks the actual invocation, generated artifacts, assertion coverage, restoration and prerequisite expiry. Recurring failures require a bounded reproducer and checked repair, or an explicit diagnostic reason for the next run. Routine edits need no separate preparation record.
+Before expensive acceptance runs, it checks the actual invocation, current inputs,
+owned resources, starting state, generated artifacts, assertion coverage,
+restoration and prerequisite expiry. It distinguishes interruption, assertion
+failure and invalidation, reconciles uncertain effects and never replays a
+committed mutation. Recurring failures require a bounded reproducer and checked
+repair, or an explicit diagnostic reason for the next run. Device restoration
+does not establish fixture cleanup. Routine edits need no separate preparation record.
 
 ## When to reach for it
 
-You invoke this by typing `/implement` yourself, and the agent won't reach for it on its own. It ships with `disable-model-invocation: true`, so no other skill can call it either. Wherever [ask-matt](https://aihero.dev/skills-ask-matt) or [to-tickets](https://aihero.dev/skills-to-tickets) says "then `/implement` per ticket", that is an instruction to you, not something the agent will do unprompted.
+You invoke this by typing `/implement` yourself, and the agent won't reach for it
+on its own. Its Codex `agents/openai.yaml` sets
+`policy.allow_implicit_invocation: false`. Wherever
+[ask-matt](https://aihero.dev/skills-ask-matt) or
+[to-tickets](https://aihero.dev/skills-to-tickets) says "then `/implement` per ticket",
+that is an instruction to you, not something the agent will do unprompted.
 
 Where the work currently lives decides whether this is the right skill:
 
-| The work is… | Reach for |
-| --- | --- |
-| A ticket on the tracker | `/implement #42`, one ticket per [session](https://www.aihero.dev/ai-coding-dictionary/session), [clearing](https://www.aihero.dev/ai-coding-dictionary/clearing) context between tickets |
-| A published spec, whether large or small | [to-tickets](https://aihero.dev/skills-to-tickets) first, then `/implement` per ticket |
-| Only in the conversation you just had, and it's still small | `/implement` right there, in the same window |
-| Not written down anywhere yet | [grill-with-docs](https://aihero.dev/skills-grill-with-docs), or [grill-me](https://aihero.dev/skills-grill-me) if there's no codebase |
-| One concrete behaviour you want test-first, with no spec | [tdd](https://aihero.dev/skills-tdd) directly |
-| Already built, and you want it checked | [code-review](https://aihero.dev/skills-code-review) directly |
+| The work is…                                                | Reach for                                                                                                                                                                                 |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A ticket on the tracker                                     | `/implement #42`, one ticket per [session](https://www.aihero.dev/ai-coding-dictionary/session), [clearing](https://www.aihero.dev/ai-coding-dictionary/clearing) context between tickets |
+| A published spec, whether large or small                    | [to-tickets](https://aihero.dev/skills-to-tickets) first, then `/implement` per ticket                                                                                                    |
+| Only in the conversation you just had, and it's still small | `/implement` right there, in the same window                                                                                                                                              |
+| Not written down anywhere yet                               | [grill-with-docs](https://aihero.dev/skills-grill-with-docs), or [grill-me](https://aihero.dev/skills-grill-me) if there's no codebase                                                    |
+| One concrete behaviour you want test-first, with no spec    | [tdd](https://aihero.dev/skills-tdd) directly                                                                                                                                             |
+| Already built, and you want it checked                      | [code-review](https://aihero.dev/skills-code-review) directly                                                                                                                             |
 
 The same-session case is worth naming because no tracker artifact exists. If the small plan lives only in the thread, say so when you invoke it. Once a spec has been published, it must pass through `to-tickets` before code changes begin.
 
@@ -72,18 +87,22 @@ and the ticket's comparison row. If either is missing, it creates or repairs the
 have durable, hashed references and be at least `design_selected` before code
 changes begin.
 
-Once the target surface is `design_selected`, visual tickets have a deliberate
-human boundary inside the run. The first implementation invocation builds the
-real surface, captures every candidate required for that surface, and stops after producing the
-side-by-side comparison and candidate-set hash. No snapshot baseline moves.
+Once the target surface is `design_selected`, early rendered comparisons expose
+feasible mismatches during implementation. Relevant enabled controls and normal
+and enlarged text belong in those focused checks. Related fixes finish before
+final committed-candidate review and capture. Diagnostic images replace no final
+coverage, complete native-parent requirement or acceptance.
+
+The run then supplies every required candidate, the side-by-side comparison and
+candidate-set hash, and asks for exact human approval. No snapshot baseline moves.
 An immediate `Approve` reply binds to the displayed surface and hash without
 requiring you to repeat the digest. Later invocations resume from validated state:
 
-| Surface state | What happens next |
-| --- | --- |
-| `approval_requested` | A bound approval or rejection is handled first; otherwise the exact request is shown again. |
-| `member_accepted` | The approved candidate bytes are verified and promoted, then visual checks run. |
-| `baseline_promoted` | Retained evidence and completion gates are checked without rebuilding or asking for the same approval. |
+| Surface state        | What happens next                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------ |
+| `approval_requested` | A bound approval or rejection is handled first; otherwise the exact request is shown again.            |
+| `member_accepted`    | The approved candidate bytes are verified and promoted, then visual checks run.                        |
+| `baseline_promoted`  | Retained evidence and completion gates are checked without rebuilding or asking for the same approval. |
 
 That pause is not unfinished automation; it is the point at which automation
 has reached the decision it cannot make. Code review can establish that the
@@ -132,7 +151,6 @@ A ticket adds its own fixtures, assertions and registration to the existing
 runner. Shared-tooling repairs must name the blocked check and stop when that
 check works. General infrastructure improvements stay separate from feature
 delivery unless requested. Required acceptance checks still apply.
-
 
 **It finished, but my ticket is still open and the acceptance criteria are still unchecked.**
 

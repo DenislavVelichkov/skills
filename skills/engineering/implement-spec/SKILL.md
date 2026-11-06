@@ -17,7 +17,32 @@ The tickets form a **task graph**. Its **frontier** contains tickets whose block
 
 This skill depends on the sibling `implement` skill's [proportionate verification](../implement/VERIFICATION.md) and [model execution verification](../implement/MODEL-EXECUTION.md). If either file is unreadable, stop and report the missing path before dispatching any ticket.
 
-Read proportionate verification before choosing checks. Require each implementer to apply its expensive-execution preparation and recurring-failure diagnosis before costly runs or retries. For a ticket with a visual parity action, read the repository's `docs/agents/visual-acceptance.md` and follow its design, comparison, human-approval and baseline gates. A worker cannot satisfy a human gate on the user's behalf.
+Read [proportionate verification](../implement/VERIFICATION.md) before choosing
+checks. Require each implementer to apply its expensive-execution preparation
+and recurring-failure diagnosis before costly runs or retries.
+After each worker result, integration batch, check or review, follow
+[Select the next action](../implement/VERIFICATION.md#select-the-next-action).
+
+For a ticket with a visual parity action, read and follow the owning
+[visual sequence](../implement/VISUAL-PARITY.md) and the repository's
+`docs/agents/visual-acceptance.md`. Each visual worker brief includes that
+sequence, the surface and manifest, selected reference, required coverage,
+current evidence and invalidations, and serial acceptance authority. Require
+early focused rendered comparisons and related fixes before final review and
+capture. A worker with a pending human gate returns an implementation candidate
+and the exact request; it cannot satisfy that gate on the user's behalf.
+
+Integration follows the same visual sequence on the merged candidate. Complete
+the required integrated ticket review before final capture, revalidate evidence
+applicability and candidate hashes after integration, and handle invalidation
+before a dependent ticket becomes ready. A merge, passing check or review
+cannot approve a candidate. Preserve exact human approval and accepted-byte
+promotion before advancing an approved serial chain. Include the visual
+sequence and current evidence in a visual merger's brief.
+
+The graph grants no parallel implementation permission. Concurrency requires
+project authorization and isolated mutable resources; preserve approved serial
+acceptance order even when graph edges alone would permit dispatch.
 
 If the approved acceptance order requires review before the next ticket can start, review the integrated ticket scope at that checkpoint. Retain that coverage for the final spec review; do not report still-blocked tickets as missing implementation in the checkpoint review.
 
@@ -25,7 +50,8 @@ The user's `/implement-spec` request is the delegation request; the host permiss
 
 Keep communication with subagents sparse: pass **context pointers** to the spec, tickets, research notes and previous commits instead of duplicating their content.
 
-Run **implementer subagents** in the background where possible for maximum concurrency.
+Run **implementer subagents** in the background where supported and concurrency
+is authorized.
 
 ## Model gate
 
@@ -56,9 +82,11 @@ Read [model execution verification](../implement/MODEL-EXECUTION.md) to distingu
 
    If an implementer fails or a merge conflict stays unresolved, start one fresh replacement worker for that ticket (or follow the repository's retry limit). When that also fails, mark the ticket blocked, preserve its branch and report it, keep its dependents not ready, and continue the rest of the frontier.
 
-5. Require the usual acceptance evidence from every implementer, plus the [Model gate](#model-gate) receipt for assessed tickets. Merge its work to the integration branch with a **merger subagent**, bound per [Model gate](#model-gate) when it changes code or resolves conflicts for an assessed ticket. One merger owns the integration checkout at a time: run merges sequentially, never two at once, and record the integration head each merge verified. Implementers stay parallel. A blocked worker cannot make its dependents ready.
+5. Require the usual acceptance evidence from every implementer, plus the [Model gate](#model-gate) receipt for assessed tickets. Merge its work to the integration branch with a **merger subagent**, bound per [Model gate](#model-gate) when it changes code or resolves conflicts for an assessed ticket. One merger owns the integration checkout at a time: run merges sequentially, never two at once, and record the integration head each merge verified. A blocked worker cannot make its dependents ready.
 
-6. If this changes the **frontier**, start **implementer subagents** for the new tickets. Done when every ready ticket has a running implementer or the frontier is empty.
+6. If this changes the **frontier**, start **implementer subagents** for tickets
+   whose dispatch is authorized by the project order. Continue other authorized
+   checks and integration; a pending serial gate keeps its dependents blocked.
 
 7. Once all ticket implementations have landed, run required checks on the integrated candidate and follow the loaded `code-review` skill against the task-start commit and full spec. Route accepted fixes to the affected ticket implementers, bound per [Model gate](#model-gate), then validate and review their delta with affected callers. Run at most two review-fix passes unless the repository defines another limit. At the limit, preserve the integration candidate and report the recurring findings or acceptance blockers instead of looping.
 

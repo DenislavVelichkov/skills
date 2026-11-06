@@ -49,6 +49,9 @@ unavailable required review rather than claiming it ran.
    infer approval from "continue", prototype selection, green tests, or a clean
    review.
 6. **Implement.** Run the smallest relevant check after each meaningful change.
+   After each batch or result, follow [Select the next action](VERIFICATION.md#select-the-next-action)
+   through the remaining authorized work. Visual work uses the sequence above
+   for early comparison, final review, capture and human acceptance.
 7. **Commit and review.** Commit the integrated candidate to the current branch,
    following documented branch rules, then run code-review with the task-start
    commit and ticket scope. Batch accepted fixes, validate, commit, and review

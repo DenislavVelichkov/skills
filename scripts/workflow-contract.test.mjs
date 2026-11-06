@@ -7,6 +7,140 @@ import assert from "node:assert/strict";
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const read = (path) => readFileSync(join(root, path), "utf8");
 
+// Issue 189 checks instruction decisions only; runtime adoption needs separate consumers.
+test("batch completion selects another authorized action", () => {
+  for (const name of ["implement", "implement-spec"]) {
+    assert.match(
+      read(`skills/engineering/${name}/SKILL.md`),
+      /VERIFICATION.md#select-the-next-action/u,
+    );
+  }
+  const policy = read("skills/engineering/implement/VERIFICATION.md").replace(
+    /\s+/gu,
+    " ",
+  );
+  for (const action of [
+    "After each batch, check, review or recovery",
+    "Stop only for completion, a real external blocker or a required human decision",
+    "A passing check or review is an intermediate result",
+    "project order and the approval boundary permit it",
+  ])
+    assert.ok(policy.includes(action), action);
+});
+
+test("visual diagnostics precede final review and preserve complete acceptance", () => {
+  const visual = read("skills/engineering/implement/VISUAL-PARITY.md").replace(
+    /\s+/gu,
+    " ",
+  );
+  for (const action of [
+    "Inspect focused rendered comparisons",
+    "enabled controls and normal and enlarged text",
+    "Batch feasible related fixes",
+    "Diagnostic images replace no final coverage",
+    "complete native parent",
+  ])
+    assert.ok(visual.includes(action), action);
+  assert.ok(
+    visual.indexOf("Inspect focused rendered comparisons") <
+      visual.indexOf("Complete the committed-candidate review"),
+  );
+});
+
+test("pending human approval and candidate changes retain exact hash authority", () => {
+  const visual = read("skills/engineering/implement/VISUAL-PARITY.md").replace(
+    /\s+/gu,
+    " ",
+  );
+  for (const action of [
+    "Do no other work until the human replies",
+    "verify the candidate files and hashes are unchanged",
+    'Never infer approval from "continue", prototype selection, green tests, or a clean review',
+    "clear the surface's `approvalRequest`, `approval`, and `baselines` entries",
+    "Preserve existing baseline files until new approval",
+    "promote the accepted bytes",
+  ])
+    assert.ok(visual.includes(action), action);
+});
+
+test("delegated visual work and integration use the same sequence without granting parallelism", () => {
+  const spec = read("skills/engineering/implement-spec/SKILL.md").replace(
+    /\s+/gu,
+    " ",
+  );
+  assert.match(spec, /\(\.\.\/implement\/VISUAL-PARITY.md\)/u);
+  for (const action of [
+    "The graph grants no parallel implementation permission",
+    "Each visual worker brief",
+    "surface and manifest",
+    "selected reference",
+    "required coverage",
+    "serial acceptance authority",
+    "Integration follows the same visual sequence",
+    "A merge, passing check or review cannot approve a candidate",
+  ])
+    assert.ok(spec.includes(action), action);
+  assert.doesNotMatch(
+    spec,
+    /Implementers stay parallel|for maximum concurrency/u,
+  );
+});
+
+test("stateful recovery distinguishes interruption, assertion failure and invalidation", () => {
+  const policy = read("skills/engineering/implement/VERIFICATION.md").replace(
+    /\s+/gu,
+    " ",
+  );
+  for (const action of [
+    "Interruption",
+    "Assertion failure",
+    "Invalidation",
+    "Check the outcome of uncertain mutations before any retry",
+    "Never replay a committed mutation",
+    "Device restoration does not establish fixture cleanup",
+    "bounded repair check before a broad rerun",
+    "process identity",
+    "supported resumption",
+  ])
+    assert.ok(policy.includes(action), action);
+});
+
+test("runtime-specific tooling repairs need a remaining failure and regression", () => {
+  const policy = read("skills/engineering/implement/VERIFICATION.md").replace(
+    /\s+/gu,
+    " ",
+  );
+  for (const action of [
+    "identified remaining failed check",
+    "actual runtime owner",
+    "focused regression",
+    "Do not infer that Codex's next-step hook caused a stop",
+    "Claude uses the same implementation",
+  ])
+    assert.ok(policy.includes(action), action);
+  assert.doesNotMatch(policy, /Measure prerequisite|human waiting separately/u);
+  assert.ok(
+    policy.includes(
+      "No routine timing ledger, savings report or benchmark campaign",
+    ),
+  );
+});
+
+test("public routing preserves continuation, early comparison and serial approval", () => {
+  for (const name of ["implement", "implement-spec", "ask-matt"]) {
+    const docs = read(`docs/engineering/${name}.md`).replace(/\s+/gu, " ");
+    assert.ok(docs.includes("next authorized action"), name);
+    assert.ok(docs.includes("early rendered comparisons"), name);
+  }
+  assert.ok(
+    read("docs/engineering/implement-spec.md").includes(
+      "graph grants no parallel implementation permission",
+    ),
+  );
+  const authoring = read(".agents/invocation.md");
+  assert.match(authoring, /2026-11-06/u);
+});
+
 // These scenarios check saved instructions, not observed execution or speedup.
 for (const [situation, file, actions] of [
   ["wrong installed invocation path", "implement/VERIFICATION.md", [
@@ -265,7 +399,18 @@ test("validation selects desktop behavior, native exceptions, and complete final
 
 test("reports stay passive and live reuse expires at real operation boundaries", () => {
   const policy = read("skills/engineering/implement/VERIFICATION.md");
-  for (const text of ["Keep audits, refresh plans and visual reviews passive", "per profile and relevant input state", "before native work", "review pause expires", "holding a lease alone", "old client projection before ordinary", "reject later drift", "including failed operations", "human waiting separately"]) assert.ok(policy.includes(text), text);
+  for (const text of [
+    "Keep audits, refresh plans and visual reviews passive",
+    "per profile and relevant input state",
+    "before native work",
+    "review pause expires",
+    "holding a lease alone",
+    "old client projection before ordinary",
+    "reject later drift",
+    "including failed operations",
+    "No routine timing ledger",
+  ])
+    assert.ok(policy.includes(text), text);
   const review = read("skills/engineering/code-review/SKILL.md");
   assert.match(review, /\.\.\/implement\/VERIFICATION.md/u);
   assert.match(review, /Review does not authorize runtime execution/u);

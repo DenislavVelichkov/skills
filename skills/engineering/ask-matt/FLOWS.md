@@ -21,7 +21,11 @@ The route most work travels. You have an idea and want it built.
 
    Both implementation paths use **`/tdd`** and **`/code-review`**; shared verification rules are in [proportionate verification](../implement/VERIFICATION.md). Use `/tdd` directly for a concrete behavior to build test-first, or `/code-review` to assess a branch or PR against a fixed point.
 
-   Visual parity (comparing built UI against a visual reference) is an extra approval step owned by `/implement`; its manifest travels through `/to-spec` and `/to-tickets`.
+   Visual parity uses the shared [visual sequence](../implement/VISUAL-PARITY.md)
+   for early rendered comparisons, final review and exact human approval.
+   Both implementation routes carry its manifest through workers and integration.
+   The graph grants no parallel implementation permission or exception to an
+   approved serial acceptance order.
 
    When the work goes up as a pull request, **`/pr`** shapes the body with a small visual, before/after evidence and rollback risks. It is model-invoked when the agent writes a PR body.
 

@@ -58,6 +58,19 @@ If work stays disconnected, reassess the missing path and dependency before
 adding more isolated components. Keep instruction availability, observed use
 and measured speedup separate in the existing records.
 
+## Select the next action
+
+After each batch, check, review or recovery, select and perform the next
+authorized action. Stop only for completion, a real external blocker or a
+required human decision. A passing check or review is an intermediate result
+while required work remains. Carry the settled scope and authorization forward;
+do not ask the user to reactivate the same work.
+
+Continue independent authorized work while input is pending only where
+project order and the approval boundary permit it. For exact visual approval,
+follow the owning visual sequence's stop and response format. Preserve a
+resumable record when a blocker or human decision prevents further work.
+
 ## Bound verification tooling work
 
 Feature tickets own their fixtures, assertions and registration in the existing
@@ -73,6 +86,12 @@ Once that check works, return to the feature. Generalization for future packages
 or projects belongs in separate work unless explicitly requested. If a broader
 repair is necessary, expose that dependency and its scope before expanding work;
 continue authorized independent work where project order allows it.
+
+Hook or runner repair also requires an identified remaining failed check,
+its actual runtime owner and a focused regression for the smallest repair.
+Do not infer that Codex's next-step hook caused a stop or that Claude uses the
+same implementation. With no concrete remaining failure, continue the task
+without changing hooks or runners.
 
 A missing observer permits the minimum feature-specific observation needed to
 prove the requirement. It does not waive evidence, security, accessibility or
@@ -106,10 +125,11 @@ gap until its required proof exists.
 - Complete a bounded batch of related shared fixes before expensive captures.
   Rerun each affected scenario once on that stable candidate. A subsequent
   relevant edit invalidates the affected result again.
-- Run all required final checks on the final candidate. After they pass, stop
-  unless a later relevant change, failure, or unresolved concern requires more
-  verification. Verification cost is a signal to improve the workflow, not a
-  reason to skip a required gate.
+- Run all required final checks on the final candidate. After they pass,
+  continue to the next required delivery or acceptance step. Repeat verification
+  only when a later relevant change, failure or unresolved concern requires it.
+  Verification cost is a signal to improve the workflow, not a reason to skip
+  a required gate.
 
 ## Prepare expensive execution
 
@@ -118,6 +138,10 @@ following checks in the existing validation notes. Reuse applicable results
 under the evidence rules below. Routine edits need no separate preparation
 record or new tooling.
 
+- Record current input identities and versions, exact owned resources and
+  starting state. Verify access to the existing process handle, supervision and
+  supported resumption before a long run. Observe its actual terminal result;
+  an inaccessible handle does not prove exit or authorize a duplicate run.
 - Exercise the real invocation with the smallest supported input, including
   its installed entry point, working directory and path resolution. An import
   test or `--help` alone does not prove the execution path works.
@@ -136,7 +160,8 @@ record or new tooling.
 - Check owned resources and starting state using existing tooling. For runs
   that mutate state, retain a successful bounded restoration check for the
   affected path, including failure cleanup. A written cleanup plan alone does
-  not prove it works.
+  not prove it works. Device restoration does not establish fixture cleanup;
+  verify affected account, source and service resources separately.
 - Compare prerequisite expiry with the expected duration of execution and
   recovery, allowing for uncertainty. Refresh through supported mechanisms or
   use a supported renewal or split-run path before starting. Unknown readiness
@@ -150,10 +175,24 @@ Preparation is not acceptance and adds no new human approval requirement.
 
 ## Diagnose before repeating expensive work
 
+First distinguish the event:
+
+- Interruption: inspect the original process and retained results before
+  resuming; a missing response does not prove the operation failed or stopped.
+- Assertion failure: retain the failing observation and expected result before
+  diagnosing the failed stage.
+- Invalidation: identify the changed input and affected evidence. Obtain the
+  required current proof without rewriting historical results as failures.
+
 On failure, classify the failed stage as product, verification tooling,
 environment or unresolved, citing observed evidence. Preserve failed results
 and record restoration separately; successful cleanup cannot turn a failed run
 into a pass. Check the outcome of uncertain mutations before any retry.
+Never replay a committed mutation. Reconcile its effects through the existing
+read-only checks, then use supported resumption only for unfinished authorized
+stages. Preserve financial non-retry rules and stop if effects remain unknown.
+
+Require a bounded repair check before a broad rerun.
 
 Before repeating an expensive run after a failure, reproduce it with
 the smallest supported check and verify the repair there. Native-only failures
@@ -220,9 +259,10 @@ immutable candidate or with reliable content invalidation.
   reject later drift before reuse. Preserve fixture cleanup and serialization.
 - Apply the failure diagnosis above before another broad run. Record actual
   scenario executions, assessment reuse, invalidations and failures,
-  including failed operations. Measure prerequisite,
-  capture, validation, recovery and human waiting separately; screenshot reuse
-  alone does not demonstrate less end-to-end work or a ticket speedup.
+  including failed operations. No routine timing ledger, savings report or
+  benchmark campaign is required. If a quantified speed claim is requested,
+  compare complete records including preparation, failed attempts and human
+  waiting; screenshot reuse alone does not establish that claim.
 
 ## Schedule without repeated work
 
