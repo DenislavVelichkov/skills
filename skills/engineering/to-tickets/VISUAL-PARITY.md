@@ -37,4 +37,12 @@ Never invent references, hashes, state transitions, or approval.
 - Put the manifest path and surface id in the ticket. Acceptance criteria must
   require exact reference/candidate comparison, explicit approval bound to the
   candidate-set hash, and promoted baselines that match the accepted bytes.
+- Require early rendered comparisons on the affected platform, feasible shared
+  corrections before final review/capture, and annotated comparison HTML with
+  numbered difference pointers. Follow the existing
+  [visual sequence](../implement/VISUAL-PARITY.md) and the project protocol's
+  "Comparison presentation" through its actual producer and consumer.
+- Retain the applicable platform proof and required final coverage. Browser work
+  adds no native-only proof requirement. Keep a complete native parent only when
+  the project requires it; focused diagnostics replace no final evidence.
 - Never let green tests or a clean review satisfy the human-approval criterion.

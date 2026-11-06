@@ -81,6 +81,26 @@ For a visual parity action, also add the slices listed under "Slices" in [VISUAL
 
 **Wide refactors are the exception to vertical slicing.** A **wide refactor** is one mechanical change (rename a column, retype a shared symbol) whose **blast radius** breaks so many call sites that no vertical slice can land green. Sequence it as **expand–contract** instead of a tracer bullet; read [WIDE-REFACTOR.md](WIDE-REFACTOR.md) for the batch and integration-branch rules.
 
+Keep each ticket's demonstrable behavior, ordinary entry, focused checks and final gates,
+product requirements, immutable requirement links and mandatory own-body text.
+Link repeated execution procedure to its existing owning project policy or the
+shared verification reference; keep ticket-specific obligations in the body.
+For example, when a project requires a development antivirus instruction in every
+ticket, copy it into each applicable body. Retain installed signed definitions
+regardless of age, exact-byte scanning, no development/native/browser/capture block
+for old definitions or unavailable updates, and separate production freshness.
+Preserve the owner's exact wording where required. A policy link cannot replace
+mandatory text.
+
+For amendments to existing tickets, read their current bodies and comments first.
+Save the exact issue-to-clause map with the conflicting or missing clause,
+bounded replacement, controlling policy and preserved requirements and dependency
+identities. An old pinned requirement link alone is not a conflict. Apply only
+justified amendments within existing publication authorization, then read back
+bodies and relationships. Record edits, outcomes and uncertain-write reconciliation
+in existing progress records, without a new ledger or implementation authority.
+Leave compliant tickets unchanged and preserve closed history.
+
 ### 4. Quiz the user
 
 Present the proposed breakdown as a numbered list. For each ticket, show:
@@ -100,6 +120,11 @@ or still-open decisions; publish when the breakdown is approved.
 
 ### 5. Publish the tickets to the configured tracker
 
+For GitHub, read [publication and recovery](PUBLICATION.md) before the first
+write. It governs native ownership, separate blockers, configured roles,
+pagination, grouping and partial-write reconciliation. Preserve the local-file
+and other tracker behavior below.
+
 First check the approved breakdown: each approved slice appears in exactly one
 ticket, and no ticket blocks itself or sits in a cycle. Then publish the approved tickets. **How** depends on the tracker `/setup-matt-pocock-skills` configured; the tickets are the same either way, only the shape of the blocking edges changes:
 
@@ -107,7 +132,7 @@ ticket, and no ticket blocks itself or sits in a cycle. Then publish the approve
 - **Local files without a parent feature spec** → write one file per ticket under `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01` in dependency order. First list that directory: if it already holds planning, research, or Wayfinder tickets, use `.scratch/<feature-slug>/implementation/issues/` instead; ask only when that directory also holds tickets. Never overwrite an existing ticket file.
 - In either local form, each file's "Blocked by" lists the numbers and titles it depends on. Use the per-ticket file template below, one ticket per file, never a combined file.
 - In local files, change the template status to `ready-for-human` only for a visual design-selection blocker that still needs a human choice.
-- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Record each blocking edge with the platform's native blocking relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. A parent/sub-issue link never records a blocking edge. If the source was an existing issue, make each ticket its sub-issue using the configured tracker operation. Apply the `ready-for-agent` triage label unless instructed otherwise. A visual design-selection blocker that still requires a human uses `ready-for-human`; its downstream implementation ticket remains `ready-for-agent` but blocked.
+- **A real issue tracker (GitHub, Linear, …)** → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Record each blocking edge with the platform's native blocking relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. A parent/sub-issue link never records a blocking edge. If the source was an existing issue, link each ticket through the configured native parent hierarchy, including GitHub grouping where required. Apply the configured label for the `ready-for-agent` role unless instructed otherwise. A visual design-selection blocker that still requires a human uses `ready-for-human`; its downstream implementation ticket remains `ready-for-agent` but blocked.
 
 When resuming partial publication, find tickets already created for the approved
 breakdown and complete only missing tickets or links. Check an uncertain write's
@@ -154,4 +179,4 @@ The end-to-end behaviour this ticket makes work, from the user's perspective, no
 
 </issue-template>
 
-In either form, avoid specific file paths or code snippets: they go stale fast. The manifest path, surface ids, and evidence paths a ticket must cite are exempt. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.
+In either form, avoid specific file paths or code snippets: they go stale fast. Required policy and immutable contract links, mandatory own-body text, the manifest path, surface ids, and evidence paths a ticket must cite are exempt. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.
