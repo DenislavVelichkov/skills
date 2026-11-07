@@ -84,13 +84,16 @@ persistent errors remain explicit blockers, with no invented evidence.
 ## Existing project copies
 
 Plugin refresh does not migrate repository-local tracker or visual protocol
-copies. Rerun setup explicitly to compare them and review one combined draft of
-bounded changes before it writes files or creates missing labels. It preserves
-your configured repository, custom category/state mappings, PR policy, local
-schema, acceptance states, pending approvals and retained evidence. Incompatible
-templates or validators need a separate migration decision, not an overwrite.
+copies. Rerun setup explicitly to compare them. It preserves your configured
+repository, custom category/state mappings, PR policy, local schema, acceptance
+states, pending approvals and retained evidence.
 
-GitHub guidance uses native spec ownership and separate blocking relationships,
+| Existing copy                       | Update path                                                                                       |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Compatible tracker or protocol copy | Review one combined draft of bounded changes before setup writes files or creates missing labels. |
+| Incompatible template or validator  | Keep the current contract until a separate migration decision is resolved.                        |
+
+GitHub guidance uses native [spec](https://www.aihero.dev/ai-coding-dictionary/spec) ownership and separate blocking relationships,
 checks complete paginated read-back and recovers partial writes using existing
 issue identities. Groups keep each parent within 100 direct children while
 preserving leaf scope and serial order. Containers and separate follow-ups do
@@ -98,16 +101,25 @@ not increase an approved leaf-ticket denominator. GitHub's flat Issues list
 still has child rows; the spec's sub-issue tree provides hierarchical navigation
 without changing approved pinning or filters.
 
-Triage excludes pure specification and group containers even when unlabeled.
-It still handles actionable parents and standalone requests. Generated
-agent-ready children stay exempt from retriage while blocked. Configured roles,
-mandatory notices and each runtime's verification and approval rules still apply.
+Triage follows the configured tracker rules:
+
+- Pure specification and group containers stay excluded even when unlabeled.
+- Standalone requests and actionable parents remain eligible.
+- Generated agent-ready children stay exempt from retriage while blocked.
+
+Configured roles, mandatory notices and each runtime's verification and approval
+rules still apply.
 
 The installed visual sequence inspects early rendered comparisons, batches
 related shared fixes before final review and captures, then presents numbered
 difference pointers in disk-openable comparison HTML. Diagnostic images grant
-no acceptance. Browser parity adds no native-only gate, and ordinary UI without
-a named comparison obligation creates no manifest or human acceptance gate.
+no acceptance.
+
+| Work                                              | Applicable gates                                                                           |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Browser parity                                    | Keep the browser comparison and human acceptance gates, without adding a native-only gate. |
+| Native parity                                     | Keep the project's required native proof and human acceptance gates.                       |
+| Ordinary UI without a named comparison obligation | Create no manifest or new human acceptance gate.                                           |
 
 ## Fast checks, explicit acceptance
 
@@ -146,10 +158,10 @@ Setup now selects `AGENTS.md` for Codex and `CLAUDE.md` for Claude Code when bot
 
 **It didn't create my triage labels.**
 
-Setup proposes missing configured labels when triage is installed, then creates
-only those listed in the draft you approved. It preserves existing custom
-vocabulary. Without triage installed, it skips the label section, file and
-pointer. Wayfinder labels remain governed by the project's tracker policy.
+- With triage installed, setup proposes missing configured labels and creates only those listed in the draft you approved. It preserves existing custom vocabulary.
+- Without triage installed, setup skips the label section, file and pointer.
+
+Wayfinder labels remain governed by the project's tracker policy.
 
 **Can I configure the other skills' behaviour here ([grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) cadence, question format, tone)?**
 
