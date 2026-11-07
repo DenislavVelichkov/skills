@@ -40,8 +40,12 @@ The router checks the loaded plugin's selection or registration before recommend
 
 The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assume [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) has already configured an issue tracker in the repo. The router recommends them even before that has happened.
 
-For GitHub, triage excludes pure spec/group containers while keeping actionable
-parents eligible. Generated agent-ready children stay exempt while blocked.
+For GitHub, the configured tracker distinguishes these cases:
+
+- Pure specification and organizational group containers stay outside execution triage.
+- Standalone requests and actionable parents remain eligible.
+- Generated agent-ready children stay exempt from retriage while blocked.
+
 Setup reconciles these rules through an approved draft of local tracker changes.
 
 ## Flows, not skills

@@ -26,14 +26,14 @@ The tracker config also decides whether external pull requests count as a reques
 
 ## GitHub eligibility
 
-The configured tracker owns eligibility rules. Pure specification containers
-and organizational groups stay outside execution triage even when unlabeled.
-Having children alone does not exclude actionable parents with their own
-behavior and acceptance work. Ordinary standalone requests still enter triage.
-Generated agent-ready tickets need no retriage, including blocked children;
-blockers control execution readiness separately. If purpose or ownership is
-uncertain, triage reads the body and discussion before recommending changes.
-An excluded container keeps its labels and state.
+The configured tracker owns eligibility rules:
+
+| Item                                                                                           | Triage outcome                                                            |
+| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Pure specification container or organizational group                                           | Stay outside execution triage even when unlabeled; keep labels and state. |
+| Ordinary standalone requests or actionable parents with their own behavior and acceptance work | Remain eligible; having children alone does not exclude the parent.       |
+| Generated agent-ready ticket, including a blocked child                                        | Skip retriage; blockers control execution readiness separately.           |
+| Uncertain purpose or ownership                                                                 | Read the body and discussion before recommending changes.                 |
 
 ## The state machine
 
@@ -104,10 +104,8 @@ This is the most-filed gap on the skill. It comes in three forms:
 - Future work that is intended but waits on a trigger, so it is not actionable yet ([#297](https://github.com/mattpocock/skills/issues/297)).
 - A terminal state for "implemented, awaiting verification". Without it, an AFK runner can queue finished tickets again.
 
-A fully specified blocked ticket keeps its mapped `ready-for-agent` role and
-its independent blocker edges. It needs no new triage state or brief. Deferred
-and implemented states remain outside these five roles; preserve any existing
-project-specific labels and policy.
+- A fully specified blocked ticket keeps its mapped `ready-for-agent` role and independent blocker edges. It needs no new triage state or brief.
+- Deferred and implemented states remain outside these five roles. Preserve existing project-specific labels and policy.
 
 **How is this different from `/diagnosing-bugs`?**
 The verification step here is shallow on purpose. It answers "is this real, and roughly where does it live", and does not look for a root cause. If a bug does not reproduce from the reporter's steps in a few minutes, use `needs-info`, or use [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs) if you want to investigate it now. Neither skill's text mentions the other yet. A user reported that gap, and it is still open.
