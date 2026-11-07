@@ -1,5 +1,12 @@
 # mattpocock-skills
 
+## 1.4.4
+
+### Patch Changes
+
+- Continue authorized ticket work after routine checks and reconcile failed runs before retrying. Keep focused visual comparisons before final proof, numbered comparison pointers and exact human approval gates.
+- Preserve ticket requirements, native GitHub ownership, separate blockers, complete pagination and partial-write recovery. Reconcile setup copies and triage roles without changing local policy or invocation permissions.
+
 ## 1.4.3
 
 ### Patch Changes
