@@ -76,6 +76,10 @@ A starting situation that generates work, then merges onto the main flow.
 
   When the map clears, **it hands off, it doesn't build**: merge onto the main flow at **`/to-spec`**, which collapses the map's linked decisions into a buildable plan, then `/to-tickets` and `/implement` as usual. `/implement` must not build directly from the map or parent spec.
 
+For GitHub triage, pure spec/group containers stay outside execution triage;
+actionable parents remain eligible. Generated agent-ready children need no
+retriage while blocked. The configured tracker owns those rules.
+
 ## Codebase health
 
 Not feature work, just upkeep.

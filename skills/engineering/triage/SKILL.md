@@ -10,6 +10,9 @@ Move issues on the project issue tracker through a small state machine of triage
 
 If this repo treats external pull requests as a request surface (see the issue-tracker config), triage covers them too: **a PR is an issue with attached code**, using the same roles, same states, and same machine, with a few deltas marked "for a PR" below. Resolve a bare `#42` to an issue or PR per the tracker config.
 
+Tickets created by `/to-tickets` are already agent-ready; do not retriage them,
+including blocked children. Their blockers control execution readiness separately.
+
 Every comment or issue posted to the issue tracker during triage **must** start with this disclaimer. Prepend it to every template below (needs-info notes, agent briefs, closing comments):
 
 ```
@@ -21,6 +24,17 @@ pointers in the current `AGENTS.md` or `CLAUDE.md`. If no alternate paths are
 configured, read `docs/agents/issue-tracker.md` and
 `docs/agents/triage-labels.md` when present. Resolve missing tracker or role
 mappings before dependent operations.
+
+For GitHub issues, apply the configured tracker's "Triage eligibility" rules before
+discovery counts or specific-item evaluation. Exclude pure specification and
+group containers. Having children alone does not exclude an actionable parent;
+ordinary requests still use normal triage. Read uncertain purpose or ownership
+before recommending changes, and ask the maintainer if it remains unresolved.
+Report an excluded item's role without assigning execution labels or a new brief.
+If an existing tracker lacks these rules, read the
+[GitHub eligibility reference](../setup-matt-pocock-skills/issue-tracker-github.md#triage-eligibility)
+for this distinction and recommend an explicit setup reconciliation. Reading
+that reference does not invoke setup or authorize writing its local copies.
 
 ## Reference docs
 
@@ -61,13 +75,13 @@ The maintainer invokes `/triage` and describes what they want in natural languag
 
 ## Show what needs attention
 
-Query the issue tracker and present three buckets, oldest first:
+Apply eligibility first, then query the issue tracker and present three buckets, oldest first:
 
 1. **Unlabeled**: never triaged.
 2. **`needs-triage`**: evaluation in progress.
 3. **`needs-info` with reporter activity since the last triage notes**: needs re-evaluation.
 
-When PRs are in scope, include external PRs in these buckets and tag each line `[PR]` or `[issue]`. Discovery surfaces only *external* PRs (the tracker config defines who counts as external), so a collaborator's in-flight PR is not triage work. This filter is discovery-only; an explicitly named PR is always triaged regardless of author.
+When PRs are in scope, include external PRs in these buckets and tag each line `[PR]` or `[issue]`. Discovery surfaces only _external_ PRs (the tracker config defines who counts as external), so a collaborator's in-flight PR is not triage work. This filter is discovery-only; an explicitly named PR is always triaged regardless of author.
 
 Show counts and a one-line summary per item. Let the maintainer pick.
 
@@ -90,7 +104,7 @@ Show counts and a one-line summary per item. Let the maintainer pick.
    - `ready-for-agent`: post an agent brief comment ([AGENT-BRIEF.md](AGENT-BRIEF.md)).
    - `ready-for-human`: same structure as an agent brief, but note why it can't be delegated (judgment calls, external access, design decisions, manual testing).
    - `needs-info`: post triage notes (template below).
-   - For `wontfix`, close the issue, with the comment depending on *why*:
+   - For `wontfix`, close the issue, with the comment depending on _why_:
      - **Already implemented**: the change already exists in the codebase. Point to where it lives; do **not** write to `.out-of-scope/`.
      - **Rejected (bug)**: give a polite explanation, then close.
      - **Rejected (enhancement)**: write to `.out-of-scope/`, link to it from a comment, then close ([OUT-OF-SCOPE.md](OUT-OF-SCOPE.md)).
@@ -113,7 +127,7 @@ If the maintainer says "move #42 to ready-for-agent", trust them and apply the r
 - point 1
 - point 2
 
-**What we still need from you (@reporter):**  <!-- replace @reporter with the reporter's login -->
+**What we still need from you (@reporter):** <!-- replace @reporter with the reporter's login -->
 
 - question 1
 - question 2

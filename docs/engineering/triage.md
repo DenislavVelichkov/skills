@@ -10,13 +10,13 @@ It also differs from labelling by hand because it recommends and then waits. It 
 
 You invoke this by typing `/triage` and then describing what you want in plain language. The [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own. Examples: "Show me anything that needs my attention", "let's look at #42", "move #42 to ready-for-agent".
 
-| What you have | Where to go |
-| --- | --- |
-| A tracker full of raw reports from other people | `/triage` |
-| A rough idea of your own, nothing written down | [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
-| A settled conversation to turn into a [spec](https://www.aihero.dev/ai-coding-dictionary/spec) | [to-spec](https://aihero.dev/skills-to-spec) |
-| A spec to split into agent-ready tickets | [to-tickets](https://aihero.dev/skills-to-tickets) |
-| A confirmed bug that needs a root cause, not a label | [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs) |
+| What you have                                                                                  | Where to go                                                  |
+| ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| A tracker full of raw reports from other people                                                | `/triage`                                                    |
+| A rough idea of your own, nothing written down                                                 | [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
+| A settled conversation to turn into a [spec](https://www.aihero.dev/ai-coding-dictionary/spec) | [to-spec](https://aihero.dev/skills-to-spec)                 |
+| A spec to split into agent-ready tickets                                                       | [to-tickets](https://aihero.dev/skills-to-tickets)           |
+| A confirmed bug that needs a root cause, not a label                                           | [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs) |
 
 ## Prerequisites
 
@@ -24,27 +24,38 @@ You invoke this by typing `/triage` and then describing what you want in plain l
 
 The tracker config also decides whether external pull requests count as a request surface, and who counts as external. That flag is off by default, and setup no longer asks about it. To bring PRs into scope, turn it on in `docs/agents/issue-tracker.md`.
 
+## GitHub eligibility
+
+The configured tracker owns eligibility rules. Pure specification containers
+and organizational groups stay outside execution triage even when unlabeled.
+Having children alone does not exclude actionable parents with their own
+behavior and acceptance work. Ordinary standalone requests still enter triage.
+Generated agent-ready tickets need no retriage, including blocked children;
+blockers control execution readiness separately. If purpose or ownership is
+uncertain, triage reads the body and discussion before recommending changes.
+An excluded container keeps its labels and state.
+
 ## The state machine
 
 Every triaged item ends with exactly one category role and one state role. There are two categories: `bug` (something is broken) and `enhancement` (new feature or improvement). There are five states:
 
-| State | Means |
-| --- | --- |
-| `needs-triage` | You need to evaluate it. An unlabelled issue normally lands here first. |
-| `needs-info` | Waiting on the reporter. Returns to `needs-triage` when they reply. |
-| `ready-for-agent` | Fully specified, normally with an agent brief attached. A label applied without one says so in its comment. An [AFK](https://www.aihero.dev/ai-coding-dictionary/afk) agent can take it. |
-| `ready-for-human` | The same brief, plus why an agent can't do it: judgment, external access, manual testing. |
-| `wontfix` | Closed, with the reason recorded. |
+| State             | Means                                                                                                                                                                                                                 |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `needs-triage`    | You need to evaluate it. An unlabelled issue normally lands here first.                                                                                                                                               |
+| `needs-info`      | Waiting on the reporter. Returns to `needs-triage` when they reply.                                                                                                                                                   |
+| `ready-for-agent` | Fully specified, normally with an agent brief attached. A label applied without one says so in its comment. An [AFK](https://www.aihero.dev/ai-coding-dictionary/afk) agent can take it once its blockers are closed. |
+| `ready-for-human` | The same brief, plus why an agent can't do it: judgment, external access, manual testing.                                                                                                                             |
+| `wontfix`         | Closed, with the reason recorded.                                                                                                                                                                                     |
 
 That is the whole vocabulary. The rule of exactly one state role per item keeps the queries simple. The states are also the most-requested area of the [skill](https://www.aihero.dev/ai-coding-dictionary/skill). Users have asked for a state for work that is specified but blocked on another issue, a `deferred` state for work that waits on a future trigger, and a terminal `implemented` state. None of those has shipped. See the questions below.
 
 `wontfix` has three cases. The difference matters because only one of them writes to the knowledge base:
 
-| Why you're closing it | What happens |
-| --- | --- |
-| Already implemented | A comment that points to where the feature already lives. Nothing goes into `.out-of-scope/`, because it's a built feature, not a rejected one, and a file there would break the dedup checks. |
-| Rejected bug | Polite explanation, then close. |
-| Rejected enhancement | A file in `.out-of-scope/`, linked from the closing comment, then close. A rejected PR gets a file only when its concept is rejected, not when only its code is. |
+| Why you're closing it | What happens                                                                                                                                                                                   |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Already implemented   | A comment that points to where the feature already lives. Nothing goes into `.out-of-scope/`, because it's a built feature, not a rejected one, and a file there would break the dedup checks. |
+| Rejected bug          | Polite explanation, then close.                                                                                                                                                                |
+| Rejected enhancement  | A file in `.out-of-scope/`, linked from the closing comment, then close. A rejected PR gets a file only when its concept is rejected, not when only its code is.                               |
 
 `.out-of-scope/` holds one markdown file per rejected **concept**, not per issue. Each file is a short design document, not a database row. It says what was rejected, why, and lists every issue that asked for it. `triage` reads the whole directory before it evaluates anything. It matches by concept, not keyword, so "night theme" matches `dark-mode.md`. When it finds a match, it shows you the old decision and asks if you still agree with it, instead of arguing the request again from the start.
 
@@ -64,7 +75,7 @@ All of this work makes one artifact good: the **agent brief**. This is the struc
 
 If the tracker treats external pull requests as a request surface, they go through the same machine, with the same categories, states and transitions. The states apply to the diff. `ready-for-agent` means a brief is attached and an agent should take the next step on the code. `ready-for-human` means a person can merge it. A brief on a PR describes what is left to do to the existing diff, not how to build the thing from nothing.
 
-Discovery shows only *external* PRs, because a collaborator's in-progress branch is not triage work. That filter applies only to discovery. If you name a PR explicitly, `triage` handles it, whoever wrote it. The GitHub template reads author association from the pull-request REST endpoint and fetches each selected PR's discussion separately.
+Discovery shows only _external_ PRs, because a collaborator's in-progress branch is not triage work. That filter applies only to discovery. If you name a PR explicitly, `triage` handles it, whoever wrote it. The GitHub template reads author association from the pull-request REST endpoint and fetches each selected PR's discussion separately.
 
 Configured labels cover two categories and five states. Applying an outcome
 removes conflicting labels only from those groups and preserves unrelated
@@ -83,7 +94,10 @@ No. They are already agent-ready. `to-tickets` applies the `ready-for-agent` lab
 Only if you have inbound work. `triage` is older than that flow and does a different job: it handles reports other people filed. If everything in your tracker came from your own planning, you will rarely use it. If you maintain anything public, or your team files bugs to you, it is where that work starts. The main use is open-source repos that take issues from external contributors.
 
 **The agent tried to apply `ready-for-agent` and `gh` said the label doesn't exist.**
-This is a known open bug ([#616](https://github.com/mattpocock/skills/issues/616)). `setup-matt-pocock-skills` writes the label vocabulary into `docs/agents/triage-labels.md`, but does not create the labels in your tracker. Create the five state labels and two category labels yourself, once, with `gh label create` or the tracker's UI, and the error stops. The issue links to a community fix branch that has not been merged.
+
+Use the configured label mapping. An explicit setup rerun can draft missing
+labels and create them after you approve that concrete draft. It must preserve
+your custom names instead of adding duplicate defaults.
 
 **Five states aren't enough. What about blocked, or deferred, or implemented?**
 This is the most-filed gap on the skill. It comes in three forms:
@@ -92,13 +106,16 @@ This is the most-filed gap on the skill. It comes in three forms:
 - Future work that is intended but waits on a trigger, so it is not actionable yet ([#297](https://github.com/mattpocock/skills/issues/297)).
 - A terminal state for "implemented, awaiting verification". Without it, an AFK runner can queue finished tickets again.
 
-The blocked case is accepted as real, but the name is undecided (`blocked` versus `paused`). None of it has shipped. As a workaround, people add a repo-local extra label next to the category. The state slot then holds an accurate value, but the skill does not know about the extra label. One community fork goes further and adds `needs-slicing`, `tracking` and effort labels. That works, but it belongs to that fork, not to the skill.
+A fully specified blocked ticket keeps its mapped `ready-for-agent` role and
+its independent blocker edges. It needs no new triage state or brief. Deferred
+and implemented states remain outside these five roles; preserve any existing
+project-specific labels and policy.
 
 **How is this different from `/diagnosing-bugs`?**
 The verification step here is shallow on purpose. It answers "is this real, and roughly where does it live", and does not look for a root cause. If a bug does not reproduce from the reporter's steps in a few minutes, use `needs-info`, or use [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs) if you want to investigate it now. Neither skill's text mentions the other yet. A user reported that gap, and it is still open.
 
 **Can I point it at my whole backlog and let it run?**
-You can ask, but watch what it reads. The "show what needs attention" pass is a cheap listing for *selection*. You pick one issue, and then `triage` gathers full [context](https://www.aihero.dev/ai-coding-dictionary/context) on that issue. If you run it across twenty issues at once, the agent can use that cheap listing as its only evidence without telling you. The listing returns issue bodies but not comments. One user hit exactly this. Three issues already had a comment that said "already fixed, recommend closing", and all three got new agent briefs instead. For a bulk pass, say explicitly that it must read the comments on each issue.
+You can ask, but watch what it reads. The "show what needs attention" pass is a cheap listing for _selection_. You pick one issue, and then `triage` gathers full [context](https://www.aihero.dev/ai-coding-dictionary/context) on that issue. If you run it across twenty issues at once, the agent can use that cheap listing as its only evidence without telling you. The listing returns issue bodies but not comments. One user hit exactly this. Three issues already had a comment that said "already fixed, recommend closing", and all three got new agent briefs instead. For a bulk pass, say explicitly that it must read the comments on each issue.
 
 **Does it work with Linear, or anything other than GitHub Issues?**
 Yes. The tracker is config, not a hard-coded assumption. People run it against Linear (through the `linear` CLI), GitLab, and plain markdown files under `.scratch/`. A common split is Linear for issues and planning, and GitHub for code and PRs. Skills that say "issue tracker" then map to Linear, and skills that say "PR" map to GitHub. The local-markdown tracker has an open template bug: the generated file can contain the acceptance criteria twice, once at the top level and once inside the agent brief ([#200](https://github.com/mattpocock/skills/issues/200)).

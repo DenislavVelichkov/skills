@@ -40,6 +40,10 @@ The router names skills; it does not install them. It checks `.claude-plugin/plu
 
 The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assume [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) has already configured an issue tracker in the repo. The router recommends them even before that has happened.
 
+For GitHub, triage excludes pure spec/group containers while keeping actionable
+parents eligible. Generated agent-ready children stay exempt while blocked.
+Setup reconciles these rules through an approved draft of local tracker changes.
+
 ## Flows, not skills
 
 The skill's leading word is **flow**, a path _through_ the skills rather than a single skill. When you name your situation, the router places you at a step on a flow. That is a different answer from "here is the skill that matches your keywords". There are five kinds of route, and the skill itself describes them in full:

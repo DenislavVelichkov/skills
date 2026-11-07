@@ -81,6 +81,34 @@ version-specific options against the installed CLI before relying on them.
 Visual planning corrects source-supported validation faults in a bounded pass;
 persistent errors remain explicit blockers, with no invented evidence.
 
+## Existing project copies
+
+Plugin refresh does not migrate repository-local tracker or visual protocol
+copies. Rerun setup explicitly to compare them and review one combined draft of
+bounded changes before it writes files or creates missing labels. It preserves
+your configured repository, custom category/state mappings, PR policy, local
+schema, acceptance states, pending approvals and retained evidence. Incompatible
+templates or validators need a separate migration decision, not an overwrite.
+
+GitHub guidance uses native spec ownership and separate blocking relationships,
+checks complete paginated read-back and recovers partial writes using existing
+issue identities. Groups keep each parent within 100 direct children while
+preserving leaf scope and serial order. Containers and separate follow-ups do
+not increase an approved leaf-ticket denominator. GitHub's flat Issues list
+still has child rows; the spec's sub-issue tree provides hierarchical navigation
+without changing approved pinning or filters.
+
+Triage excludes pure specification and group containers even when unlabeled.
+It still handles actionable parents and standalone requests. Generated
+agent-ready children stay exempt from retriage while blocked. Configured roles,
+mandatory notices and each runtime's verification and approval rules still apply.
+
+The installed visual sequence inspects early rendered comparisons, batches
+related shared fixes before final review and captures, then presents numbered
+difference pointers in disk-openable comparison HTML. Diagnostic images grant
+no acceptance. Browser parity adds no native-only gate, and ordinary UI without
+a named comparison obligation creates no manifest or human acceptance gate.
+
 ## Fast checks, explicit acceptance
 
 A local commit check catches mechanical failures in the staged candidate. It
@@ -118,10 +146,10 @@ Setup now selects `AGENTS.md` for Codex and `CLAUDE.md` for Claude Code when bot
 
 **It didn't create my triage labels.**
 
-It doesn't. `docs/agents/triage-labels.md` is a _mapping_: it tells `/triage` which strings in your tracker correspond to the five canonical roles. It does not run `gh label create`. On a fresh GitHub repo the labels do not exist yet, and users have filed this as a bug more than once. Two consequences:
-
-- If your tracker already uses the canonical names, the mapping is an identity table and there is nothing to configure. That is the intended common case, not a missing step.
-- This skill does not create [wayfinder](https://aihero.dev/skills-wayfinder)'s `wayfinder:map` and `wayfinder:<type>` labels either, and `gh issue create --label <missing>` fails instead of creating the label. Create them by hand before the first wayfinder run on a GitHub repo.
+Setup proposes missing configured labels when triage is installed, then creates
+only those listed in the draft you approved. It preserves existing custom
+vocabulary. Without triage installed, it skips the label section, file and
+pointer. Wayfinder labels remain governed by the project's tracker policy.
 
 **Can I configure the other skills' behaviour here ([grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) cadence, question format, tone)?**
 

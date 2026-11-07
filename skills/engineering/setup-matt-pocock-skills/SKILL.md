@@ -60,6 +60,17 @@ Default posture: these skills were designed for GitHub. If a `git remote` points
 - **Local markdown**: issues live as files under `.scratch/<feature>/` in this repo (good for solo projects or repos without a remote)
 - **Other** (Jira, Linear, etc.): ask the user to describe the workflow in one paragraph; the skill will record it as freeform prose
 
+For GitHub, resolve the configured repository from existing tracker policy and
+actual remotes, then verify `gh repo view OWNER/REPO --json nameWithOwner` against
+that destination. Record the explicit repository in the draft and commands;
+do not let a fork's upstream default redirect writes. Keep category and state
+role mappings, alternate guidance paths and PR policy already configured.
+Read [the GitHub tracker seed](issue-tracker-github.md) and
+[publication and recovery](../to-tickets/PUBLICATION.md) when preparing or
+reconciling GitHub guidance; reading this reference does not invoke `to-tickets`.
+Carry its general ownership, grouping and triage conventions into the local
+tracker without copying the complete publication procedure into each skill.
+
 Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off**. Leave it off and don't raise it: a user who wants external PRs in the triage queue can flip the flag in the file later.
 
 **Section B: Triage label vocabulary.** Skip this section entirely if the `triage` skill isn't installed (exploration told you), since an uninstalled skill needs no labels.
@@ -102,6 +113,16 @@ Apply any corrections the user already supplied. Show this draft once and let
 the user edit it; on a rerun, the draft shows the in-place updates to existing
 files. Write nothing, and create no labels, until the user accepts the draft.
 An acceptance covers only the scope shown; show any added file or label again.
+
+Plugin refresh does not migrate repository-local tracker or protocol copies.
+For an existing setup, compare the configured copies with the bundled seeds,
+then show bounded in-place hunks in the combined draft. Preserve local policy,
+repository and role mappings, PR policy, pinning, filters, historical evidence
+and pending approvals. Include the early rendered comparison, shared fixes
+before final proof and numbered HTML review instructions where missing.
+List each proposed file and tracker command before applying the approved draft;
+new scope needs its own draft approval. Do not perform a live hierarchy repair
+or issue relabeling as an implied setup action.
 
 ### 4. Write
 
@@ -171,10 +192,17 @@ Install the visual-acceptance assets in the target repository:
 - [validate-visual-acceptance.mjs](./validate-visual-acceptance.mjs) →
   `./scripts/validate-visual-acceptance.mjs` (target repository root)
 
-Copy the template and validator byte-for-byte from their bundled sources. On a
-rerun, compare any installed copy first: leave an identical copy alone, and for
-a customized copy show the difference and replace it only when the user agrees.
-Apply any user-approved prose edits only to the installed protocol.
+For missing assets, copy the template and validator byte-for-byte from this
+runtime's bundled sources. On a rerun, inspect the existing template and validator
+before any write. Preserve the local schema and acceptance states, manifest
+records, pending requests and accepted evidence. Leave identical copies alone;
+show customized or incompatible contracts in the draft and report any separate
+migration decision required. Do not overwrite them or substitute the other
+runtime's contract. Reconcile protocol prose only through the approved draft.
+Installing dormant assets creates no initiative manifest or visual approval.
+When installing the label seed for GitHub, resolve its tracker link to the
+configured repository-local tracker path rather than retaining a bundled-resource
+path. For other trackers, omit that GitHub-specific paragraph.
 
 Use [local verification](local-verification.md) as the seed for
 `docs/agents/local-verification.md`; replace tooling placeholders with verified
