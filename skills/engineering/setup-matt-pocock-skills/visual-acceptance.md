@@ -18,6 +18,11 @@ normal workflow. A UI change, redesign, prototype, screenshot, or visual test
 without a production-to-reference comparison creates no manifest and adds no
 visual-acceptance gate.
 
+Browser parity adds no native-only proof requirement. Native parity retains
+all project-required native coverage, including a complete native parent where
+required. Diagnostic images and focused checks replace no final coverage and add
+no manifest state or human acceptance gate.
+
 ## Invariant
 
 A production screenshot is a candidate, never its own acceptance reference.
@@ -159,10 +164,15 @@ bytes. Timestamps are UTC ISO strings in `toISOString()` form
 Work one surface at a time unless the human explicitly authorizes another
 order.
 
-1. Implement the surface in the real application.
+1. Implement the surface in the real application. Inspect early rendered
+   comparisons against the frozen reference during implementation, including
+   relevant enabled controls and normal and enlarged text. Use the affected
+   platform and supported diagnostic paths with their existing prerequisites;
+   a mock does not prove native rendering.
 2. Run its automated behavior, accessibility, localization, responsive, and
    lifecycle checks.
-3. Set the surface to `implemented`, commit it, and complete code review and
+3. Batch feasible related shared fixes before final review and affected captures.
+   Set the surface to `implemented`, commit it, and complete code review and
    accepted fixes before capturing approval candidates.
 4. Capture final candidates using the same locale, viewport, scenario, and
    deterministic data as each reference.
@@ -172,8 +182,9 @@ order.
 6. Record an approval request bound to that candidate-set hash, set
    `approval_requested`, validate again, and end the turn with the mandatory
    request printed by the validator below.
-7. On rejection or any candidate-changing edit, clear the request, return to
-   `compared`, revise, recapture, and request approval again.
+7. On rejection or any candidate-changing edit, clear `approvalRequest`,
+   `approval` and `baselines`, return to `compared`, revise, recapture, and request
+   approval again. Preserve existing baseline files until new approval.
 8. On explicit approval, bind the approval to the requested surface and
    candidate-set hash; set `member_accepted`.
 9. Copy the accepted candidate bytes to regression baselines, record their
@@ -238,8 +249,10 @@ node scripts/validate-visual-acceptance.mjs \
 An immediate explicit `Approve` response is bound to the surface and hash
 shown in that request; the human does not need to repeat the digest. Generic
 messages such as "continue", "looks good", or an earlier prototype selection
-do not approve production. If a later invocation finds an unresolved
-`approval_requested` surface, show the request again before doing other work.
+do not approve production. On a later invocation, handle a bound human response
+before redisplaying a pending request. Verify the exact files and hashes before
+recording approval. If `approval_requested` remains unresolved, show the request
+again before doing other work.
 
 Record:
 

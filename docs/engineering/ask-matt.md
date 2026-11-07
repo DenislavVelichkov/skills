@@ -40,6 +40,10 @@ The router checks the loaded plugin's selection or registration before recommend
 
 The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assume [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) has already configured an issue tracker in the repo. The router recommends them even before that has happened.
 
+For GitHub, triage excludes pure spec/group containers while keeping actionable
+parents eligible. Generated agent-ready children stay exempt while blocked.
+Setup reconciles these rules through an approved draft of local tracker changes.
+
 ## Flows, not skills
 
 The skill's leading word is **flow**, a path _through_ the skills rather than a single skill. When you name your situation, the router places you at a step on a flow. That is a different answer from "here is the skill that matches your keywords". There are five kinds of route. The skill keeps a compact map of them and reads the linked `FLOWS.md` for the detail (branches, tracker layout, verification rules, what each skill hands to the next) when you ask how a flow runs past the pick:

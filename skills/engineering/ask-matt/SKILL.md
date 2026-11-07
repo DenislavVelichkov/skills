@@ -47,6 +47,10 @@ override an approved serial acceptance order.
 - **Something's broken** → **`/diagnosing-bugs`**, then **`/retro`** once the fix is in; **`/improve-codebase-architecture`** if there is no seam for a regression test.
 - **A huge, foggy effort too big for one session** → **`/wayfinder`**, never a well-scoped feature. When the map clears **it hands off, it doesn't build**: merge onto the main flow at `/to-spec`. `/implement` must not build directly from the map or parent spec.
 
+For GitHub triage, pure spec/group containers stay outside execution triage;
+actionable parents remain eligible. Generated agent-ready children need no
+retriage while blocked. The configured tracker owns those rules.
+
 ## Codebase health and vocabulary
 
 - **`/improve-codebase-architecture`**: upkeep survey for deepening opportunities; a pick enters the main flow at `/grill-with-docs`.

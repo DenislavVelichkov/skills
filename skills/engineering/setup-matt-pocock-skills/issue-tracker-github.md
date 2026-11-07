@@ -1,54 +1,171 @@
 # Issue tracker: GitHub
 
-Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
+Issues and specs for this repo live as GitHub issues. Use the `gh` CLI.
+
+## Repository and capabilities
+
+Use the configured repository `OWNER/REPO`. Setup replaces this placeholder with
+its verified destination. Resolve it from project tracker policy and actual
+remotes; in a fork, do not assume the upstream or `gh` default is correct.
+Check `gh repo view OWNER/REPO --json nameWithOwner` before the first write.
+Pass `--repo OWNER/REPO` to issue and PR commands and use that repository in API
+paths. Preserve configured category/state role mappings and PR policy.
+
+Check `gh --version`, `gh issue create --help` and `gh issue edit --help` before
+using relationship flags. Use supported CLI operations or the documented REST
+API below. An authentication, permission or partial-response error does not prove
+that native relationships are unavailable. Use textual fallback only when native
+support is unavailable and project policy permits it; report the limitation.
+
+File issues only into the user's own repository. Never file into the skill
+author's repository unless the user owns it. If the verified destination is
+not their repository, obtain their explicit decision before creating an issue.
 
 ## Conventions
 
-- **Create an issue**: `gh issue create --title "..." --body-file <path>`. Write the exact Markdown body to that file first.
-- **Read an issue**: `gh issue view <number> --json number,title,body,comments,labels,author,createdAt,updatedAt,url` for structured context; use `jq` to inspect it.
-- **List issues**: `gh issue list --state open --json number,title,body,labels,comments --jq '[.[] | {number, title, body, labels: [.labels[].name], comments: [.comments[].body]}]'` with appropriate `--label` and `--state` filters.
-- **Make an issue a sub-issue of a parent**: `gh issue create --parent <parent> ...`, or `gh issue edit <parent> --add-sub-issue <child>` afterwards (`gh` 2.94+). Older `gh`: `gh api --method POST repos/<owner>/<repo>/issues/<parent>/sub_issues -F sub_issue_id=<child-db-id>` (database id, as in **Blocking** below). Without sub-issues, put `Part of #<parent>` at the top of the child body.
-- **Blocking**: GitHub's **native issue dependencies**, the canonical, UI-visible representation. Add an edge with `gh issue create --blocked-by <n>,<n> ...` or `gh issue edit <child> --add-blocked-by <blocker>` (`gh` 2.94+). Older `gh`: `gh api --method POST repos/<owner>/<repo>/issues/<child>/dependencies/blocked_by -F issue_id=<blocker-db-id>`, where `<blocker-db-id>` is the blocker's numeric **database id** (`gh api repos/<owner>/<repo>/issues/<n> --jq .id`, _not_ the `#number` or `node_id`). Where dependencies aren't available, fall back to a `Blocked by: #<n>, #<n>` line at the top of the child body. A ticket is unblocked when every blocker is closed.
-- **Count open blockers**: `gh api repos/<owner>/<repo>/issues/<n> --jq .issue_dependencies_summary.blocked_by` (open blockers only; 0 means startable). `gh issue view <n> --json blockedBy` also lists closed blockers, so filter it: `--jq '[.blockedBy.nodes[] | select(.state == "OPEN")] | length'`.
-- **Comment on an issue**: `gh issue comment <number> --body-file <path>`
-- **Apply / remove labels**: `gh issue edit <number> --add-label "..."` / `--remove-label "..."`
-- **Close**: post any explanation with `gh issue comment <number> --body-file <path>`, then run `gh issue close <number>`
+- Create with `gh issue create --title "..." --body-file <path>`. Save the exact body first.
+- Read the full issue with `gh issue view <number> --json number,title,body,comments,labels,author,createdAt,updatedAt,url`; use `jq` to inspect it.
+- List the requested scope with `gh issue list --state open --json number,title,body,labels`. A bounded listing is discovery, not a complete hierarchy or discussion. Read comments for each selected item.
+- Comment with `gh issue comment <number> --body-file <path>`.
+- Apply or remove mapped labels with `gh issue edit <number> --add-label "..."` or `--remove-label "..."`; preserve unrelated labels.
+- Close with `gh issue close <number>` only after the completion gates below.
 
-Infer the repo from `git remote -v`; `gh` does this automatically when run inside a clone.
+## Native ownership and blockers
+
+For a known specification, each implementation ticket has its approved native
+parent, directly or through an organizational group. Native ownership and
+blocking are separate relationships. A textual parent link, label or checklist
+alone proves neither. Retain every approved technical, external and serial
+blocker; belonging to a spec does not itself make that spec a blocker.
+
+When installed help supports them, use `gh issue create --parent <parent>` or
+`gh issue edit <parent> --add-sub-issue <child>` for ownership, and
+`gh issue create --blocked-by <n>,<n>` or
+`gh issue edit <child> --add-blocked-by <blocker>` for dependencies.
+The REST alternatives use numeric database IDs, not issue numbers or node IDs:
+
+```sh
+# Read .id for each child or blocker before writing its relationship.
+gh api repos/OWNER/REPO/issues/CHILD --jq .id
+gh api --method POST repos/OWNER/REPO/issues/PARENT/sub_issues -F sub_issue_id=CHILD_DB_ID
+gh api --method POST repos/OWNER/REPO/issues/CHILD/dependencies/blocked_by -F issue_id=BLOCKER_DB_ID
+```
+
+After publication or repair, read each child's native parent and the complete
+paginated child list at every parent, including closed children and grouped
+descendants. Read each child's complete paginated blocker list, body and labels:
+
+```sh
+gh api --method GET repos/OWNER/REPO/issues/CHILD/parent
+gh api --method GET --paginate --slurp 'repos/OWNER/REPO/issues/PARENT/sub_issues?per_page=100'
+gh api --method GET --paginate --slurp 'repos/OWNER/REPO/issues/CHILD/dependencies/blocked_by?per_page=100'
+```
+
+Follow every next page or GraphQL cursor, including searches. Match saved issue
+identities against approved parents, leaves, role labels and blockers. Summary
+counts or a successful write do not establish complete membership. Closed
+blockers remain edges; only open blockers prevent execution. Missing or extra
+edges require reconciliation with the approved graph.
+
+For a missing or wrong parent, first verify the child's identity and authority
+to change ownership. The add-child API's `replace_parent: true` replaces a wrong
+parent; use it only for that approved repair and read back both old and intended
+parents. An inaccessible parent is uncertain, not a confirmed missing parent.
+
+Before retrying an uncertain create, inspect the saved result and search every
+relevant page for the approved ticket's identifiers and exact content, including
+unlinked issues. Reuse an existing match and complete only missing operations
+for body, parent, blockers or labels. Never repeat a successful create to repair
+a failed link. Multiple plausible matches or inaccessible results stop dependent
+writes until identity or access is resolved. Record partial writes, failures,
+repairs and read-back in the existing progress record.
+
+If native ownership is unavailable under an allowed fallback, add the child to
+a task list in the parent and put `Part of #<parent>` in the child's body. For
+unavailable dependencies, use `Blocked by: #<n>, #<n>`. Report these as textual
+fallbacks, never as verified native relationships. Ticket publishing follows
+the available `to-tickets` skill's `PUBLICATION.md` reference for the detailed
+publication sequence; reading that reference does not invoke the skill.
+
+## Capacity and navigation
+
+GitHub permits 100 direct children per parent and eight levels of nesting.
+Count all existing children, including closed history, plus missing planned
+children before adding them. Reuse approved organizational groups; nest further
+only within the depth limit. Resolve an absent grouping convention before
+changing ownership. Reparent existing leaves instead of splitting, renumbering,
+reopening or replacing them. Preserve scope, states, acceptance criteria,
+blockers and serial order. Verify the approved leaf total across all groups;
+organizational groups and separate follow-ups do not increase that denominator.
+
+The flat Issues list still shows child rows. Navigate from the specification's
+expandable sub-issue tree and group links. Preserve project-approved pinning and
+filters; setup does not change GitHub's default list or those choices.
+
+## Triage eligibility
+
+Apply this distinction before discovery counts and specific-item evaluation:
+
+| Item                                                                                    | Execution triage                                                                                   |
+| --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Pure specification containers or organizational groups that only organize approved work | Exclude even when unlabeled; report their planning role without changing labels or state.          |
+| Actionable parents with their own requested behavior and acceptance work                | Eligible like standalone requests; having children alone does not exclude them.                    |
+| Ordinary standalone requests                                                            | Use normal triage and configured category/state roles.                                             |
+| `to-tickets` work already agent-ready                                                   | Do not retriage, even while blocked; check blockers when choosing execution work.                  |
+| Role or purpose is uncertain                                                            | Read the body, discussion and ownership; ask the maintainer if still uncertain before changing it. |
+
+Container status comes from the issue's purpose and approved plan, not its
+label count, title or number of children. Preserve generated agent-ready work
+and unrelated labels. This policy grants no new triage invocation, verification
+or mutation permission and changes none of its mandatory notices.
 
 ## Implementation progress
 
-When completing or pausing work on an existing issue, comment on that issue with the commit or PR, checks run and their results, acceptance criteria met, and any remaining work or blockers. Update its labels or checklist when the project's conventions use them. Close it only after its required gates pass on the intended integration branch; otherwise leave it open and say what remains. A `#<number>` commit reference does not record this progress.
-
-File issues only into the user's own repo. Never file into `mattpocock/skills` (the repo these skills come from) unless the user owns it. In a fork, `gh` can default to the upstream parent, so before the first `gh issue create` of a session, check the target with `gh repo view --json nameWithOwner` and confirm it with the user if it is not their repo.
+When completing or pausing an issue, comment with the commit or PR, checks and
+results, acceptance criteria met, and remaining work or blockers. Update its
+checklist or labels where project policy requires it. Close only after required
+gates pass on the intended integration branch; otherwise leave it open. A
+`#<number>` commit reference alone does not record progress.
 
 ## Pull requests as a triage surface
 
 **PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_
 
-When set to `yes`, PRs run through the same labels and states as issues, using the `gh pr` equivalents:
+When enabled, use `gh pr view <number>`, `gh pr view <number> --comments`,
+`gh pr diff <number>`, and the `gh pr` comment/edit/close equivalents. Preserve
+project authorization for running contributor code and applying outcomes.
+List external PRs through the [pull-request REST endpoint](https://docs.github.com/en/rest/pulls/pulls#list-pull-requests),
+not an unsupported `gh pr list --json authorAssociation` field:
 
-- **Read a PR**: `gh pr view <number>`, then `gh pr view <number> --comments` to read its discussion, and `gh pr diff <number>` for the diff.
-- **List external PRs for triage**: use the [pull-request REST endpoint](https://docs.github.com/en/rest/pulls/pulls#list-pull-requests), because `authorAssociation` is not a supported `gh pr list --json` field. Run `gh api --method GET --paginate 'repos/{owner}/{repo}/pulls?state=open&per_page=100' --jq '.[] | select(.author_association == "CONTRIBUTOR" or .author_association == "FIRST_TIME_CONTRIBUTOR" or .author_association == "NONE")'`; fetch each selected PR's full discussion separately.
-- **Comment / label / close**: `gh pr comment`, `gh pr edit --add-label`/`--remove-label`, `gh pr close`.
+```sh
+gh api --method GET --paginate 'repos/OWNER/REPO/pulls?state=open&per_page=100' --jq '.[] | select(.author_association == "CONTRIBUTOR" or .author_association == "FIRST_TIME_CONTRIBUTOR" or .author_association == "NONE")'
+```
 
-GitHub shares one number space across issues and PRs, so a bare `#42` may be either: resolve with `gh pr view 42` and fall back to `gh issue view 42`.
+Fetch each selected PR's full discussion separately. GitHub shares one number
+space across issues and PRs; resolve a bare number with `gh pr view` and fall
+back to `gh issue view`.
 
-## When a skill says "publish to the issue tracker"
+## Publishing and fetching
 
-Create a GitHub issue.
-
-## When a skill says "fetch the relevant ticket"
-
-Read it as in **Read an issue** above.
+"Publish to the issue tracker" means create a GitHub issue. "Fetch the relevant
+ticket" means read its full body, comments and configured roles as above.
 
 ## Wayfinding operations
 
-Used by `/wayfinder`. The **map** is a single issue with **child** issues as tickets.
+The map is one issue labelled `wayfinder:map`, holding the
+Notes / Decisions-so-far / Fog body. Create it with
+`gh issue create --label wayfinder:map`. Its child tickets follow the native
+ownership and separate blocker rules above. Use `wayfinder:<type>` for
+`research`, `prototype`, `grilling` or `task` and preserve configured triage roles.
+The frontier is its open, unassigned children without open blockers, in map order.
+Claim with `gh issue edit <n> --add-assignee @me`, the session's first write.
+Resolve with `gh issue comment <n> --body-file <answer-path>`, close the child,
+then append a linked context pointer to Decisions-so-far.
 
-- **Map**: a single issue labelled `wayfinder:map`, holding the Notes / Decisions-so-far / Fog body. `gh issue create --label wayfinder:map`.
-- **Child ticket**: an issue linked to the map as a GitHub sub-issue (see **Make an issue a sub-issue of a parent**). Where sub-issues aren't enabled, add the child to a task list in the map body and put `Part of #<map>` at the top of the child body. Labels: `wayfinder:<type>` (`research`/`prototype`/`grilling`/`task`). Once claimed, the ticket is assigned to the driving dev.
-- **Blocking**: see **Blocking** under Conventions.
-- **Frontier query**: list the map's open children (`gh issue list --state open`, scoped to the map's sub-issues / task list), drop any with an open blocker (see **Count open blockers**, or an open issue in the `Blocked by` line) or an assignee; first in map order wins.
-- **Claim**: `gh issue edit <n> --add-assignee @me`, the session's first write.
-- **Resolve**: `gh issue comment <n> --body-file <answer-path>`, then `gh issue close <n>`, then append a context pointer (gist + link) to the map's Decisions-so-far.
+## Official operations
+
+Check current [sub-issue limits](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/adding-sub-issues),
+[sub-issue API](https://docs.github.com/en/rest/issues/sub-issues),
+[dependencies](https://docs.github.com/en/rest/issues/issue-dependencies) and
+[pagination](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api)
+when an installed capability differs. CLI failure alone does not authorize a fallback.
