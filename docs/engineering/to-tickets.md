@@ -71,9 +71,10 @@ existing issues and repair missing operations before any retry.
 
 For a visual parity action, tickets require early rendered comparisons and
 annotated HTML with numbered difference pointers before exact human acceptance.
-Browser parity retains browser proof without adding native-only proof; native
-parity retains its required native evidence. Ordinary UI without a named
-comparison obligation needs no parity manifest.
+
+- Browser parity retains browser proof without adding native-only proof.
+- Native parity retains its required native evidence.
+- Ordinary UI without a named comparison obligation needs no parity manifest.
 
 For a visual parity action, the manifest defines one extra edge the tracker must show:
 the next surface stays blocked until the current one has been compared,
