@@ -149,12 +149,40 @@ bytes. Timestamps are UTC ISO strings in `toISOString()` form
   "requiredRegions": ["order-summary"],
   "requiredInteractions": [],
   "state": "member_accepted",
-  "references": [{ "path": "docs/visual-acceptance/<initiative>/reference.png", "sha256": "sha256:<64 hex>", "locale": "en-US", "viewport": "1280x800", "scenario": "default" }],
-  "candidates": [{ "path": "docs/visual-acceptance/<initiative>/candidate.png", "sha256": "sha256:<64 hex>", "locale": "en-US", "viewport": "1280x800", "scenario": "default" }],
-  "comparison": { "path": "docs/visual-acceptance/<initiative>/comparison.html", "sha256": "sha256:<64 hex>" },
+  "references": [
+    {
+      "path": "docs/visual-acceptance/<initiative>/reference.png",
+      "sha256": "sha256:<64 hex>",
+      "locale": "en-US",
+      "viewport": "1280x800",
+      "scenario": "default"
+    }
+  ],
+  "candidates": [
+    {
+      "path": "docs/visual-acceptance/<initiative>/candidate.png",
+      "sha256": "sha256:<64 hex>",
+      "locale": "en-US",
+      "viewport": "1280x800",
+      "scenario": "default"
+    }
+  ],
+  "comparison": {
+    "path": "docs/visual-acceptance/<initiative>/comparison.html",
+    "sha256": "sha256:<64 hex>"
+  },
   "deviations": [],
-  "approvalRequest": { "requestedAt": "2026-01-02T03:04:05.000Z", "source": "<conversation or review reference>", "candidateSetSha256": "sha256:<64 hex>" },
-  "approval": { "approvedBy": "<human approver>", "approvedAt": "2026-01-02T03:10:00.000Z", "source": "<conversation or review reference>", "candidateSetSha256": "sha256:<64 hex>" },
+  "approvalRequest": {
+    "requestedAt": "2026-01-02T03:04:05.000Z",
+    "source": "<conversation or review reference>",
+    "candidateSetSha256": "sha256:<64 hex>"
+  },
+  "approval": {
+    "approvedBy": "<human approver>",
+    "approvedAt": "2026-01-02T03:10:00.000Z",
+    "source": "<conversation or review reference>",
+    "candidateSetSha256": "sha256:<64 hex>"
+  },
   "baselines": []
 }
 ```

@@ -143,88 +143,143 @@ test("public routing preserves continuation, early comparison and serial approva
 
 // These scenarios check saved instructions, not observed execution or speedup.
 for (const [situation, file, actions] of [
-  ["wrong installed invocation path", "implement/VERIFICATION.md", [
-    "Exercise the real invocation with the smallest supported input",
-    "installed entry point, working directory and path resolution",
-    "An import test or `--help` alone does not prove the execution path works",
-  ]],
-  ["malformed generated proof", "tdd/SKILL.md", [
-    "test actual producer output through the actual consumer",
-    "Assert a successful consumed result against the contract",
-    "cover incomplete and incompatible outputs",
-    "Check rejection before runtime mutation or ownership acquisition",
-  ]],
-  ["recurring failure without a short reproducer", "implement/VERIFICATION.md", [
-    "product, verification tooling, environment or unresolved",
-    "reproduce it with the smallest supported check and verify the repair there",
-    "record what was tried, why it cannot expose the failure",
-    "hypothesis, observation and stop condition",
-    "Check the outcome of uncertain mutations before any retry",
-  ]],
-  ["native-only retention failure", "implement/VERIFICATION.md", [
-    "bounded check on the affected runtime",
-    "process identity and relevant resource measurements",
-    "passing desktop mocks cannot establish that repair",
-  ]],
-  ["prerequisite expires during capture", "implement/VERIFICATION.md", [
-    "Compare prerequisite expiry with the expected duration of execution and recovery",
-    "Refresh through supported mechanisms",
-    "never change timestamps or weaken freshness rules",
-  ]],
-  ["missing assertion samples and cleanup proof", "implement/VERIFICATION.md", [
-    "List covered and uncovered required scenarios",
-    "Metadata counts and mocked fixtures do not establish assertion coverage",
-    "permit a first collection or diagnostic run to obtain missing samples",
-    "do not require a full capture before the run that will collect them",
-    "including failure cleanup",
-    "successful cleanup cannot turn a failed run into a pass",
-  ]],
-  ["unchanged valid evidence and a routine edit", "implement/VERIFICATION.md", [
-    "Reuse applicable results under the evidence rules below",
-    "Routine edits need no separate preparation record or new tooling",
-    "only when the project verifier supports it and proves applicability",
-    "Preparation is not acceptance and adds no new human approval requirement",
-    "financial non-retry rules and human approval boundaries",
-  ]],
-  ["passive review of incomplete acceptance coverage", "code-review/SKILL.md", [
-    "successful real entry-path invocation",
-    "actual producer output accepted by its consumer",
-    "Compare claimed scenario coverage with assertions actually exercised",
-    "changed input or unresolved diagnostic question",
-    "without launching live journeys",
-    "Include this scope in any delegated review brief",
-  ]],
-  ["retro lesson already has an owner", "retro/SKILL.md", [
-    "existing owning skill or shared reference",
-    "inspect overlapping guidance",
-    "unavailable, ignored or contradicted",
-    "observable success criterion and an evaluation",
-    "routine case that should not gain extra process",
-    "Wording alone cannot prove a speedup",
-  ]],
-  ["advisor capacity unavailable", "implement/VERIFICATION.md", [
-    "available blocker consultation",
-    "Respect its host restrictions and remaining budget",
-    "creates no advisor requirement or new consultation capacity",
-    "Advice never substitutes for verification",
-  ]],
+  [
+    "wrong installed invocation path",
+    "implement/VERIFICATION.md",
+    [
+      "Exercise the real invocation with the smallest supported input",
+      "installed entry point, working directory and path resolution",
+      "An import test or `--help` alone does not prove the execution path works",
+    ],
+  ],
+  [
+    "malformed generated proof",
+    "tdd/SKILL.md",
+    [
+      "test actual producer output through the actual consumer",
+      "Assert a successful consumed result against the contract",
+      "cover incomplete and incompatible outputs",
+      "Check rejection before runtime mutation or ownership acquisition",
+    ],
+  ],
+  [
+    "recurring failure without a short reproducer",
+    "implement/VERIFICATION.md",
+    [
+      "product, verification tooling, environment or unresolved",
+      "reproduce it with the smallest supported check and verify the repair there",
+      "record what was tried, why it cannot expose the failure",
+      "hypothesis, observation and stop condition",
+      "Check the outcome of uncertain mutations before any retry",
+    ],
+  ],
+  [
+    "native-only retention failure",
+    "implement/VERIFICATION.md",
+    [
+      "bounded check on the affected runtime",
+      "process identity and relevant resource measurements",
+      "passing desktop mocks cannot establish that repair",
+    ],
+  ],
+  [
+    "prerequisite expires during capture",
+    "implement/VERIFICATION.md",
+    [
+      "Compare prerequisite expiry with the expected duration of execution and recovery",
+      "Refresh through supported mechanisms",
+      "never change timestamps or weaken freshness rules",
+    ],
+  ],
+  [
+    "missing assertion samples and cleanup proof",
+    "implement/VERIFICATION.md",
+    [
+      "List covered and uncovered required scenarios",
+      "Metadata counts and mocked fixtures do not establish assertion coverage",
+      "permit a first collection or diagnostic run to obtain missing samples",
+      "do not require a full capture before the run that will collect them",
+      "including failure cleanup",
+      "successful cleanup cannot turn a failed run into a pass",
+    ],
+  ],
+  [
+    "unchanged valid evidence and a routine edit",
+    "implement/VERIFICATION.md",
+    [
+      "Reuse applicable results under the evidence rules below",
+      "Routine edits need no separate preparation record or new tooling",
+      "only when the project verifier supports it and proves applicability",
+      "Preparation is not acceptance and adds no new human approval requirement",
+      "financial non-retry rules and human approval boundaries",
+    ],
+  ],
+  [
+    "passive review of incomplete acceptance coverage",
+    "code-review/SKILL.md",
+    [
+      "successful real entry-path invocation",
+      "actual producer output accepted by its consumer",
+      "Compare claimed scenario coverage with assertions actually exercised",
+      "changed input or unresolved diagnostic question",
+      "without launching live journeys",
+      "Include this scope in any delegated review brief",
+    ],
+  ],
+  [
+    "retro lesson already has an owner",
+    "retro/SKILL.md",
+    [
+      "existing owning skill or shared reference",
+      "inspect overlapping guidance",
+      "unavailable, ignored or contradicted",
+      "observable success criterion and an evaluation",
+      "routine case that should not gain extra process",
+      "Wording alone cannot prove a speedup",
+    ],
+  ],
+  [
+    "advisor capacity unavailable",
+    "implement/VERIFICATION.md",
+    [
+      "available blocker consultation",
+      "Respect its host restrictions and remaining budget",
+      "creates no advisor requirement or new consultation capacity",
+      "Advice never substitutes for verification",
+    ],
+  ],
 ]) {
   test(`verification preparation: ${situation}`, () => {
-    const instructions = read(`skills/engineering/${file}`).replace(/\s+/gu, " ");
-    for (const action of actions) assert.ok(instructions.includes(action), action);
+    const instructions = read(`skills/engineering/${file}`).replace(
+      /\s+/gu,
+      " ",
+    );
+    for (const action of actions)
+      assert.ok(instructions.includes(action), action);
   });
 }
 
 test("implementation routes and public docs retain verification preparation", () => {
   for (const [name, preparation, diagnosis] of [
-    ["implement", /"Prepare\s+expensive\s+execution"/u, /"Diagnose before repeating expensive\s+work"/u],
-    ["implement-spec", /expensive-execution preparation/u, /recurring-failure diagnosis/u],
+    [
+      "implement",
+      /"Prepare\s+expensive\s+execution"/u,
+      /"Diagnose before repeating expensive\s+work"/u,
+    ],
+    [
+      "implement-spec",
+      /expensive-execution preparation/u,
+      /recurring-failure diagnosis/u,
+    ],
   ]) {
     const skill = read(`skills/engineering/${name}/SKILL.md`);
     assert.match(skill, /VERIFICATION.md/u);
     assert.match(skill, preparation);
     assert.match(skill, diagnosis);
-    assert.match(read(`skills/engineering/${name}/agents/openai.yaml`), /allow_implicit_invocation: false/u);
+    assert.match(
+      read(`skills/engineering/${name}/agents/openai.yaml`),
+      /allow_implicit_invocation: false/u,
+    );
   }
   for (const [name, expected] of [
     ["implement", "Routine edits need no separate preparation record"],
@@ -233,16 +288,23 @@ test("implementation routes and public docs retain verification preparation", ()
     ["code-review", "review starts no live journey"],
     ["retro", "observable success criterion and an evaluation"],
     ["ask-matt", "existing skill that owns them"],
-  ]) assert.ok(read(`docs/engineering/${name}.md`).includes(expected), name);
+  ])
+    assert.ok(read(`docs/engineering/${name}.md`).includes(expected), name);
 });
 
 test("an unrelated test edit cannot authorize visual evidence reuse", () => {
   const implement = read("skills/engineering/implement/SKILL.md");
   assert.match(implement, /\[VERIFICATION.md\]\(VERIFICATION.md\)/u);
   const policy = read("skills/engineering/implement/VERIFICATION.md");
-  assert.match(policy, /only when the project verifier supports it and proves/u);
+  assert.match(
+    policy,
+    /only when the project verifier supports it and proves/u,
+  );
   assert.match(policy, /direct\nand transitive source dependencies/u);
-  assert.match(policy, /Unknown dependencies require conservative revalidation/u);
+  assert.match(
+    policy,
+    /Unknown dependencies require conservative revalidation/u,
+  );
   assert.match(policy, /Never relabel an old capture as a new run/u);
   assert.match(policy, /respect the existing validator/u);
 });
@@ -250,10 +312,19 @@ test("an unrelated test edit cannot authorize visual evidence reuse", () => {
 test("shared fixes precede consumer evidence without changing approved order", () => {
   const ticketing = read("skills/engineering/to-tickets/SKILL.md");
   assert.match(ticketing, /repairs before consumers' final evidence/u);
-  assert.match(ticketing, /affected behavior, focused checks, reusable evidence inputs/u);
+  assert.match(
+    ticketing,
+    /affected behavior, focused checks, reusable evidence inputs/u,
+  );
   assert.match(ticketing, /where the approved workflow permits/u);
-  assert.match(ticketing, /Preserve that chain\nuntil the user explicitly approves/u);
-  assert.match(ticketing, /does not change\nan active project's order or authorize parallel implementation/u);
+  assert.match(
+    ticketing,
+    /Preserve that chain\nuntil the user explicitly approves/u,
+  );
+  assert.match(
+    ticketing,
+    /does not change\nan active project's order or authorize parallel implementation/u,
+  );
 });
 
 test("a stable fix ends verification while retaining full initial review coverage", () => {
@@ -264,8 +335,14 @@ test("a stable fix ends verification while retaining full initial review coverag
   assert.match(tdd, /failures, uncertain impact, and project gates/u);
   assert.match(review, /first review covers the full requested diff/u);
   assert.match(review, /affected callers, contracts,/u);
-  assert.match(review, /delta review alone cannot stand in for a missing initial review/u);
-  assert.match(review, /After required checks and both axes pass, stop reviewing that unchanged scope/u);
+  assert.match(
+    review,
+    /delta review alone cannot stand in for a missing initial review/u,
+  );
+  assert.match(
+    review,
+    /After required checks and both axes pass, stop reviewing that unchanged scope/u,
+  );
   assert.match(review, /follow stricter project requirements/u);
 });
 
@@ -296,7 +373,9 @@ test("published specs must pass through an approved ticket split", () => {
 });
 
 test("visual acceptance stays local and human-approved", () => {
-  const toTickets = read("skills/engineering/to-tickets/SKILL.md") + read("skills/engineering/to-tickets/VISUAL-PARITY.md");
+  const toTickets =
+    read("skills/engineering/to-tickets/SKILL.md") +
+    read("skills/engineering/to-tickets/VISUAL-PARITY.md");
   const visualAcceptance = read(
     "skills/engineering/setup-matt-pocock-skills/visual-acceptance.md",
   );
@@ -310,13 +389,14 @@ test("visual acceptance stays local and human-approved", () => {
     visualAcceptance,
     /Run it locally before each state change and\nbefore claiming completion\./u,
   );
-  assert.match(visualAcceptance, /it must never invent,\ninfer, or self-author approval/u);
+  assert.match(
+    visualAcceptance,
+    /it must never invent,\ninfer, or self-author approval/u,
+  );
 });
 
 test("visual parity gates require an explicit reference comparison", () => {
-  const setup = read(
-    "skills/engineering/setup-matt-pocock-skills/SKILL.md",
-  );
+  const setup = read("skills/engineering/setup-matt-pocock-skills/SKILL.md");
   const visualAcceptance = read(
     "skills/engineering/setup-matt-pocock-skills/visual-acceptance.md",
   );
@@ -342,7 +422,10 @@ test("visual parity gates require an explicit reference comparison", () => {
     visualAcceptance,
     /A proposed manifest path or a\nrequest to create a new manifest does not establish it/u,
   );
-  assert.match(setup, /links a visual-acceptance manifest, read `docs\/agents\/visual-acceptance.md`/u);
+  assert.match(
+    setup,
+    /links a visual-acceptance manifest, read `docs\/agents\/visual-acceptance.md`/u,
+  );
 
   for (const skill of [wayfinder, toSpec, toTickets, implement, codeReview]) {
     assert.match(skill, /visual parity action/u);
@@ -362,9 +445,15 @@ test("applicable missing manifests are created before ticketing or implementatio
   const visualAcceptance = read(
     "skills/engineering/setup-matt-pocock-skills/visual-acceptance.md",
   );
-  const toSpec = read("skills/engineering/to-spec/SKILL.md") + read("skills/engineering/to-spec/VISUAL-PARITY.md");
-  const toTickets = read("skills/engineering/to-tickets/SKILL.md") + read("skills/engineering/to-tickets/VISUAL-PARITY.md");
-  const implement = read("skills/engineering/implement/SKILL.md") + read("skills/engineering/implement/VISUAL-PARITY.md");
+  const toSpec =
+    read("skills/engineering/to-spec/SKILL.md") +
+    read("skills/engineering/to-spec/VISUAL-PARITY.md");
+  const toTickets =
+    read("skills/engineering/to-tickets/SKILL.md") +
+    read("skills/engineering/to-tickets/VISUAL-PARITY.md");
+  const implement =
+    read("skills/engineering/implement/SKILL.md") +
+    read("skills/engineering/implement/VISUAL-PARITY.md");
 
   assert.match(visualAcceptance, /before either phase begins/u);
   assert.match(toSpec, /Do not stop merely because it is absent/u);
@@ -384,18 +473,27 @@ test("applicable missing manifests are created before ticketing or implementatio
 // These assertions check instruction contracts, not observed agent behavior.
 test("validation selects desktop behavior, native exceptions, and complete final proof", () => {
   const policy = read("skills/engineering/implement/VERIFICATION.md");
-  for (const text of ["focused desktop tests", "exposes production behavior",
-    "only at established test boundaries", "cannot otherwise reach it",
-    "extract the minimum needed", "focused native", "native-only case",
-    "cannot certify native behavior", "after its desktop regression passes",
-    "Run all required final checks on the final candidate"]) {
+  for (const text of [
+    "focused desktop tests",
+    "exposes production behavior",
+    "only at established test boundaries",
+    "cannot otherwise reach it",
+    "extract the minimum needed",
+    "focused native",
+    "native-only case",
+    "cannot certify native behavior",
+    "after its desktop regression passes",
+    "Run all required final checks on the final candidate",
+  ]) {
     assert.ok(policy.includes(text), text);
   }
   for (const name of ["tdd", "diagnosing-bugs", "to-tickets"]) {
-    assert.match(read(`skills/engineering/${name}/SKILL.md`), /\(\.\.\/implement\/VERIFICATION.md\)/u);
+    assert.match(
+      read(`skills/engineering/${name}/SKILL.md`),
+      /\(\.\.\/implement\/VERIFICATION.md\)/u,
+    );
   }
 });
-
 
 test("reports stay passive and live reuse expires at real operation boundaries", () => {
   const policy = read("skills/engineering/implement/VERIFICATION.md");
@@ -419,49 +517,108 @@ test("reports stay passive and live reuse expires at real operation boundaries",
 // Instruction-contract coverage; this does not certify agent behavior.
 test("feature verification bounds shared-tooling repairs and debugging effort", () => {
   const policy = read("skills/engineering/implement/VERIFICATION.md");
-  for (const text of ["exact required check it cannot run", "smallest repair and its completion criterion",
-    "report tooling work separately from feature completion", "Once that check works, return to the feature",
-    "Generalization for future packages", "does not waive evidence, security, accessibility"]) {
+  for (const text of [
+    "exact required check it cannot run",
+    "smallest repair and its completion criterion",
+    "report tooling work separately from feature completion",
+    "Once that check works, return to the feature",
+    "Generalization for future packages",
+    "does not waive evidence, security, accessibility",
+  ]) {
     assert.ok(policy.includes(text), text);
   }
   const diagnosis = read("skills/engineering/diagnosing-bugs/SKILL.md");
   assert.ok(diagnosis.includes("Stop improving it"));
   assert.ok(diagnosis.includes("Choose a bounded trial count"));
-  assert.ok(diagnosis.includes("Native or external-service checks may take minutes"));
-  assert.doesNotMatch(diagnosis, /Spend disproportionate effort|Treat the loop as a product|seconds, not minutes/u);
+  assert.ok(
+    diagnosis.includes("Native or external-service checks may take minutes"),
+  );
+  assert.doesNotMatch(
+    diagnosis,
+    /Spend disproportionate effort|Treat the loop as a product|seconds, not minutes/u,
+  );
 });
 
 // Expected next actions in installed instructions, not measured agent execution.
 for (const [situation, file, action] of [
-  ["hidden dependency", "implement/VERIFICATION.md", "Name missing dependencies and their existing owners before substantial component work"],
-  ["missing ordinary entry", "implement/VERIFICATION.md", "If components have no ordinary entry, make connecting that path the next authorized batch"],
-  ["settled authorization", "implement/VERIFICATION.md", "Carry confirmed scope, authorization, decisions and test boundaries forward"],
-  ["inferable review baseline", "code-review/SKILL.md", "use the recorded task-start commit"],
-  ["unresolved design", "implement/VERIFICATION.md", "Ask only for consequential unresolved decisions"],
-  ["delta review", "code-review/SKILL.md", "review the delta from the last reviewed candidate plus affected callers"],
-  ["disconnected progress", "implement/VERIFICATION.md", "Component completion cannot close a ticket whose required user path remains disconnected"],
+  [
+    "hidden dependency",
+    "implement/VERIFICATION.md",
+    "Name missing dependencies and their existing owners before substantial component work",
+  ],
+  [
+    "missing ordinary entry",
+    "implement/VERIFICATION.md",
+    "If components have no ordinary entry, make connecting that path the next authorized batch",
+  ],
+  [
+    "settled authorization",
+    "implement/VERIFICATION.md",
+    "Carry confirmed scope, authorization, decisions and test boundaries forward",
+  ],
+  [
+    "inferable review baseline",
+    "code-review/SKILL.md",
+    "use the recorded task-start commit",
+  ],
+  [
+    "unresolved design",
+    "implement/VERIFICATION.md",
+    "Ask only for consequential unresolved decisions",
+  ],
+  [
+    "delta review",
+    "code-review/SKILL.md",
+    "review the delta from the last reviewed candidate plus affected callers",
+  ],
+  [
+    "disconnected progress",
+    "implement/VERIFICATION.md",
+    "Component completion cannot close a ticket whose required user path remains disconnected",
+  ],
 ]) {
   test(`${situation}: prescribed next action is ${action}`, () => {
-    const instructions = read(`skills/engineering/${file}`).replace(/\s+/gu, " ");
+    const instructions = read(`skills/engineering/${file}`).replace(
+      /\s+/gu,
+      " ",
+    );
     assert.ok(instructions.includes(action), action);
   });
 }
 
 test("connected batches retain scope and route through shared guidance", () => {
-  const policy = read("skills/engineering/implement/VERIFICATION.md").replace(/\s+/gu, " ");
-  for (const action of ["ordinary entry, demonstrable behavior and the existing check",
+  const policy = read("skills/engineering/implement/VERIFICATION.md").replace(
+    /\s+/gu,
+    " ",
+  );
+  for (const action of [
+    "ordinary entry, demonstrable behavior and the existing check",
     "real authorization, validated contracts and persistence",
     "security, data integrity and essential accessibility",
-    "timer or context-window cutoff", "remaining requirements and their existing owners",
-    "design selection does not grant exact production acceptance"]) assert.ok(policy.includes(action), action);
+    "timer or context-window cutoff",
+    "remaining requirements and their existing owners",
+    "design selection does not grant exact production acceptance",
+  ])
+    assert.ok(policy.includes(action), action);
   for (const skill of ["implement", "to-tickets", "tdd", "code-review"]) {
-    assert.match(read(`skills/engineering/${skill}/SKILL.md`), /VERIFICATION.md/u);
+    assert.match(
+      read(`skills/engineering/${skill}/SKILL.md`),
+      /VERIFICATION.md/u,
+    );
   }
-  assert.doesNotMatch(read("skills/engineering/to-tickets/SKILL.md"), /sized to fit in a single fresh context window/u);
-  assert.doesNotMatch(read("skills/engineering/tdd/SKILL.md"), /Before writing any test.*confirm them with the user/u);
-  assert.doesNotMatch(read("skills/engineering/code-review/SKILL.md"), /If they didn't specify one, ask for it/u);
+  assert.doesNotMatch(
+    read("skills/engineering/to-tickets/SKILL.md"),
+    /sized to fit in a single fresh context window/u,
+  );
+  assert.doesNotMatch(
+    read("skills/engineering/tdd/SKILL.md"),
+    /Before writing any test.*confirm them with the user/u,
+  );
+  assert.doesNotMatch(
+    read("skills/engineering/code-review/SKILL.md"),
+    /If they didn't specify one, ask for it/u,
+  );
 });
-
 
 test("public workflow docs retain connected delivery and settled decisions", () => {
   for (const [file, expected] of [
@@ -471,75 +628,212 @@ test("public workflow docs retain connected delivery and settled decisions", () 
     ["code-review", "recorded task-start commit"],
     ["prototype", "neither authorizes production implementation"],
     ["ask-matt", "reviews committed integrated candidates"],
-  ]) assert.ok(read(`docs/engineering/${file}.md`).replace(/\s+/gu, " ").includes(expected), file);
-  assert.ok(read("docs/productivity/grilling.md").includes("Only consequential unresolved decisions"));
-  assert.ok(read("skills/productivity/grilling/SKILL.md").includes("A prior answer"));
-  assert.ok(read("skills/engineering/prototype/SKILL.md").includes("Reuse settled design answers"));
+  ])
+    assert.ok(
+      read(`docs/engineering/${file}.md`)
+        .replace(/\s+/gu, " ")
+        .includes(expected),
+      file,
+    );
+  assert.ok(
+    read("docs/productivity/grilling.md").includes(
+      "Only consequential unresolved decisions",
+    ),
+  );
+  assert.ok(
+    read("skills/productivity/grilling/SKILL.md").includes("A prior answer"),
+  );
+  assert.ok(
+    read("skills/engineering/prototype/SKILL.md").includes(
+      "Reuse settled design answers",
+    ),
+  );
 });
 
-
 test("planning and design selection cannot reopen or expand execution authority", () => {
-  assert.match(read("skills/engineering/implement/VERIFICATION.md"), /Publishing a plan does not authorize implementation/u);
-  assert.match(read("skills/engineering/prototype/UI.md"), /explicit implementation authorization/u);
-  assert.doesNotMatch(read("docs/engineering/tdd.md"), /Before any test exists/u);
-  assert.match(read("skills/engineering/ask-matt/SKILL.md"), /a published spec always goes through `\/to-tickets` first/u);
+  assert.match(
+    read("skills/engineering/implement/VERIFICATION.md"),
+    /Publishing a plan does not authorize implementation/u,
+  );
+  assert.match(
+    read("skills/engineering/prototype/UI.md"),
+    /explicit implementation authorization/u,
+  );
+  assert.doesNotMatch(
+    read("docs/engineering/tdd.md"),
+    /Before any test exists/u,
+  );
+  assert.match(
+    read("skills/engineering/ask-matt/SKILL.md"),
+    /a published spec always goes through `\/to-tickets` first/u,
+  );
 });
 
 // Issue 190 checks the presentation instructions; browser observations stay separate.
 test("comparison presentation reaches both visual callers without changing approval authority", () => {
-  const protocol = read("skills/engineering/setup-matt-pocock-skills/visual-acceptance.md").replace(/\s+/gu, " ");
+  const protocol = read(
+    "skills/engineering/setup-matt-pocock-skills/visual-acceptance.md",
+  ).replace(/\s+/gu, " ");
   for (const requirement of [
-    "existing comparison-build entry", "numbered arrows", "matching explanations",
-    "image coordinates", "unobstructed original view", "No differences identified",
-    "deliberate adaptations", "original image bytes", "all required pairs",
-    "pair identities", "regenerate", "directly from disk", "comparison-file hash",
-  ]) assert.ok(protocol.includes(requirement), requirement);
+    "existing comparison-build entry",
+    "numbered arrows",
+    "matching explanations",
+    "image coordinates",
+    "unobstructed original view",
+    "No differences identified",
+    "deliberate adaptations",
+    "original image bytes",
+    "all required pairs",
+    "pair identities",
+    "regenerate",
+    "directly from disk",
+    "comparison-file hash",
+  ])
+    assert.ok(protocol.includes(requirement), requirement);
   assert.ok(protocol.includes("## Comparison presentation"));
   const visual = read("skills/engineering/implement/VISUAL-PARITY.md");
   assert.ok(visual.includes("Comparison presentation"));
-  for (const name of ["implement", "implement-spec", "ask-matt", "setup-matt-pocock-skills"]) {
-    assert.ok(read(`docs/engineering/${name}.md`).includes("numbered difference pointers"), name);
+  for (const name of [
+    "implement",
+    "implement-spec",
+    "ask-matt",
+    "setup-matt-pocock-skills",
+  ]) {
+    assert.ok(
+      read(`docs/engineering/${name}.md`).includes(
+        "numbered difference pointers",
+      ),
+      name,
+    );
   }
 });
 
 // These checks inspect authoring contracts, not registered skill execution.
 test("ticket publication retains requirements while sharing execution procedure", () => {
-  const instructions = read("skills/engineering/to-tickets/SKILL.md").replace(/\s+/gu, " ");
+  const instructions = read("skills/engineering/to-tickets/SKILL.md").replace(
+    /\s+/gu,
+    " ",
+  );
   for (const requirement of [
-    "mandatory own-body text", "immutable requirement links", "focused checks and final gates",
+    "mandatory own-body text",
+    "immutable requirement links",
+    "focused checks and final gates",
     "An old pinned requirement link alone is not a conflict",
-    "exact issue-to-clause map", "existing progress records", "PUBLICATION.md",
-    "regardless of age", "unavailable updates", "exact-byte scanning",
-  ]) assert.ok(instructions.includes(requirement), requirement);
+    "exact issue-to-clause map",
+    "existing progress records",
+    "PUBLICATION.md",
+    "regardless of age",
+    "unavailable updates",
+    "exact-byte scanning",
+  ])
+    assert.ok(instructions.includes(requirement), requirement);
 });
 
 for (const [situation, actions] of [
-  ["missing or wrong native parent", ["Read each child's native parent", "missing or wrong parent", "missing or extra blockers", "approved parent", "replace_parent", "sub_issue_id"]],
-  ["child or blocker on a later page", ["complete paginated child list", "complete paginated blocker list", "--paginate --slurp", "Follow every next page", "closed issues"]],
-  ["custom category and state roles", ["configured category and state roles", "specification and group containers", "fully specified blocked child", "ready-for-agent", "read back its labels"]],
-  ["parent capacity and grouping", ["100 direct children", "eight levels", "configured grouping convention", "approved leaf-ticket total", "preserve existing issue states and serial order", "Reparent existing issues"]],
-  ["uncertain create or partial relationships", ["uncertain create", "reuse the saved issue identity", "complete only missing operations", "Do not create a duplicate", "stop dependent publication", "existing progress record"]],
+  [
+    "missing or wrong native parent",
+    [
+      "Read each child's native parent",
+      "missing or wrong parent",
+      "missing or extra blockers",
+      "approved parent",
+      "replace_parent",
+      "sub_issue_id",
+    ],
+  ],
+  [
+    "child or blocker on a later page",
+    [
+      "complete paginated child list",
+      "complete paginated blocker list",
+      "--paginate --slurp",
+      "Follow every next page",
+      "closed issues",
+    ],
+  ],
+  [
+    "custom category and state roles",
+    [
+      "configured category and state roles",
+      "specification and group containers",
+      "fully specified blocked child",
+      "ready-for-agent",
+      "read back its labels",
+    ],
+  ],
+  [
+    "parent capacity and grouping",
+    [
+      "100 direct children",
+      "eight levels",
+      "configured grouping convention",
+      "approved leaf-ticket total",
+      "preserve existing issue states and serial order",
+      "Reparent existing issues",
+    ],
+  ],
+  [
+    "uncertain create or partial relationships",
+    [
+      "uncertain create",
+      "reuse the saved issue identity",
+      "complete only missing operations",
+      "Do not create a duplicate",
+      "stop dependent publication",
+      "existing progress record",
+    ],
+  ],
 ]) {
   test(`ticket publication: ${situation}`, () => {
-    const instructions = read("skills/engineering/to-tickets/PUBLICATION.md").replace(/\s+/gu, " ");
-    for (const action of actions) assert.ok(instructions.includes(action), action);
+    const instructions = read(
+      "skills/engineering/to-tickets/PUBLICATION.md",
+    ).replace(/\s+/gu, " ");
+    for (const action of actions)
+      assert.ok(instructions.includes(action), action);
   });
 }
 
 for (const [kind, obligations] of [
-  ["browser parity", ["early rendered comparisons", "numbered difference pointers", "Browser work adds no native-only proof requirement"]],
-  ["native parity", ["early rendered comparisons", "numbered difference pointers", "complete native parent", "candidate-set hash"]],
+  [
+    "browser parity",
+    [
+      "early rendered comparisons",
+      "numbered difference pointers",
+      "Browser work adds no native-only proof requirement",
+    ],
+  ],
+  [
+    "native parity",
+    [
+      "early rendered comparisons",
+      "numbered difference pointers",
+      "complete native parent",
+      "candidate-set hash",
+    ],
+  ],
   ["ordinary UI", ["UI work without that obligation", "no manifest"]],
 ]) {
   test(`ticket publication UI applicability: ${kind}`, () => {
-    const instructions = (read("skills/engineering/to-tickets/SKILL.md") + read("skills/engineering/to-tickets/VISUAL-PARITY.md")).replace(/\s+/gu, " ");
-    for (const obligation of obligations) assert.ok(instructions.includes(obligation), obligation);
+    const instructions = (
+      read("skills/engineering/to-tickets/SKILL.md") +
+      read("skills/engineering/to-tickets/VISUAL-PARITY.md")
+    ).replace(/\s+/gu, " ");
+    for (const obligation of obligations)
+      assert.ok(instructions.includes(obligation), obligation);
   });
 }
 
 test("ticket publication public guidance explains verified ownership and safe recovery", () => {
   const page = read("docs/engineering/to-tickets.md").replace(/\s+/gu, " ");
-  for (const text of ["mandatory own-body text", "immutable requirement links", "complete paginated", "configured grouping", "installed CLI", "numbered difference pointers", "native-only proof"]) {
+  for (const text of [
+    "mandatory own-body text",
+    "immutable requirement links",
+    "complete paginated",
+    "configured grouping",
+    "installed CLI",
+    "numbered difference pointers",
+    "native-only proof",
+  ]) {
     assert.ok(page.includes(text), text);
   }
   assert.doesNotMatch(page, /`gh` 2\.94\+/u);
