@@ -1,5 +1,12 @@
 # mattpocock-skills
 
+## 1.3.2+codex.20261109diagnosis
+
+### Patch changes
+
+- Preserve consumed diagnostic budgets across resumptions and require comparable generated fixtures before causal comparisons. Stop inconclusive loops with the exact missing evidence.
+- Retain capped-test tracebacks when failures occur and reuse existing reporting callbacks. Keep public guidance and routing consistent.
+
 ## 1.3.2+codex.20261107workflow
 
 ### Patch Changes

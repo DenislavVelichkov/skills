@@ -45,6 +45,10 @@ override an approved serial acceptance order.
 
 - **Bugs and requests piling up** → **`/triage`**, only for issues **you didn't create**. Tickets that `/to-tickets` produced are already agent-ready, so **don't triage them**.
 - **Something's broken** → **`/diagnosing-bugs`**, then **`/retro`** once the fix is in; **`/improve-codebase-architecture`** if there is no seam for a regression test.
+
+For an inconclusive resumed diagnosis, keep its existing trial budget and
+missing-evidence decision. Recommend the next discriminating action only when
+that budget and authorization permit it; do not restart the diagnosis flow.
 - **A huge, foggy effort too big for one session** → **`/wayfinder`**, never a well-scoped feature. When the map clears **it hands off, it doesn't build**: merge onto the main flow at `/to-spec`. `/implement` must not build directly from the map or parent spec.
 
 For GitHub triage, pure spec/group containers stay outside execution triage;

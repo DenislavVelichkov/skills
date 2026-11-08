@@ -194,6 +194,14 @@ stages. Preserve financial non-retry rules and stop if effects remain unknown.
 
 Require a bounded repair check before a broad rerun.
 
+For a capped test run, retain complete tracebacks when each error occurs;
+termination must not erase an already reported failure. Reuse the existing
+result callback and retained stdout/stderr rather than creating a new runner.
+If that callback does not exist, make the smallest local reporting repair and
+verify it with a synthetic error followed by termination before the final
+summary. Record setup and test duration separately when setup obscures the
+feedback cost. Normal passing checks need no extra environment or capture run.
+
 Before repeating an expensive run after a failure, reproduce it with
 the smallest supported check and verify the repair there. Native-only failures
 need a bounded check on the affected runtime, with process identity and relevant

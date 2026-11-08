@@ -117,6 +117,11 @@ the rendered result is the design you accept.
 
 ## Pre-agreed seams
 
+Capped test runs retain errors as they happen so termination cannot erase an
+already reported traceback. They reuse existing reporting callbacks and separate
+setup time when it obscures the feedback cost. Normal passing checks need no
+extra capture run.
+
 The skill's central idea is the **seam**, the public boundary you observe behaviour at without reaching inside. Tests live at seams. When the seam is agreed before any code exists, the tests last, and you can rewrite the implementation underneath without changing them.
 
 Reuse test boundaries confirmed in the ticket, spec or conversation. If none is established, recommend a public boundary and explain what it catches before asking the user to choose. Existing agreement does not need another approval.
