@@ -137,6 +137,15 @@ Tool preference:
 
 **Tag every debug log** with a unique prefix, e.g. `[DEBUG-a4f2]`. Use `rg` to locate that prefix during cleanup.
 
+When measurements show I/O amplification or repeated reads after cache eviction,
+inspect the actual storage before changing callback cadence or read-ahead.
+Record the filesystem, mount options, compression and relevant file extents or
+layout with available read-only tools. Compare physical bytes read with useful
+input bytes on the retained fixture, then choose a bounded intervention that
+distinguishes storage amplification from callback CPU cost. Unavailable layout
+evidence remains a gap; do not infer it from elapsed time. This branch does not
+apply to a CPU-bound regression without evidence of amplified I/O.
+
 **Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second.
 
 **No surviving hypothesis.** If every ranked hypothesis is falsified or the probes give no causal evidence, re-rank once with what the probes showed. If that round also fails, stop and report the remaining uncertainty and the evidence or access needed to proceed. Do not apply a fix without evidence for its cause.

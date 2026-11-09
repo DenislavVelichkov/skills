@@ -101,6 +101,11 @@ v1.0.0 renamed it to `/diagnosing-bugs`. The old name no longer exists. Anything
 - The commit or PR message names which hypothesis was right.
 - When it cannot lock the bug down with a test, it says so instead of writing a shallow one.
 
+For measured I/O amplification, the agent checks the actual filesystem,
+compression and file layout before changing callback cadence or read-ahead.
+Physical-read measurements distinguish storage rereads from callback CPU cost.
+CPU-bound bugs without that signal need no filesystem investigation.
+
 ## Where it fits
 
 A resumed diagnosis carries its existing trial budget and unresolved decision.
