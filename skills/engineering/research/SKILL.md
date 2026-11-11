@@ -3,7 +3,7 @@ name: research
 description: Investigates a question against high-trust primary sources in a background agent and saves the cited findings as a Markdown file in the repo. Use when the user wants a topic researched, docs or API facts gathered, or reading legwork delegated to a background agent. Not for a question answerable from one page or from the code in front of you.
 ---
 
-If the question or scope is ambiguous, ask one clarifying question first. Spin up a **background agent** to do the research. Brief it with the question, the output path, any sources the user named, and steps 1-6 below verbatim. If you are already a delegated agent or cannot start one, say so and research it yourself, then return the file path.
+If the question or scope is ambiguous, ask one clarifying question first. Spin up a **background agent** with a fresh context window to do the research. Brief it with the question, the output path, any sources the user named, and steps 1-6 below verbatim. If you are already a delegated agent or cannot start one, say so and research it yourself, then return the file path.
 
 Its job:
 

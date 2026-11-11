@@ -20,7 +20,7 @@ Show this to the user, then immediately proceed to Step 2. The user reads and th
 
 First check that this host can run sub-agents. If it cannot, tell the user and, with their agreement, draft the designs yourself one after another; if the user declines, report that the comparison was not run. If a sub-agent result does not arrive, compare the designs you have and name the missing one.
 
-Spawn 3+ sub-agents in parallel. Each must produce a **radically different** interface for the deepened module.
+Spawn 3+ sub-agents in parallel, each with a fresh context window. Each must produce a **radically different** interface for the deepened module.
 
 Prompt each sub-agent with a separate technical brief (file paths, coupling details, dependency category from [DEEPENING.md](DEEPENING.md), what sits behind the seam). The brief is independent of the user-facing problem-space explanation in Step 1. Give each agent a different design constraint:
 

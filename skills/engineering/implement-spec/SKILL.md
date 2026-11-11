@@ -45,6 +45,8 @@ acceptance order even when graph edges alone would permit dispatch.
 
 If the approved acceptance order requires review before the next ticket can start, review the integrated ticket scope at that checkpoint. Retain that coverage for the final spec review; do not report still-blocked tickets as missing implementation in the checkpoint review.
 
+Start every subagent with a fresh context window.
+
 Communication to and from subagents should be sparse. Communicate primarily through **context pointers**: to the spec, tickets, research notes, and previous commits.
 
 Run **implementer subagents** in the background where supported and concurrency
@@ -61,7 +63,7 @@ states none) and queue the rest of the authorized frontier.
 
 3. Record the task-start commit and create the integration branch from the agreed base. On resume, verify and reuse this effort's existing branch and PR. If the issue tracker closes work through PRs, or the user asks for one, open a draft PR after the first merge in step 5 (a branch with no commits ahead of main can't open one), marked as closing the spec and tickets. Check for an existing PR before retrying an uncertain creation.
 
-4. Use **implementer subagents** to implement each ticket, each in its own worktree on its own branch. For assessed tickets, pass both exact model and reasoning effort through supported runtime controls, accounting for fixed role overrides; include the recommendation snapshot, revision, and model-gate reference. For unassessed tickets, leave model and effort at the existing or inherited settings and identify the ticket as unassessed in the handoff. Each implementer subagent:
+4. Use a fresh **implementer subagent** for each ticket, each in its own worktree on its own branch. For assessed tickets, pass both exact model and reasoning effort through supported runtime controls, accounting for fixed role overrides; include the recommendation snapshot, revision, and model-gate reference. For unassessed tickets, leave model and effort at the existing or inherited settings and identify the ticket as unassessed in the handoff. Each implementer subagent:
    - for an assessed ticket, applies the **model gate** before any implementation or worktree reset;
    - confirms its worktree is based on the integration branch before starting; preserves existing changes and commits if it is not, then uses a fresh worktree from the correct base;
    - runs `tdd` (invoked as above) to build the ticket within its assigned scope, preserving other workers' changes;

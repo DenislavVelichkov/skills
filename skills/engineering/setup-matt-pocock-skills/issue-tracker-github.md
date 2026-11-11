@@ -8,6 +8,10 @@ Use the configured repository `OWNER/REPO`. Setup replaces this placeholder with
 its verified destination. Resolve it from project tracker policy and actual
 remotes; in a fork, do not assume the upstream or `gh` default is correct.
 Check `gh repo view OWNER/REPO --json nameWithOwner` before the first write.
+File issues only into the user's own repository. Never file into `mattpocock/skills`
+(the repository these skills come from) unless the user owns it. If the verified
+destination is not the user's repository, confirm it with them before the first
+`gh issue create` of a session.
 Pass `--repo OWNER/REPO` to issue and PR commands and use that repository in API
 paths. Preserve configured category/state role mappings and PR policy.
 

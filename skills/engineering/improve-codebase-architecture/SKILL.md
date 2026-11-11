@@ -24,7 +24,7 @@ This command is _informed_ by the project's domain model and built on a shared d
 
 Read the project's domain glossary (`GLOSSARY.md`) and any ADRs in the area you're touching first.
 
-Then spawn a sub-agent to walk the codebase. Give it the scoped paths, the questions below, and the vocabulary above, and have it return each candidate with its files, the problem, and the deletion-test result. Don't follow rigid heuristics; explore organically and note where you experience friction. If sub-agents are unavailable, walk the scoped paths yourself and say so in the report.
+Then spawn a sub-agent with a fresh context window to walk the codebase. Give it the scoped paths, the questions below, and the vocabulary above, and have it return each candidate with its files, the problem, and the deletion-test result. Don't follow rigid heuristics; explore organically and note where you experience friction. If sub-agents are unavailable, walk the scoped paths yourself and say so in the report.
 
 - Where does understanding one concept require bouncing between many small modules?
 - Where are modules **shallow**, with an interface nearly as complex as the implementation?

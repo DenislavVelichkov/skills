@@ -25,13 +25,13 @@ Once the user confirms the goal, and if the harness supports schedules, propose 
 
 Delegate implementation, research and review to subagents. Protect your context window. You keep the wiki, planning, integration of results, and the dialogue with the user.
 
-Use background agents so you can stay in active dialogue with the user.
+Use background agents so you can stay in active dialogue with the user. Start every subagent with a fresh context window.
 
 Communication to and from subagents should be sparse. Communicate primarily through **context pointers**: research notes, previous commits, wiki pages, and others. Don't duplicate information already available via pointers.
 
 ## Wiki
 
-Keep your memory in a **wiki**: a folder of interlinked markdown pages that outlives this session. Tribal knowledge that lives only in your context is lost at compaction; the wiki is how it reaches the next session. If the goal has no wiki yet, agree its location with the user before the first write.
+Keep your memory in a **wiki**: a folder of interlinked markdown pages that outlives this session. Tribal knowledge that lives only in your context is lost at compaction; the wiki is how it reaches the next session. Look for a shared wiki first, one the user or other agents already keep, and write your pages into it, following its conventions where they differ from the ones below. Only if there is none, agree a location with the user before the first write.
 
 - `index.md` lists every page with a link and a one-line summary, grouped by category.
 - Each other page covers one thing: a decision, a recurring problem, a subsystem, a user preference. Link related pages to each other.
@@ -51,6 +51,13 @@ The wiki is a historical record. It never claims to describe how things are now,
 - When a claim concerns code, cite the commit it was true at, with its repo: "As of `mattpocock/skills@abc1234`, `retro` loads `writing-for-agents` in step 1."
 - Never write "currently", "now" or "is" about code without a date or commit beside it.
 - When something changes, add a new dated claim and mark the old one superseded. Don't rewrite the old one.
+
+## Procedures
+
+These procedures use other skills in this plugin. Respect each skill's invocation policy: recommend a user-invoked skill to the user instead of running it yourself.
+
+- For a retrospective, recommend `/retro`. Prioritize sessions where something went wrong, including sessions an `implement-spec` run dispatched. After the user invokes it, follow its decision and approval steps.
+- For large work, recommend `/to-spec`, then `/to-tickets` and `/implement-spec`. Publish through the configured issue tracker when authorized.
 
 ## Strategic View
 
