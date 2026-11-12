@@ -30,12 +30,12 @@ What accumulates in that directory:
 | `MISSION.md` | Why you are learning this. Every other file depends on it. If it is missing, the first thing `teach` does is interview you until it isn't. If it is missing but the directory already holds other files, `teach` first asks you to confirm the directory as the workspace or pick a new one |
 | `RESOURCES.md` | The vetted sources it teaches from, split into Knowledge and Wisdom (communities) |
 | `lessons/*.html` | The numbered lessons: the primary unit of teaching |
-| `reference/*.html` | Compressed cheat-sheets, algorithms, glossaries: the documents you return to |
+| `reference/*.html` | Compressed cheat-sheets, algorithms, syntax tables: the documents you return to |
 | `learning-records/*.md` | ADR-style notes on what you have demonstrably learned, used to decide what to teach next |
 | `assets/*` | Reusable components, starting with a shared stylesheet, so the lessons look like one course |
 | `NOTES.md` | Your stated teaching preferences |
 
-Two notes on that list. `GLOSSARY.md` is the Markdown source of truth for the topic's terms, in the format `GLOSSARY-FORMAT.md` defines; a page in `reference/` is a rendered copy, regenerated when the glossary changes. All of it lands in the directory you ran `/teach` in.
+Two notes on that list. `GLOSSARY.md` holds the topic's terms, in the format `GLOSSARY-FORMAT.md` defines, and is the only place they are kept: `reference/` gets no glossary page. All of it lands in the directory you ran `/teach` in.
 
 ## Storage strength, not fluency
 
@@ -49,7 +49,7 @@ Storage strength is also why the skill pushes back instead of agreeing. A questi
 
 A lesson is one HTML file tied to the mission, with source citations and links to related materials. Keep its referenced workspace assets when sharing it. Before handoff, the agent checks local links and, when a browser is available, exercises the interactive feedback. It reports any unrun checks or remaining faults.
 
-You rarely go back to a lesson, but you do go back to reference documents. So when a lesson produces reusable facts, their short form (the syntax table, the algorithm, the pose sequence, the glossary) belongs in `reference/`, not buried in the lesson that introduced it. A lesson with nothing reusable gets no reference document.
+You rarely go back to a lesson, but you do go back to reference documents. So when a lesson produces reusable facts, their short form (the syntax table, the algorithm, the pose sequence) belongs in `reference/`, not buried in the lesson that introduced it. A lesson with nothing reusable gets no reference document.
 
 Lessons are built from **components** in `assets/`: stylesheets, quiz widgets, simulators, diagram helpers. Reuse is the default. The agent reads `assets/` before authoring a lesson and builds from what is there. It writes anything new that a second lesson could use as a component, not inline. The shared stylesheet is the first component in every workspace, and it makes the lessons look like one course instead of many unrelated pages.
 

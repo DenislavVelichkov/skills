@@ -33,7 +33,7 @@ The architectural review is rendered as a single HTML file in the OS temp direct
 </html>
 ```
 
-Escape every piece of repository-derived text (file names, identifiers, quoted code, commit messages) before inserting it: HTML-escape `&`, `<`, `>`, `"` and `'` in markup and attribute values (including the `{{repo name}}` title), and inside Mermaid labels wrap the text in double quotes and replace `"` with `#quot;`. Never paste repository text in as raw HTML.
+Escape every piece of repository-derived text (file names, identifiers, quoted code, commit messages) before inserting it: HTML-escape `&`, `<`, `>`, `"` and `'` in markup and attribute values (including the `{{repo name}}` title), and inside Mermaid labels wrap the text in double quotes, replace `"` with `#quot;`, and HTML-escape `&`, `<` and `>`, because the diagram source sits inside an HTML `<pre>`. Never paste repository text in as raw HTML.
 
 ## Header
 

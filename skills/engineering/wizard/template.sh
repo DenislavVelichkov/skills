@@ -164,9 +164,9 @@ ask_secret() {
 # _check_env_file REAL_PATH runs once, before the first write. It refuses an
 # ENV_FILE that Git tracks, and one Git does not ignore until the human adds it
 # to .gitignore; there is no override. REAL_PATH is ENV_FILE with any symlink
-# resolved, so the checks apply to the file that receives the values. It asks
-# before writing to a group- or world-readable file. It never edits .gitignore
-# or the mode.
+# resolved, so the checks apply to the file that receives the values. For a
+# group- or world-readable file it offers chmod 600 and, if that is declined,
+# asks before writing. It never edits .gitignore.
 _check_env_file() {
   [[ "$_ENV_CHECKED" == 1 ]] && return 0
   _ENV_CHECKED=1
@@ -185,8 +185,12 @@ _check_env_file() {
     warn "not inside a Git repo: keep $ENV_FILE out of any repository you create here."
   fi
   if [[ -e "$real" && -n "$(find -L "$real" -prune \( -perm -040 -o -perm -004 \) 2>/dev/null)" ]]; then
-    warn "$ENV_FILE is readable by other users (consider: chmod 600 $ENV_FILE)."
-    confirm "Write to $ENV_FILE anyway?" || { warn "stopped: tighten $ENV_FILE's mode, then re-run"; exit 1; }
+    warn "$ENV_FILE is readable by other users."
+    if confirm "Restrict it to you (chmod 600)?"; then
+      chmod 600 "$real" || { warn "stopped: couldn't chmod $ENV_FILE; nothing written"; exit 1; }
+    else
+      confirm "Write to $ENV_FILE anyway?" || { warn "stopped: tighten $ENV_FILE's mode, then re-run"; exit 1; }
+    fi
   fi
 }
 
@@ -209,21 +213,22 @@ _resolve_link() {
 # Refuses a Git-tracked or unignored file (checked on the symlink's real file).
 # Values use shell single quotes (an apostrophe becomes '\''), which `source`
 # reads back exactly. The new file is built beside the target and renamed over
-# it only when complete, so a failed write leaves the old file intact.
+# it only when complete, so a failed write stops the wizard and leaves the old
+# file intact.
 write_env() {
   local key="$1" value="$2" sq="'\\''" rc=0 dest="$ENV_FILE" mode
   if [[ -L "$dest" ]]; then
     dest=$(readlink -f -- "$ENV_FILE" 2>/dev/null || _resolve_link "$ENV_FILE") || { warn "couldn't resolve symlink $ENV_FILE; nothing written"; exit 1; }
   fi
   _check_env_file "$dest"
-  [[ -e "$dest" ]] || (umask 077 && : > "$dest")
+  [[ -e "$dest" ]] || (umask 077 && : > "$dest") || { warn "stopped: couldn't create $ENV_FILE; nothing written"; exit 1; }
   mode=$(stat -c %a -- "$dest" 2>/dev/null || stat -f %Lp -- "$dest" 2>/dev/null) || mode=600
-  _ENV_TMP=$(mktemp "$(dirname -- "$dest")/.wizard-env.XXXXXX")
-  chmod "$mode" "$_ENV_TMP"
-  grep -vE "^(export[[:space:]]+)?${key}[[:space:]]*=" "$dest" > "$_ENV_TMP" || rc=$?
-  if (( rc > 1 )); then warn "couldn't read $ENV_FILE; nothing written"; exit 1; fi
-  printf "%s='%s'\n" "$key" "${value//\'/$sq}" >> "$_ENV_TMP"
-  mv -f -- "$_ENV_TMP" "$dest"
+  _ENV_TMP=$(mktemp "$(dirname -- "$dest")/.wizard-env.XXXXXX") || { warn "stopped: couldn't write $key to $ENV_FILE; it is unchanged"; exit 1; }
+  chmod "$mode" "$_ENV_TMP" || rc=2
+  (( rc > 1 )) || grep -vE "^(export[[:space:]]+)?${key}[[:space:]]*=" "$dest" > "$_ENV_TMP" || rc=$?    # 1 = no other lines, 2 = read error
+  if (( rc > 1 )) || ! printf "%s='%s'\n" "$key" "${value//\'/$sq}" >> "$_ENV_TMP" || ! mv -f -- "$_ENV_TMP" "$dest"; then
+    rm -f "$_ENV_TMP"; _ENV_TMP=""; warn "stopped: couldn't write $key to $ENV_FILE; it is unchanged"; exit 1
+  fi
   _ENV_TMP=""
   [[ "$(_existing "$key" || true)" == "$value" ]] || warn "$key did not read back unchanged from $ENV_FILE; check it by hand"
   printf -v "$key" '%s' "$value"

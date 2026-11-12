@@ -1,5 +1,16 @@
 # mattpocock-skills
 
+## 1.3.2+codex.20261112reaudit
+
+### Patch changes
+
+- Resolve the 12 "two sides disagree" rows from the 2026-11-12 re-audit, so both family branches carry the same rules in their own conventions.
+- `wizard` template: `write_env` and the re-run default also match `KEY =` and `export KEY=` lines, and a line that cannot be decoded safely (an inline `# comment`, for example) is asked for again. When other users can read the `.env` file it offers `chmod 600` and, if that is declined, asks before writing. A refusal or a failed write stops the wizard and leaves the file unchanged.
+- `wizard` skill: the stage list is shown with an invitation to add, drop or reorder while drafting continues, and only missing decisions are asked about. Checks are fixed and rerun at most twice, and a wizard that still fails is not called ready to run. `write_env` takes only the values the local project reads, and GitHub-only values go to `set_secret`/`set_var` alone.
+- `teach` keeps the glossary only in `GLOSSARY.md`, and every learning record carries an evidence line. `writing-for-agents` keeps scope, permission and correctness constraints unless a comparison run shows they are not needed, and fixes a vague instruction with an action and a completion criterion before a stronger word.
+- `wayfinder` closes the map only when no open tickets remain, checks the visual parity conditions, and does not execute the destination. `ask-matt` suggests proceeding without a skill when nothing fits, names the closest skill only when one is near, and decides context between tickets with Phase boundaries. `codebase-design` requires two justified adapters for a seam.
+- The architecture report escapes Mermaid labels fully (`#quot;` for a double quote, HTML escapes for `&`, `<` and `>`). The visual manifest validator names the file when a symlink resolves outside the repository, and a test covers that case. Keep the public docs consistent.
+
 ## 1.3.2+codex.20261112diverged
 
 ### Patch changes

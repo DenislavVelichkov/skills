@@ -10,12 +10,12 @@ The user has asked you to teach them something. This is a stateful request - the
 Treat the current directory as a teaching workspace. Workspace paths (`./lessons/` and the rest) resolve from the directory `/teach` was run in; only the `*-FORMAT.md` links resolve from this skill's folder. The state of their learning is captured in this directory in several files:
 
 - `MISSION.md`: A document capturing the _reason_ the user is interested in the topic. This should be used to ground all teaching. Use the format in [MISSION-FORMAT.md](./MISSION-FORMAT.md).
-- `./reference/*.html`: A directory of reference materials. These are the compressed learnings from the lessons - cheat sheets, reference algorithms, syntax, yoga poses, glossaries. They are the raw units of learning. They should be beautiful documents which print out well, and are designed for quick reference.
+- `./reference/*.html`: A directory of reference materials. These are the compressed learnings from the lessons - cheat sheets, reference algorithms, syntax, yoga poses. They are the raw units of learning. They should be beautiful documents which print out well, and are designed for quick reference.
 - `RESOURCES.md`: A list of resources which can be explored to ground your teaching in contextual knowledge, or to acquire knowledge and wisdom. Use the format in [RESOURCES-FORMAT.md](./RESOURCES-FORMAT.md).
 - `./learning-records/*.md`: A directory of learning records, which capture what the user has learned. These are loosely equivalent to architectural decision records in software development - they capture non-obvious lessons and key insights that may need to be revised later, or drive future sessions. These should be used to calculate the zone of proximal development. They are titled `0001-<dash-case-name>.md`, where the number increments each time. Use the format in [LEARNING-RECORD-FORMAT.md](./LEARNING-RECORD-FORMAT.md).
 - `./lessons/*.html`: A directory of lessons. A **lesson** is one HTML file that teaches one topic tied to the mission and loads shared components from the workspace's `assets/` directory. It is the primary unit of teaching in this workspace.
 - `./assets/*`: Reusable **components** shared across lessons. See [Assets](#assets).
-- `GLOSSARY.md`: The canonical glossary for the topic, and the Markdown source of truth for its terms. Use the format in [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md). A glossary page in `./reference/` is a rendered copy of it.
+- `GLOSSARY.md`: The canonical glossary for the topic, and the only place its terms are kept. Use the format in [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md).
 - `NOTES.md`: A scratchpad for you to jot down user preferences, or working notes.
 
 ## Each session
@@ -26,7 +26,7 @@ Treat the current directory as a teaching workspace. Workspace paths (`./lessons
 4. Gather sources and record them in `RESOURCES.md`. Done when they cover the lesson's claims (citation rule: [Philosophy](#philosophy)).
 5. Write the lesson, building from `./assets/`. Write or update a reference document when the lesson produces reusable facts (see [Reference Documents](#reference-documents)); otherwise skip it. Done when the file exists in `./lessons/`.
 6. Check the lesson's links and feedback paths (see [Lessons](#lessons)). Done when each check passed, or is reported as failed or not run.
-7. After the user works through the lesson, write learning records only for what they demonstrated, when the criteria in [LEARNING-RECORD-FORMAT.md](./LEARNING-RECORD-FORMAT.md) are met, and update `GLOSSARY.md` and `NOTES.md`. When `GLOSSARY.md` changes, regenerate its rendered page in `./reference/`. Done when each record cites its evidence.
+7. After the user works through the lesson, write learning records only for what they demonstrated, when the criteria in [LEARNING-RECORD-FORMAT.md](./LEARNING-RECORD-FORMAT.md) are met, and update `GLOSSARY.md` and `NOTES.md`. Done when each record cites its evidence.
 
 The session is done when the lesson is presented with its checks reported, and the workspace files reflect what the user learned or said.
 
@@ -111,9 +111,8 @@ Some learning topics lend themselves to reference:
 - Algorithms and flowcharts for processes
 - Yoga poses and sequences for yoga
 - Exercises and routines for fitness
-- Glossaries for any topic with its own nomenclature
 
-Glossaries, in particular, are an essential reference. Keep terms in `GLOSSARY.md` using [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md), and adhere to it in every lesson.
+For a topic with its own nomenclature, keep the glossary in `GLOSSARY.md`, not `./reference/`, using [GLOSSARY-FORMAT.md](./GLOSSARY-FORMAT.md), and adhere to it in every lesson.
 
 ## `NOTES.md`
 

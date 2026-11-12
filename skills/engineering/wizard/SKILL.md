@@ -20,12 +20,13 @@ Work out every manual step the human must take and every value that gets capture
 - For setup: `.env.example`, key names only from `.env` and `.env.*` (`awk -f env-keys.awk .env` with this skill's [env-keys.awk](env-keys.awk); never read values into context), `README`, `docker-compose*`, framework config, and `.github/workflows/*` (every `secrets.*` / `vars.*` reference is a value the wizard must produce).
 - For a migration or transition: the current state, the target state, and the irreversible actions between them.
 
-If the wizard writes `.env` (or `$ENV_FILE`) inside a git repo, check that file before writing any secret to it: `git ls-files --error-unmatch <file>` succeeding means it is tracked, so stop and tell the user; `git check-ignore -q <file>` failing means it is not ignored, so propose adding it to `.gitignore` and add it only with the user's agreement. Outside a git repo, both checks pass. The template's `write_env` repeats these checks at run time with no override (it refuses a tracked file, and an unignored one until it is ignored), applies them to the real file behind a symlinked `ENV_FILE`, and warns outside a git repo. It stores each value in shell single quotes, with an apostrophe written as `'\''`.
+If the wizard writes `.env` (or `$ENV_FILE`) inside a git repo, check that file before writing any secret to it: `git ls-files --error-unmatch <file>` succeeding means it is tracked, so stop and tell the user; `git check-ignore -q <file>` failing means it is not ignored, so propose adding it to `.gitignore` and add it only with the user's agreement. Outside a git repo, both checks pass. The template's `write_env` repeats these checks at run time with no override (it refuses a tracked file, and an unignored one until it is ignored), applies them to the real file behind a symlinked `ENV_FILE`, and warns outside a git repo. When other users can read the file, it offers `chmod 600` and, if the human declines, asks before writing. A refusal or a failed write stops the wizard and leaves the file unchanged. It stores each value in shell single quotes, with an apostrophe written as `'\''`, replacing any existing `KEY=`, `KEY =` or `export KEY=` line. On a re-run, an existing line it can't decode safely (one with an inline `# comment`, for example) is asked for again.
 
-Show the ordered stages and the values each produces. Reuse choices and
-authorization already supplied. Ask only about missing decisions that change
-the procedure, and continue drafting the stages that are settled. Present the
-finished script for review before any still-unapproved external action.
+Show the ordered stages and the values each produces, and invite the user to
+add, drop, or reorder them. Reuse choices and authorization already supplied.
+Ask only about missing decisions that change the procedure, and continue
+drafting the stages that are settled. Present the finished script for review
+before any still-unapproved external action.
 
 **Done when:** every stage is named in order, and for each captured value you know (a) where the human gets it, (b) where it's written (`.env`, a GitHub secret, both, or nowhere; some stages are pure actions), (c) whether it's secret (hidden entry) or public, and (d) if a value can contain an apostrophe, that the project's env loader reads shell single-quoted values as `source` does.
 
@@ -39,11 +40,11 @@ For each stage, write the precise path a human follows: which URL to open, what 
 
 Copy `template.sh` to the target path. Replace the example stage with one `stage` per step, in dependency order. Use the library helpers: `stage`, `say`/`step`, `open_url`, `ask`/`ask_secret`, `write_env`, `set_secret`/`set_var`, `pause`/`confirm`. Set `TOTAL_STAGES` to the number of stages you wrote; the wizard warns when the count and the stages run disagree. `confirm` returns non-zero on no, which ends the script under `set -e`, so call it as `if confirm "..."; then ...; fi`, as the example stage does, or as `confirm "..." || exit 1`.
 
-Hold the bar the template sets: open the URL before asking for its value, use `ask_secret` for anything secret, `write_env` every persisted value, `set_secret` only the values CI actually needs, and `confirm` before any irreversible action. Each `stage` clears the screen so only the current step is visible: keep a stage to one focused task so nothing the human needs scrolls away. Don't touch the library above the marker.
+Hold the bar the template sets: open the URL before asking for its value, use `ask_secret` for anything secret, `write_env` only the values the local project reads from `.env`, `set_secret`/`set_var` alone for GitHub-only values and only for the ones CI actually needs, and `confirm` before any irreversible action. Each `stage` clears the screen so only the current step is visible: keep a stage to one focused task so nothing the human needs scrolls away. Don't touch the library above the marker.
 
 ### 4. Verify and hand off
 
-- `bash -n <script>`; run `shellcheck` if available. Fix reported issues and rerun, at most twice, then report any remaining warnings.
+- `bash -n <script>`; run `shellcheck` if available. Fix reported issues in your stages and rerun, at most twice. Then report any remaining warnings, and if a check still fails, don't call the wizard ready to run.
 - `chmod +x <script>`.
 - Don't run it end-to-end yourself: it opens browsers and blocks on human input. Trace it statically instead: every value from step 1 is captured and lands where step 1 said, and every `set_secret` name exactly matches a `secrets.*` reference in CI.
 - Tell the user how to run it. If the user wants a repeatable setup path, offer to commit it and link it from the README so the next person runs the script instead of asking an AI.

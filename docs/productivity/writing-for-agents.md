@@ -38,8 +38,11 @@ reference files can remain under an explicit-only skill without invoking it.
 For context pointers, verify the path and loading capability before strengthening
 wording. Keep required scope and permission constraints when pruning prose.
 Replace vague demands with concrete actions and observable completion criteria.
-A stronger adjective is not evidence of better behavior. Untested deletions
-remain hypotheses about the model and runtime.
+A stronger word is the second choice, and alone it is not evidence of better
+behavior. State the positive action in place of a prohibition, and keep the
+prohibitions that guard scope, permissions or correctness beside it. Delete a
+no-op as a whole sentence, and settle a disputed one by running the old and new
+versions on the same prompt.
 
 ## Common questions
 

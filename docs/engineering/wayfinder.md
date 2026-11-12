@@ -118,7 +118,7 @@ It is this skill. v1.1 renamed it to `wayfinder`, and you invoke it as `/wayfind
 - A session resolves one ticket, posts the answer as a resolution comment, closes it, and adds one line to the map's *Decisions so far*. Then it stops.
 - **Not yet specified** shrinks over time. When fog graduates into a ticket, it leaves that section and does not appear in both places.
 - When the opening breadth-first grill finds no fog at all, the skill stops and tells you the effort is small enough to skip the map.
-- The session that finishes the map points you toward a spec, not a pull request.
+- The map closes only when no ticket is still open (a claimed or blocked ticket counts as open) and nothing is left under *Not yet specified*. The session that finishes it points you toward a spec, not a pull request, and does not start the destination work.
 - A map with a visual parity action cannot clear while its comparison target
   lacks a durable, hashed reference in the acceptance manifest.
 - After charting or resolving, it reads the tracker back (labels, links, blocking edges, the *Decisions so far* pointer) and reports writes as verified only when the readback matches.

@@ -20,8 +20,10 @@ Reading a skill to verify its behavior does not authorize executing it.
 - A skill missing from that selection is unavailable unless the user installed it
   separately. Say so and offer the nearest available route.
 
-Reply with the recommended skill or flow, one sentence on why, and any
-prerequisite or unavailable step. If nothing fits, say so and suggest proceeding without a skill.
+Reply with the recommended skill or flow, one sentence on why, any
+prerequisite or unavailable step, and one alternative when the situation is
+ambiguous. If nothing fits, say so and suggest proceeding without a skill; name
+the closest skill and what it does not cover only when one is near enough to help.
 
 The map below picks the skill. When the user asks how a flow runs past that pick (its branches, tracker layout, verification rules, or what each skill hands to the next), read [FLOWS.md](FLOWS.md).
 
@@ -38,7 +40,7 @@ override an approved serial acceptance order.
 
 1. **`/grill-with-docs`** sharpens the idea by interview when there is a repository or an agreed documentation workspace it may write to. Neither? **`/grill-me`**.
 2. A question that needs a runnable answer (state, business logic, a UI you have to see): **`/handoff`** out, **`/prototype`**, **`/handoff`** back.
-3. A multi-session build: **`/to-spec`**, then **`/to-tickets`**, then either **`/implement`** per ticket (by default `/clear` between tickets; decide at each boundary with Phase boundaries below) or **`/implement-spec`** for the whole spec when the host supports the required subagents and isolated worktrees. Work that fits one session with no published spec: **`/implement`** directly; a published spec always goes through `/to-tickets` first. Both paths use **`/tdd`** and **`/code-review`**; **`/pr`** shapes a pull request body.
+3. A multi-session build: **`/to-spec`**, then **`/to-tickets`**, then either **`/implement`** per ticket (decide context between tickets with Phase boundaries below, and preserve settled decisions, authorization and remaining requirements before any clear) or **`/implement-spec`** for the whole spec when the host supports the required subagents and isolated worktrees. Work that fits one session with no published spec: **`/implement`** directly; a published spec always goes through `/to-tickets` first. Both paths use **`/tdd`** and **`/code-review`**; **`/pr`** shapes a pull request body.
 4. **`/retro`** reviews the completed session and proposes environment changes. It stops after presenting the recommendations unless the user has authorized their implementation.
 
 ## On-ramps

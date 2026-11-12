@@ -74,10 +74,11 @@ const validateFile = (root, file, label, errors) => {
     errors.push(`${label}.path does not exist: ${file.path}`);
     return;
   }
+  // Lexical containment above misses symlinks whose target leaves the repository.
   const real = realpathSync(absolute);
   const fromRealRoot = relative(realpathSync(root), real);
   if (fromRealRoot === ".." || fromRealRoot.startsWith(`..${sep}`) || isAbsolute(fromRealRoot)) {
-    errors.push(`${label}.path escapes the repository root`);
+    errors.push(`${label}.path resolves outside the repository root: ${file.path}`);
     return;
   }
   if (!statSync(real).isFile()) {

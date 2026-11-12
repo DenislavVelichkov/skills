@@ -41,7 +41,7 @@ The skill does *not* define depth as the ratio of implementation lines to interf
 - **Depth is a property of the interface, not the implementation.** A deep module can be built internally from small swappable parts. Callers just don't see them. A module can have internal seams its own tests use, and one external seam at its interface.
 - **The deletion test.** Imagine deleting the module. If complexity disappears, the module was a pass-through. If it reappears across N callers, the module was hiding real complexity.
 - **The interface is the test surface.** Callers and tests cross the same seam. If you want to test *past* the interface, the module is the wrong shape.
-- **One adapter means a hypothetical seam. Two adapters means a real one.** Don't cut a seam until something varies across it. A single-adapter seam is just indirection.
+- **One adapter means a hypothetical seam. Two adapters means a real one.** Don't cut a seam until at least two adapters are justified (typically production and test). A single-adapter seam is just indirection.
 
 Two supporting files go further, and the skill reads them on demand rather than up front. [DEEPENING.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/DEEPENING.md) classifies a candidate's dependencies into four categories (in-process, local-substitutable, remote-but-owned, true-external), because the category decides how you test the deepened module across its seam. [DESIGN-IT-TWICE.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/DESIGN-IT-TWICE.md) compares alternative interfaces for the same module on depth, locality and seam placement.
 
