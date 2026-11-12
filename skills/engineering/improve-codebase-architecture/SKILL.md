@@ -48,7 +48,7 @@ End the report with a **Top recommendation** section: which candidate you'd tack
 
 **ADR conflicts**: if a candidate contradicts an existing ADR, only surface it when the friction is real enough to warrant revisiting the ADR. Mark it clearly in the card (e.g. a warning callout: _"contradicts ADR-0007, but worth reopening because…"_). Don't list every theoretical refactor an ADR forbids.
 
-After writing the file, re-read it and check that each card shows all its fields. You cannot see the rendered page: re-read each Mermaid block for syntax, and use a Mermaid parser or headless browser only if one is already installed. Otherwise state that the render check was not run, give the path, and ask the user to confirm every diagram rendered. Fix any fault once; if one remains, name it when you hand over the path.
+After writing the file, re-read it and check that each card shows all its fields, and re-read each Mermaid block for syntax. Then, when a browser tool (or an already-installed headless browser or Mermaid parser) is available, inspect the rendered report once: the scripts loaded, every Mermaid diagram rendered, and every card shows its before/after diagram. Make one repair pass for any fault. Without such a tool, or without network, state that the render check was not run, give the path, and ask the user to confirm every diagram rendered. Name any fault that remains before asking for a selection.
 
 Do NOT propose interfaces yet. Then ask the user: "Which of these would you like to explore?"
 

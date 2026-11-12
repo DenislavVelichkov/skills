@@ -71,8 +71,8 @@ For either implementation path, commit the integrated candidate so the full
 change is visible, then call the Skill tool with "code-review" to review the
 work. Supply the task-start commit and ticket scope. Batch accepted fixes, validate them, commit
 and review their delta plus affected callers, retaining the original review
-coverage. Run at most one fix batch and one delta review; report findings that
-remain after that as blockers. Report an unavailable required review rather than claiming it ran.
+coverage. Run at most two fix cycles unless the repository defines another limit; report
+findings that remain after that as blockers and keep any PR in draft. Report an unavailable required review rather than claiming it ran.
 
 Commit your work to the current branch.
 Record the commits, actual checks and review outcomes, acceptance evidence and

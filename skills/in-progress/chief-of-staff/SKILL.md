@@ -12,10 +12,10 @@ You own this goal. Think on two tracks at once:
 ## Cycle
 
 1. After agreeing the wiki location (see Wiki), record the goal and its acceptance criteria there, and confirm them and a progress-review interval with the user.
-2. Assign each subagent bounded work with a stated output.
-3. Check each result against its stated output, then integrate it. If an agent is unavailable or fails, first inspect what it left behind (partial edits, commits, external writes), and stop it if it is still running. Then reassign the work once, giving the replacement sole ownership of that work and the state you found, or record it as a blocker.
+2. Assign each subagent bounded work with a stated output and the evidence it must return.
+3. Check each result against its stated output, then integrate it. Re-brief a task whose result fails its stated output once, naming the gap; if it fails again, record it in the wiki as a blocker and report it. If an agent is unavailable or fails, first inspect what it left behind (partial edits, commits, external writes), and stop it if it is still running. Then reassign the work once, giving the replacement sole ownership of that work and the state you found, or record it as a blocker.
 4. At the end of each cycle, check the pages that cycle touched and `index.md` for missing links and conflicting dated claims. At the interval the user set in step 1, or when a budget the user set runs low, report progress and confirm with the user that the goal is still worth pursuing.
-5. Repeat until every acceptance criterion is met or only blockers remain. Then report the verified outcomes and the open blockers to the user.
+5. Repeat until every acceptance criterion is met or only blockers remain. Then report the status of each acceptance criterion, the open blockers, and the wiki pages you changed to the user.
 
 ## Schedules
 
@@ -25,7 +25,7 @@ Once the user confirms the goal, and if the harness supports schedules, propose 
 
 Delegate implementation, research and review to subagents. Protect your context window. You keep the wiki, planning, integration of results, and the dialogue with the user.
 
-Use background agents so you can stay in active dialogue with the user. Start every subagent with a fresh context window.
+Use background agents so you can stay in active dialogue with the user. Start every subagent with a fresh context window. If delegation is unavailable or not authorized, work locally only when the user permits it; otherwise report that delegation is unavailable.
 
 Communication to and from subagents should be sparse. Communicate primarily through **context pointers**: research notes, previous commits, wiki pages, and others. Don't duplicate information already available via pointers.
 
@@ -36,6 +36,7 @@ Keep your memory in a **wiki**: a folder of interlinked markdown pages that outl
 - `index.md` lists every page with a link and a one-line summary, grouped by category.
 - Each other page covers one thing: a decision, a recurring problem, a subsystem, a user preference. Link related pages to each other.
 - Sources (issues, PRs, transcripts, subagent reports) are never copied in or edited. Pages cite them.
+- Never write credentials, tokens or unnecessary private data to the wiki; cite the source location instead.
 
 Three operations keep it alive:
 
@@ -63,6 +64,6 @@ These procedures use other skills in this plugin. Respect each skill's invocatio
 
 Alongside each task, look for environment changes that keep agents in the **pit of success**: tightly constrained APIs and functions, lint rules that force correctness, a `CODING_STANDARDS.md` reviewers can enforce, and a fix for each workaround or deviation from conventions.
 
-Agents also need relevant **data sources**: logs from critical processes, test databases, a browser for screenshots when needed. Ask the user for read-only access to the specific logs or test databases a task needs, and prefer test environments. Never request production write access, and never write credentials or production data into wiki pages or chat.
+Agents also need relevant **data sources**: logs from critical processes, test databases, a browser for screenshots when needed. Ask the user for read-only access to the specific logs or test databases a task needs, and prefer test environments. Production logs are read-only and need the user's explicit approval. Never request production write access, and never write credentials or production data into wiki pages or chat.
 
-Propose environment improvements as you find them. Apply only those the user approves or that block the authorized goal, and check the plan with the user before any destructive or outward-facing change.
+Propose environment improvements as you find them, separate from the goal's work. Apply only those the user approves or that block the authorized goal. Repair a deviation from conventions on the same condition; validate the repair and preserve existing state. Do not add one-off workarounds or hacks that bypass established processes. Check the plan with the user before any destructive or outward-facing change.

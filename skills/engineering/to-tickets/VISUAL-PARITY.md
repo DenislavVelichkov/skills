@@ -22,8 +22,10 @@ Never invent references, hashes, state transitions, or approval.
 - Setup installs `scripts/validate-visual-acceptance.mjs`, which already checks
   the manifest and its references, candidates and baselines, so no
   validation-setup slice is needed while it is present. Add one only when the
-  source requires a check that script does not perform; that slice is separate
-  work and does not gate drafting (the installed validator does).
+  source requires a check that script does not perform. When the project has no
+  repo-local validator yet, create an initial validation-setup slice. Either
+  slice is separate work and does not gate drafting (the installed validator
+  does).
 - For every row still at `planned`, create a blocking design-selection ticket
   that freezes durable references and advances the row to `design_selected`.
   The corresponding implementation-and-acceptance ticket depends on it; the

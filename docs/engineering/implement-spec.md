@@ -84,7 +84,7 @@ No, not any more. One user who liked the in-progress version had exactly this co
 
 **Its review and fix loop ran for hours, or kept "fixing" tickets that hadn't been built yet.**
 
-The full spec review runs after all ticket implementations have landed. Earlier reviews occur only when the approved acceptance order requires them, and cover the integrated ticket scope. They must not treat blocked tickets as missing implementation. Accepted fixes go back to the affected implementers, verifying model and effort when an assessment applies, then receive checks and a delta review with affected callers. That correction pass runs once; accepted findings left after it keep the PR in draft and are reported as blockers. A later commit does not by itself require repeating the full review.
+The full spec review runs after all ticket implementations have landed. Earlier reviews occur only when the approved acceptance order requires them, and cover the integrated ticket scope. They must not treat blocked tickets as missing implementation. Accepted fixes go back to the affected implementers, verifying model and effort when an assessment applies, then receive checks and a delta review with affected callers. At most two review-fix passes run unless the repository defines another limit; findings left at the limit keep the PR in draft, with the integration candidate preserved, and are reported as blockers. A later commit does not by itself require repeating the full review.
 
 **Does it drive tdd like implement does?**
 

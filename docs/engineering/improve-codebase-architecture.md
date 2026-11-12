@@ -63,7 +63,7 @@ Yes. Say so when you invoke it ("don't grill me, just show the report"). This is
 
 **The report opened as unstyled raw HTML with no diagrams. What happened?**
 
-The report loads Tailwind and Mermaid from CDNs, so it needs network access when you open it. If something blocks those scripts, the page breaks with no error. In the reported case, a security hook required SRI hashes. The agent added them, but the CDN served different bytes to the browser than to the `curl` that computed the hash, so the browser blocked the script. Offline and locked-down environments have the same problem. The agent cannot see it, because it never renders the page. As a workaround, ask for inline CSS and hand-built SVG diagrams instead of the CDN setup. This is an open issue.
+The report loads Tailwind and Mermaid from CDNs, so it needs network access when you open it. If something blocks those scripts, the page breaks with no error. In the reported case, a security hook required SRI hashes. The agent added them, but the CDN served different bytes to the browser than to the `curl` that computed the hash, so the browser blocked the script. Offline and locked-down environments have the same problem. The agent sees it only when a browser tool lets it inspect the rendered report. Without one it says the render check was not run and asks you to confirm the diagrams. As a workaround, ask for inline CSS and hand-built SVG diagrams instead of the CDN setup. This is an open issue.
 
 **It gave me twelve candidates. Do I work through them in the same session or start a new one?**
 
@@ -102,6 +102,7 @@ The skill does not ship a good answer. People often ask for a `TYPESCRIPT.md` wi
 - Each card explains the payoff as locality or leverage, and says which tests get simpler, not just "this is cleaner."
 - When you reject a candidate for a lasting reason, it offers to record an ADR, so the next run does not suggest it again.
 - Each card carries a dependency-category tag (in-process, local-substitutable, ports & adapters or mock) next to its recommendation strength.
+- Before asking you to pick, it either inspected the rendered report in a browser or told you the render check was not run.
 
 ## Where it fits
 

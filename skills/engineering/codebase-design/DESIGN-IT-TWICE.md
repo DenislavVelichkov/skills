@@ -41,6 +41,6 @@ Each sub-agent outputs:
 
 ### 3. Present and compare
 
-First check each design against the constraints set before delegation (required invariants, error modes, dependencies); reject any design that violates one and say why. Present designs sequentially so the user can absorb each one, then compare them in prose. Contrast by **depth** (leverage at the interface), **locality** (where change concentrates), and **seam placement**.
+First check each design against the constraints set before delegation (required invariants, error modes, ordering rules, dependencies). Mark any constraint a design leaves unmet instead of dropping the design from the comparison. Present designs sequentially so the user can absorb each one, then compare them in prose. Contrast by **depth** (leverage at the interface), **locality** (where change concentrates), and **seam placement**.
 
 After comparing, give your own recommendation: which design you think is strongest and why. If elements from different designs would combine well, propose a hybrid. Be opinionated: the user wants a strong read, not a menu.

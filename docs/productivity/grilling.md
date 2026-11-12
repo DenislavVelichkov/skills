@@ -82,6 +82,7 @@ This is a real bug, still unfixed, and users report it across [harnesses](https:
 - It stops at the end and asks you to confirm the understanding is shared, instead of starting work.
 - Settled decisions carry forward; rounds contain only consequential unresolved questions.
 - When another skill started the interview, the settled decisions go back to that skill instead of a confirmation question.
+- If you stop early, it stops asking, summarises what is settled, and lists the open decisions with what each one blocks.
 
 ## Where it fits
 

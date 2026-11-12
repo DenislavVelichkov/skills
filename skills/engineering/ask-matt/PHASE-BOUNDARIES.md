@@ -18,7 +18,7 @@ The **phase boundary** is the gap between two phases. Prefer manual context chan
 
 Work top to bottom at the boundary. The first **yes** wins. Use only commands supported by the current host.
 
-**1. Can you continue in this session?** Yes when the current host has enough usable context for the next phase to fit (the budget depends on the model and runtime), and especially when the next phase needs this phase as a **primary source**. If that primary evidence will not fit, preserve it in durable artifacts, state the context limitation, and go on down the tree. Grilling → implementation is the standard yes: the implementation wants the reasoning verbatim, not a summary of it. Continue costs nothing and loses nothing, so rule it out before anything else.
+**1. Can you continue in this session?** Only if the next phase stays on this host and in this directory; otherwise go to 3. Then the answer is yes when the current host has enough usable context for the next phase to fit (the budget depends on the model and runtime), and especially when the next phase needs this phase as a **primary source**. If that primary evidence will not fit, preserve it in durable artifacts, state the context limitation, and go on down the tree. Grilling → implementation is the standard yes: the implementation wants the reasoning verbatim, not a summary of it. Continue costs nothing and loses nothing, so rule it out before anything else.
 
 **2. Is the context irrelevant to what comes next?** Is everything in this session (the exploration, the decisions, the dead ends) disposable? If so, **`/clear`**. It is the cheapest move on the board: it takes no time and hands back the whole window. `/clear` also isn't terminal: the old session stays resumable.
 

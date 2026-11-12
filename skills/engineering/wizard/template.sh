@@ -102,8 +102,8 @@ confirm() {
   [[ "$reply" =~ ^[Yy] ]]
 }
 
-# _existing KEY: current value of KEY in ENV_FILE, if any, with single quotes
-# (including an older '\'' escape) or a plain dotenv double-quoted value undone.
+# _existing KEY: current value of KEY in ENV_FILE, if any, with write_env's single
+# quotes (and its '\'' apostrophe escape) or a plain dotenv double-quoted value undone.
 _existing() {
   [[ -f "$ENV_FILE" ]] || return 1
   local line value sq="'\\''"; line=$(grep -E "^${1}=" "$ENV_FILE" | tail -n1) || return 1
@@ -158,51 +158,70 @@ ask_secret() {
   printf -v "$key" '%s' "$input"
 }
 
-# _env_git_guard: once per run, refuse an ENV_FILE that git tracks, and one git
-# does not ignore until the human adds it to .gitignore. Passes outside a git work tree.
+# _env_git_guard REAL_PATH: once per run, refuse an ENV_FILE that git tracks, and
+# one git does not ignore until the human adds it to .gitignore. There is no
+# override. REAL_PATH is ENV_FILE with any symlink resolved, so the checks apply
+# to the file that receives the values. Outside a git work tree it only warns.
 _env_git_guard() {
   [[ -n "${_ENV_GIT_CHECKED:-}" ]] && return 0
-  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    if git ls-files --error-unmatch -- "$ENV_FILE" >/dev/null 2>&1; then
+  local real="${1:-$ENV_FILE}" dir base
+  dir=$(dirname -- "$real"); base=$(basename -- "$real")
+  if git -C "$dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    if git -C "$dir" ls-files --error-unmatch -- "$base" >/dev/null 2>&1; then
       warn "$ENV_FILE is tracked by git; refusing to write secrets to it"; return 1
     fi
-    if ! git check-ignore -q -- "$ENV_FILE"; then
+    if ! git -C "$dir" check-ignore -q -- "$base"; then
       warn "$ENV_FILE is not ignored by git; add it to .gitignore before any secret is written."
       pause "Press Enter once it is in .gitignore"
-      git check-ignore -q -- "$ENV_FILE" || { warn "$ENV_FILE is still not ignored; refusing to write secrets to it"; return 1; }
+      git -C "$dir" check-ignore -q -- "$base" || { warn "$ENV_FILE is still not ignored; refusing to write secrets to it"; return 1; }
     fi
+  else
+    warn "not inside a git repo: keep $ENV_FILE out of any repository you create here."
   fi
   _ENV_GIT_CHECKED=1
+}
+
+# _resolve_link PATH: readlink -f fallback for systems without it (macOS < 12.3).
+_resolve_link() {
+  local p="$1" d n=0
+  while [[ -L "$p" ]]; do
+    (( n++ < 40 )) || return 1   # symlink loop
+    d=$(cd -P -- "$(dirname -- "$p")" && pwd) || return 1
+    p=$(readlink -- "$p") || return 1
+    [[ "$p" == /* ]] || p="$d/$p"
+  done
+  d=$(cd -P -- "$(dirname -- "$p")" && pwd) || return 1
+  printf '%s/%s' "$d" "$(basename -- "$p")"
 }
 
 # write_env KEY VALUE upserts KEY='VALUE' into ENV_FILE (replaces any existing
 # line) and sets $KEY. Idempotent. Creates ENV_FILE at mode 0600, keeps an
 # existing file's mode, offers chmod 600 when other users can read it, and
-# replaces it atomically. Refuses a symlinked ENV_FILE, a git-tracked or
-# unignored one, and a value containing a single quote. On failure the file is unchanged.
+# replaces it atomically. Writes through a symlinked ENV_FILE to its real file.
+# Values use shell single quotes (an apostrophe becomes '\''), which `source`
+# reads back exactly. Refuses a git-tracked or unignored file. On failure the
+# file is unchanged.
 write_env() {
-  local key="$1" value="$2" target="$ENV_FILE" perms rc=0
+  local key="$1" value="$2" target="$ENV_FILE" perms rc=0 sq="'\\''"
   if [[ -L "$target" ]]; then
-    warn "$target is a symlink; point ENV_FILE at the real file. $key not written"; return 1
+    target=$(readlink -f -- "$ENV_FILE" 2>/dev/null || _resolve_link "$ENV_FILE") || { warn "couldn't resolve symlink $ENV_FILE; $key not written"; return 1; }
   fi
-  if [[ "$value" == *\'* ]]; then
-    warn "$key contains a single quote, which write_env cannot store; add it to $target by hand"; return 1
-  fi
-  _env_git_guard || { warn "$key not written"; return 1; }
+  _env_git_guard "$target" || { warn "$key not written"; return 1; }
   [[ -e "$target" ]] || (umask 077 && : > "$target")
   perms=$(ls -ld "$target")
   if [[ -z "${_ENV_MODE_CHECKED:-}" && ( "${perms:4:1}" == r || "${perms:7:1}" == r ) ]]; then
     _ENV_MODE_CHECKED=1
-    warn "$target is readable by other users."
+    warn "$ENV_FILE is readable by other users."
     confirm "Restrict it to you (chmod 600)?" && chmod 600 "$target"
   fi
-  _ENV_TMP=$(mktemp "$(dirname "$target")/.wizard-env.XXXXXX") || return 1
+  _ENV_TMP=$(mktemp "$(dirname -- "$target")/.wizard-env.XXXXXX") || return 1
   cp -p "$target" "$_ENV_TMP" || { rm -f "$_ENV_TMP"; _ENV_TMP=""; return 1; }   # copies the mode
   grep -vE "^${key}=" "$target" > "$_ENV_TMP" || rc=$?    # 1 = no other lines, 2 = read error
-  if (( rc > 1 )) || ! printf "%s='%s'\n" "$key" "$value" >> "$_ENV_TMP" || ! mv -f "$_ENV_TMP" "$target"; then
-    rm -f "$_ENV_TMP"; _ENV_TMP=""; warn "couldn't write $key to $target; it is unchanged"; return 1
+  if (( rc > 1 )) || ! printf "%s='%s'\n" "$key" "${value//\'/$sq}" >> "$_ENV_TMP" || ! mv -f -- "$_ENV_TMP" "$target"; then
+    rm -f "$_ENV_TMP"; _ENV_TMP=""; warn "couldn't write $key to $ENV_FILE; it is unchanged"; return 1
   fi
   _ENV_TMP=""
+  [[ "$(_existing "$key" || true)" == "$value" ]] || warn "$key did not read back unchanged from $ENV_FILE; check it by hand"
   printf -v "$key" '%s' "$value"
   WRITTEN_ENV+=("$key")
   printf '  %s✓ wrote%s %s → %s\n' "$GREEN" "$RESET" "$key" "$ENV_FILE"
@@ -296,7 +315,9 @@ step "Click 'Reveal test key' on the Secret key row, then copy it."
 ask_secret STRIPE_SECRET_KEY "Paste the secret key:"
 write_env STRIPE_PUBLISHABLE_KEY "$STRIPE_PUBLISHABLE_KEY"
 write_env STRIPE_SECRET_KEY "$STRIPE_SECRET_KEY"
-set_secret STRIPE_SECRET_KEY "$STRIPE_SECRET_KEY"   # CI needs this one
+if confirm "Also store the secret key as a GitHub Actions secret for CI?"; then
+  set_secret STRIPE_SECRET_KEY "$STRIPE_SECRET_KEY"
+fi
 # ──────────────────────────────────────────────────────────────────────────
 
 finish

@@ -38,7 +38,7 @@ It waits. `retro` only proposes. Nothing changes until you pick a candidate, so 
 
 **Won't this pile up lint rules forever? Does it ever suggest removing one?**
 
-Partly, and this is its weakest spot. It can remove prose: no-ops in steering files, and steering in `AGENTS.md` or `CLAUDE.md` that belongs in standards or a check. It flags these for deletion when a file runs over about 200 lines, a heuristic that gives way to the maintainer's own threshold. It judges them against the one session it reads, so treat each one as a candidate for the deletion test, not a verdict. It does not audit the lint rules, hooks, or CI jobs it proposed last month. It sees one session, so it cannot tell you that a rule now fires too often or that the bug behind it is gone. You must still prune checks yourself. A rule that fires constantly on good code is the sign to remove it.
+Partly, and this is its weakest spot. It can remove prose: no-ops in steering files, and steering in `AGENTS.md` or `CLAUDE.md` that belongs in standards or a check. It flags steering for a move when a file runs over about 200 lines or holds rules a check could enforce, a heuristic that gives way to the maintainer's own threshold. It moves only coding-style judgements, keeping execution, safety and authorization rules there. It flags a no-op for deletion when the rule had no observable effect in the session. It judges them against the one session it reads, so treat each one as a candidate for the deletion test, not a verdict. It does not audit the lint rules, hooks, or CI jobs it proposed last month. It sees one session, so it cannot tell you that a rule now fires too often or that the bug behind it is gone. You must still prune checks yourself. A rule that fires constantly on good code is the sign to remove it.
 
 **Won't it just invent generic advice to fill its categories?**
 
@@ -66,6 +66,7 @@ The input is different. [improve-codebase-architecture](https://aihero.dev/skill
 - Repeat mistakes turn into failing checks, and your `AGENTS.md` gets shorter over time, not longer.
 - If a check already existed but was not connected, the finding is to connect it, not a proposal to build a new one.
 - The next session on the same kind of task finds what it needs faster.
+- It names any session source it could not read and keeps its recommendations to the evidence it could, quoting no secrets from logs.
 
 ## Where it fits
 

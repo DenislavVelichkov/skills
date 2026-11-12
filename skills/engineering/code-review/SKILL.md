@@ -19,7 +19,8 @@ Inspect retained results passively; identify missing proof without launching ano
 live scenario. Review does not authorize runtime execution; running a visual
 manifest's validator (step 4) is the one permitted read-only check, and only
 when the validator comes from the fixed base revision or another trusted source,
-never from the candidate.
+never from the candidate. A reviewed diff or uncommitted scope that adds or
+changes the validator, or a file it imports, makes it candidate-controlled.
 
 Visual acceptance, when applicable, is a separate delivery gate rather than a
 third review axis. A clean Standards and Spec report cannot grant human visual
@@ -118,9 +119,11 @@ visual diff, prototype, or screenshot without that obligation creates no
 visual delivery gate.
 
 For a visual parity action, require a manifest. Read `docs/agents/visual-acceptance.md` completely.
-Locate the applicable manifest and run its validator only from the fixed base
-revision or a trusted source; if the candidate adds or changes the validator,
-inspect it statically and report the check as not run. Inspect the recorded
+Locate the applicable manifest. Never run candidate-controlled code: if the
+reviewed diff or uncommitted scope adds or changes the validator or a file it
+imports, do not run it; review it as code and report the visual-manifest check
+as not run. Otherwise run the validator from the fixed base revision or another
+trusted source. Inspect the recorded
 reference/candidate comparison artifacts, and capture its five progress
 counters (defined in `docs/agents/visual-acceptance.md`). Treat a missing or invalid manifest as a delivery-gate finding. A
 `compared` surface without a recorded approval request is also a delivery-gate

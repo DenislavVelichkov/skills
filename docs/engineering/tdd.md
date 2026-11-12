@@ -92,6 +92,7 @@ No. Run against one ticket, it can propose work that belongs to a sibling ticket
 - Expected values in assertions are literals you can trace to the spec, not values recomputed the way the code computes them.
 - Renaming an internal function breaks nothing in the suite.
 - Mocks appear only at external boundaries (the payment API, the clock) and never around your own modules.
+- When a new test passes before any implementation, it tightens a weak test, records behavior that already exists and moves on, and stops only when no seam reaches the behavior.
 
 ## Where it fits
 

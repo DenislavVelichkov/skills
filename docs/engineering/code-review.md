@@ -115,6 +115,7 @@ Yes, when you request a work-in-progress review. It captures the working-tree de
 - With a visual parity action, the report preserves the manifest's exact state
   and never converts a clean review into Member acceptance or baseline
   promotion.
+- When the reviewed diff changes the visual manifest validator or a file it imports, the validator is reviewed as code and the check is reported as not run.
 
 ## Where it fits
 

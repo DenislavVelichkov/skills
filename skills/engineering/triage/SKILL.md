@@ -91,16 +91,17 @@ Show counts and a one-line summary per item. Let the maintainer pick.
 
 2. **Recommend.** Tell the maintainer your provisional category and state recommendation (final after step 3) with reasoning, plus a brief codebase summary relevant to the request (including whether it's already implemented). Wait for direction.
 
-3. **Verify the claim.** Before any grilling, check that the claim holds up. Show the reporter's steps or the PR's code and the commands you would run, and get the maintainer's approval before running any of it: it runs with your credentials and network. Run it in an environment without secrets or network when one is available. For a bug, reproduce it from the reporter's steps. For a PR, confirm the diff does what it claims in an isolated checkout that preserves the maintainer's working tree, then run the relevant tests or commands. Without approval, report runtime verification as unrun. Report what happened: confirmed (with code path), failed, or insufficient detail (a strong `needs-info` signal).
+3. **Verify the claim.** Before any grilling, check that the claim holds up. Read the execution paths first. For a bug, reproduce it from the reporter's steps. For a PR, confirm the diff does what it claims in an isolated checkout that preserves the maintainer's working tree, then run the relevant tests or commands. Run external PR code or reporter-supplied commands without asking only in a disposable environment that has no host credentials and no access to unrelated files. Otherwise show the reporter's steps or the PR's code and the commands you would run, and get the maintainer's approval before running any of it: on this machine it runs with your credentials and network. With neither, report verification as not run and why. Report what happened: confirmed (with code path), failed, or insufficient detail (a strong `needs-info` signal). A confirmed verification makes a much stronger agent brief.
 
 4. **Grill (if needed).** If the request needs fleshing out, call the Skill tool twice, for "grilling" and "domain-modeling", and grill it into shape, sharpening domain terms and updating `GLOSSARY.md`/ADRs inline as decisions land.
 
 5. **Apply the outcome.** Show the maintainer the drafted comment, brief or
    `.out-of-scope/` entry with the label and close actions; apply them only
-   after the maintainer confirms. Apply the chosen category and state, removing only
-   conflicting labels from those two mapped role groups. For `ready-for-agent`, post the brief before applying the label.
-   On a retry, read the current labels, comments and state first and apply only
-   what is missing. Then record the corresponding outcome:
+   after the maintainer confirms. Apply the chosen category and state, removing
+   only conflicting labels from those two mapped role groups and preserving
+   unrelated labels. For `ready-for-agent`, post the brief before applying the
+   label. On a retry, read the current labels, comments and state first and
+   apply only what is missing. Then record the corresponding outcome:
    - `ready-for-agent`: post an agent brief comment ([AGENT-BRIEF.md](AGENT-BRIEF.md)).
    - `ready-for-human`: same structure as an agent brief, but note why it can't be delegated (judgment calls, external access, design decisions, manual testing).
    - `needs-info`: post triage notes (template below).
@@ -111,7 +112,7 @@ Show counts and a one-line summary per item. Let the maintainer pick.
      - **PR**: close the PR with the explanation. Write to `.out-of-scope/` only when the concept itself is rejected, not when only the code is.
    - `needs-triage`: apply the role. Optional comment if there's partial progress.
 
-   Finish by re-reading the issue's labels, state and new comment, and report them.
+   Land any `GLOSSARY.md`, ADR, or `.out-of-scope/` change (commit on a branch or open a PR, per repository convention) before a comment links to it. Then read back the labels, the posted comment, the file change, and the closure state, and report them. Before retrying a mutation whose result is uncertain (timeout, partial failure), check whether it already happened, so you never post a duplicate comment. Allow one repair, then report any outcome that is still partial.
 
 ## Quick state override
 

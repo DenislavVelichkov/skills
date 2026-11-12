@@ -9,7 +9,7 @@ metadata:
     url: "https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md"
 ---
 
-Determine the base (the branch or commit the user names, otherwise the repository's default branch) and read `git diff <base>...HEAD` before writing. For the default branch, use `git symbolic-ref --short refs/remotes/origin/HEAD`, then `git merge-base` with `HEAD`; if either fails, ask the user for the base. If the diff is empty, say so and stop instead of writing a body. If `git status --porcelain` shows uncommitted changes, tell the user the body covers committed work only and list those paths; do not describe them as part of the PR. Return the PR body to the user unless they name a destination.
+Determine the base (the branch or commit the user names; otherwise the PR's own base when a PR exists; otherwise the repository's default branch) and read `git diff <base>...HEAD` before writing. For the default branch, use `git symbolic-ref --short refs/remotes/origin/HEAD`, then `git merge-base` with `HEAD`; if either fails, ask the user for the base. If the diff is empty, say so and stop instead of writing a body. If `git status --porcelain` shows uncommitted changes, tell the user the body covers committed work only and list those paths; do not describe them as part of the PR. Return the PR body to the user unless they name a destination.
 
 Use this template for writing the PR body:
 
@@ -29,9 +29,7 @@ Use this template for writing the PR body:
 
 <optional: description>
 
-**Blast Radius:** <short phrase naming the main impact area>
-
-<optional: potential ramifications of merge>
+**Blast Radius:** <affected consumers or systems, and what breaks for them if this regresses>
 ```
 
 ## Sections
@@ -66,9 +64,9 @@ Concrete evidence that the change works.
 
 Prefer screenshots for a visual change when the environment can take them; otherwise use execution evidence such as test results or console output. Quote the exact test command or name and its observed result before and after. Use pseudocode only to explain what a test checks, and label it as pseudocode.
 
-Include only evidence you observed in this session. When a screenshot, baseline, or test run is unavailable, write `Not captured` with the reason; never present unrun evidence as a result. When before-evidence needs a run on the base, propose the command labelled `proposed`, or run it in a separate worktree only with the user's agreement. Label each item `observed`, `static` (read from code, not run), or `proposed` (a check the reviewer could run).
+Include only evidence you observed in this session or the user supplied in it. When a screenshot, baseline, or test run is unavailable, write `Not captured` with the reason; never present unrun evidence as a result. With no evidence at all, write `No evidence available` with the reason. When before-evidence needs a run on the base, propose the command labelled `proposed`, or run it in a separate worktree only with the user's agreement. Label each item `observed`, `static` (read from code, not run), or `proposed` (a check the reviewer could run).
 
-Before including a screenshot, log, or test output, check it for credentials, tokens, and private data, and redact them.
+Before including a screenshot, log, or test output, check it for credentials, tokens, private URLs, and personal data, and redact them. Keep the check names, outcomes, and failure evidence the reader needs.
 
 ### Merge Danger
 
@@ -78,4 +76,4 @@ The blast radius is the potential impact of this PR. Name the consumers or surfa
 
 ### Final check
 
-Before returning the body, check each section against the diff: every claimed change appears in it, and no significant change in it is missing from the Summary. Revise once; then remove or qualify any claim still unsupported and tell the user which.
+Before returning the body, check the body in both directions: every claimed change appears in the diff, every Evidence item matches what was observed or supplied, and no significant change in the diff is missing from the Summary. Revise once; then remove or qualify any claim still unsupported and tell the user which.
