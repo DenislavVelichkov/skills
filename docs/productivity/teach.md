@@ -89,6 +89,7 @@ There is no canonical answer, and the reported differences are large. Users repo
 - `learning-records/` grows, and lessons stop re-teaching what you have already demonstrated.
 - The lessons look like one course: they link the stylesheet in `assets/` rather than each carrying its own.
 - A question that needs judgement gets you pointed at a forum, subreddit or class, not just an answer.
+- A new lesson gets the next number and never overwrites an earlier one, and each learning record cites what you demonstrated.
 
 ## Where it fits
 

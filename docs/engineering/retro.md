@@ -21,7 +21,7 @@ Each candidate belongs to one category, and the category decides where the fix g
 | The agent took a long time to find a file or fact | A **navigation pointer** from a file it already reads |
 | It made a mistake a tool could have caught | An **[automated check](https://www.aihero.dev/ai-coding-dictionary/automated-check)**: lint rule, type, test, pre-commit hook, CI job |
 | The reviewer missed a judgement-call mistake | A rule in `CODING_STANDARDS.md` for the reviewer agent |
-| `AGENTS.md` or `CLAUDE.md` contains rules unrelated to navigation | Move its steering out, into standards or checks |
+| `AGENTS.md` or `CLAUDE.md` runs over about 200 lines, or holds rules a check could enforce | Move its steering out, into standards or checks |
 | A tool call was expensive for what it returned | Streamline the tool, or replace it |
 | A steering file is full of lines that change nothing | Delete the **no-ops** |
 | The agent needed information it couldn't reach | Widen its access: tee the dev server log to a file, give read-only access to a service |
@@ -67,6 +67,7 @@ The input is different. [improve-codebase-architecture](https://aihero.dev/skill
 - If a check already existed but was not connected, the finding is to connect it, not a proposal to build a new one.
 - The next session on the same kind of task finds what it needs faster.
 - Each recommendation is reported with its category, the cited event or verified gap, the owner file, the proposed change, a success criterion with its evaluation, and a severity.
+- It names any session source it could not read and keeps its recommendations to the evidence it could, quoting no secrets from logs.
 
 ## Where it fits
 

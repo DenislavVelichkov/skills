@@ -76,6 +76,7 @@ No. Finding the word that packs the most behaviour into the fewest [tokens](http
 - You can point at a leading word and see it change the agent's behaviour in more than one place.
 - Nothing is stated twice, in any form. Duplication is the most reliable sign a document was never tested.
 - Reference that only one branch needs sits behind a pointer rather than in the main file.
+- Editing a skill leaves its invocation mode as it was unless you asked for a change.
 
 ## Where it fits
 

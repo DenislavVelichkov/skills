@@ -16,6 +16,10 @@ Preserve the target's existing invocation mode unless the user requests a change
   Code and `policy.allow_implicit_invocation: false` in `agents/openai.yaml`
   for Codex. Other skills may recommend it but cannot execute it.
 
+Pick model-invocation only when the agent must reach the skill on its own, or
+another skill must. If it only ever fires by hand, make it user-invoked and pay
+no context load.
+
 Both kinds retain `name` and `description`. In Codex, also preserve picker
 metadata in `agents/openai.yaml`. Metadata visibility and context cost depend
 on the host; an explicit-only skill missing from implicit discovery is not
@@ -26,7 +30,10 @@ skill tool. If no such tool is exposed, read its discovered `SKILL.md` before
 following it. Load dependencies separately and report missing required skills.
 
 Shared reference files can stay under their owning skill. A conditional link
-to a plain file reads reference material without invoking the owner.
+to a plain file reads reference material without invoking the owner. Two
+user-invoked skills cannot share reference by invoking each other: neither can
+fire the other. Keep it as a reference file under one owner and link it from
+the other with a reading condition.
 
 ## Splitting by invocation
 

@@ -97,13 +97,17 @@ Show counts and a one-line summary per item. Let the maintainer pick.
 
 2. **Recommend.** Tell the maintainer your category and state recommendation with reasoning, plus a brief codebase summary relevant to the request (including whether it's already implemented). Wait for direction.
 
-3. **Verify the claim.** Before any grilling, check that the claim holds up. For a bug, reproduce it from the reporter's steps. For a PR, confirm the diff does what it claims in an isolated checkout that preserves the maintainer's working tree, then run the relevant tests or commands. Read the execution paths first. Run external PR code or reporter-supplied commands only in a disposable environment without host credentials or access to unrelated files, or after the maintainer explicitly approves running them on this machine; if neither is available, report verification as not run and why. Report what happened: confirmed (with code path), failed, or insufficient detail (a strong `needs-info` signal). A confirmed verification makes a much stronger agent brief.
+3. **Verify the claim.** Before any grilling, check that the claim holds up. Read the execution paths first. For a bug, reproduce it from the reporter's steps. For a PR, confirm the diff does what it claims in an isolated checkout that preserves the maintainer's working tree, then run the relevant tests or commands. Run external PR code or reporter-supplied commands without asking only in a disposable environment that has no host credentials and no access to unrelated files. Otherwise show the reporter's steps or the PR's code and the commands you would run, and get the maintainer's approval before running any of it: on this machine it runs with your credentials and network. With neither, report verification as not run and why. Report what happened: confirmed (with code path), failed, or insufficient detail (a strong `needs-info` signal). A confirmed verification makes a much stronger agent brief.
 
 4. **Grill (if needed).** If the request needs fleshing out, load `grilling` and `domain-modeling` separately, and grill it into shape a round of questions at a time, sharpening domain terms and updating `GLOSSARY.md`/ADRs inline as decisions land.
 
-5. **Apply the outcome.** Apply the chosen category and state, removing only
-   conflicting labels from those two mapped role groups. Preserve unrelated
-   labels. Then record the corresponding outcome:
+5. **Apply the outcome.** Show the maintainer the drafted comment, brief or
+   `.out-of-scope/` entry with the label and close actions; apply them only
+   after the maintainer confirms. Apply the chosen category and state, removing
+   only conflicting labels from those two mapped role groups and preserving
+   unrelated labels. For `ready-for-agent`, post the brief before applying the
+   label. On a retry, read the current labels, comments and state first and
+   apply only what is missing. Then record the corresponding outcome:
    - `ready-for-agent`: post an agent brief comment ([AGENT-BRIEF.md](AGENT-BRIEF.md)).
    - `ready-for-human`: same structure as an agent brief, but note why it can't be delegated (judgment calls, external access, design decisions, manual testing).
    - `needs-info`: post triage notes (template below).
@@ -111,13 +115,14 @@ Show counts and a one-line summary per item. Let the maintainer pick.
      - **Already implemented**: the change already exists in the codebase. Point to where it lives; do **not** write to `.out-of-scope/` (that KB is for _rejected_ requests, not built ones).
      - **Rejected (bug)**: give a polite explanation, then close.
      - **Rejected (enhancement)**: write to `.out-of-scope/`, link to it from a comment, then close ([OUT-OF-SCOPE.md](OUT-OF-SCOPE.md)).
+     - **PR**: close the PR with the explanation. Write to `.out-of-scope/` only when the concept itself is rejected, not when only the code is.
    - `needs-triage`: apply the role. Optional comment if there's partial progress.
 
-   Land any `GLOSSARY.md`, ADR, or `.out-of-scope/` change (commit on a branch or open a PR, per repository convention) before a comment links to it. Then read back the labels, the posted comment, the file change, and the closure state. Before retrying a mutation whose result is uncertain (timeout, partial failure), check whether it already happened, so you never post a duplicate comment. Allow one repair, then report any outcome that is still partial.
+   Land any `GLOSSARY.md`, ADR, or `.out-of-scope/` change (commit on a branch or open a PR, per repository convention) before a comment links to it. Then read back the labels, the posted comment, the file change, and the closure state, and report them. Before retrying a mutation whose result is uncertain (timeout, partial failure), check whether it already happened, so you never post a duplicate comment. Allow one repair, then report any outcome that is still partial.
 
 ## Quick state override
 
-If the maintainer says "move #42 to ready-for-agent", trust them and apply the role directly. State the role changes and any comment or closure, then act under that instruction. Skip grilling. If moving to `ready-for-agent` without a grilling session, ask whether they want to write an agent brief.
+If the maintainer says "move #42 to ready-for-agent", trust them and apply the role directly. State the role changes and any comment or closure, then act under that instruction. Skip grilling. Before applying `ready-for-agent` with no brief attached, offer to write or reuse one. If the maintainer still wants the label without a brief, apply it and say in the comment that no agent brief is attached.
 
 ## Needs-info template
 

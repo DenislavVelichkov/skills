@@ -114,6 +114,7 @@ Yes, when you request a work-in-progress review. It captures the working-tree de
   and never converts a clean review into Member acceptance or baseline
   promotion.
 - When issue requirements conflict materially with a spec you supplied, it asks you which governs instead of switching review targets.
+- When the reviewed diff changes the visual manifest validator or a file it imports, the validator is reviewed as code and the check is reported as not run.
 
 ## Where it fits
 

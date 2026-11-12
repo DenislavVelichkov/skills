@@ -99,6 +99,7 @@ No. Run against one ticket, it can propose work that belongs to a sibling ticket
 - Mocks appear only at external boundaries (the payment API, the clock) and never around your own modules.
 - Failures that existed before the first cycle are recorded as a baseline and are not counted as red.
 - A test that would change state in a real external service runs only against sandbox endpoints with test credentials; otherwise the boundary is mocked or the agent asks.
+- When a new test passes before any implementation, it tightens a weak test, records behavior that already exists and moves on, and stops only when no seam reaches the behavior.
 
 ## Where it fits
 

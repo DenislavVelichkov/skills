@@ -89,7 +89,7 @@ Read [model execution verification](../implement/MODEL-EXECUTION.md) to distingu
    whose dispatch is authorized by the project order, within the concurrency
    cap above. Continue other authorized checks and integration; a pending serial gate keeps its dependents blocked.
 
-7. Once all ticket implementations have landed, run required checks on the integrated candidate and follow the loaded `code-review` skill against the task-start commit and full spec. Route accepted fixes to the affected ticket implementers, bound per [Model gate](#model-gate), then validate and review their delta with affected callers. Run at most two review-fix passes unless the repository defines another limit. At the limit, preserve the integration candidate and report the recurring findings or acceptance blockers instead of looping.
+7. Once all ticket implementations have landed, run required checks on the integrated candidate and follow the loaded `code-review` skill against the task-start commit and full spec. Route accepted fixes to the affected ticket implementers, bound per [Model gate](#model-gate), then validate and review their delta with affected callers. Run at most two review-fix passes unless the repository defines another limit. At the limit, keep any PR in draft, preserve the integration candidate, and report the recurring findings or acceptance blockers instead of looping.
 
 8. Mark a draft PR ready or resolve tickets through the configured tracker only after all required checks, review fixes and acceptance gates pass. While a human response or other gate remains pending, preserve the draft and open tickets, report the implementation candidate and exact blocker, and follow the project's approval-request format.
 

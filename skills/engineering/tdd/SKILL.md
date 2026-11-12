@@ -54,7 +54,7 @@ Use the host's skill tool when exposed; otherwise read its discovered
 ## Rules of the loop
 
 - **Baseline first.** Before the first cycle, run the focused tests and record any pre-existing failures as the baseline; don't count them as your red.
-- **Red before green.** Write the test first and run it before implementing. Confirm it fails because the behavior is missing; fix syntax, setup or unrelated failures first. If the new test passes before any implementation, check whether the behavior already exists or the test is too weak; tighten the test, or record the existing behavior and move to the next slice. If the same failure survives three repair attempts, or the required suite cannot run, stop and report the command, the failure, the attempts and the missing prerequisite.
+- **Red before green.** Write the test first and run it before implementing. Confirm it fails because the behavior is missing; fix syntax, setup or unrelated failures first. If the new test passes before any implementation, check whether the behavior already exists or the test is too weak; tighten the test, or record the existing behavior and move to the next slice. If no seam reaches the behavior, stop and report that instead of forcing red. If the same failure survives three repair attempts, or the required suite cannot run, stop and report the command, the failure, the attempts and the missing prerequisite.
 - **Then green.** Write only enough code to pass the failing test. Don't anticipate future tests or add speculative features.
 - **One slice at a time.** One seam, one test, one minimal implementation per cycle.
 - **Keep feedback narrow.** Run the focused test during red-green. After a

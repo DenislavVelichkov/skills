@@ -9,7 +9,7 @@ metadata:
     url: "https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md"
 ---
 
-First establish the change source: the base and head (or the diff the user named), then read that diff. With no base named, use the PR's base if one exists, else `git merge-base HEAD <default branch>`; if that fails, ask. Gather only evidence observed or supplied this session. Before returning, check every claim in the body against the diff and that evidence. Return the body as text unless the user asked you to create or update the PR.
+First establish the change source: the base and head (or the diff the user named), then read that diff. With no base named, use the PR's base if one exists; else find the default branch with `git symbolic-ref --short refs/remotes/origin/HEAD` and take `git merge-base` of it with `HEAD`; if either fails, ask. If the diff is empty, say so and stop instead of writing a body. If `git status --porcelain` shows uncommitted changes, tell the user the body covers committed work only and list those paths; do not describe them as part of the PR. Gather only evidence observed or supplied this session. Before returning, check the body in both directions: every claim appears in the diff or that evidence, and no significant change in the diff is missing from the Summary. Revise once; then remove or qualify any claim still unsupported and tell the user which. Return the body as text unless the user asked you to create or update the PR.
 
 Use this template for writing the PR body:
 
@@ -20,8 +20,8 @@ Use this template for writing the PR body:
 
 ## Evidence
 
-- **Before:** <observed screenshot/output/failing run, or "not run: <reason>">
-  **After:** <observed screenshot/output/passing run, or "not run: <reason>">
+- **Before:** <observed|static|proposed> <screenshot/output/failing run, or "Not captured: <reason>">
+  **After:** <observed|static|proposed> <screenshot/output/passing run, or "Not captured: <reason>">
 
 ## Merge Danger
 
@@ -42,9 +42,9 @@ Pick the smallest view that makes the key point clear: pseudocode for logic, a c
 
 ### Evidence
 
-Cite only results that were supplied or that you observed: screenshots, test results, console output. Name the exact test that failed before and passes after. Prefer screenshots when the change is visual and the environment can capture them; otherwise use execution output. Redact credentials, private URLs and personal data from quoted output and screenshots; keep check names, outcomes and needed failure evidence.
+Cite only results that were supplied or that you observed: screenshots, test results, console output. Name the exact test that failed before and passes after. Prefer screenshots when the change is visual and the environment can capture them; otherwise use execution output. Redact credentials, tokens, private URLs and personal data from quoted output and screenshots; keep check names, outcomes and needed failure evidence.
 
-Label a proposed test or pseudocode as an illustration, never as a run. Write "not run: <reason>" for a run that did not happen. When before evidence cannot be obtained, add one line stating that limitation. With no evidence at all, write "No evidence available: <reason>".
+Label each item `observed`, `static` (read from code, not run), or `proposed` (a check the reviewer could run, or pseudocode that explains a test); never present a `proposed` item as a run. Write "Not captured: <reason>" for a screenshot, baseline or run that did not happen. When before evidence needs a run on the base, propose the command labelled `proposed`, or run it in a separate worktree only with the user's agreement; when it cannot be obtained, add one line stating that limitation. With no evidence at all, write "No evidence available: <reason>".
 
 ### Merge Danger
 

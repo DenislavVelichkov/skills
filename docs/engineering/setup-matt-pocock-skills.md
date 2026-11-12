@@ -191,6 +191,7 @@ One long-standing complaint says yes, in these words: _"having a skill to set up
 - Repositories expose the visual parity action test through the instruction
   file the active harness reads. UI work without a production-to-reference
   comparison creates no manifest.
+- The GitHub tracker doc files issues only into your own repository, and asks before the first `gh issue create` when the verified destination is not yours.
 
 ## Where it fits
 

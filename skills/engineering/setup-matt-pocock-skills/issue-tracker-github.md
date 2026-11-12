@@ -17,9 +17,10 @@ API below. An authentication, permission or partial-response error does not prov
 that native relationships are unavailable. Use textual fallback only when native
 support is unavailable and project policy permits it; report the limitation.
 
-File issues only into the user's own repository. Never file into the skill
-author's repository unless the user owns it. If the verified destination is
-not their repository, obtain their explicit decision before creating an issue.
+File issues only into the user's own repository. Never file into `mattpocock/skills`
+(the repository these skills come from) unless the user owns it. If the verified
+destination is not the user's repository, confirm it with them before the first
+`gh issue create` of a session.
 
 ## Conventions
 
@@ -141,7 +142,11 @@ not an unsupported `gh pr list --json authorAssociation` field:
 gh api --method GET --paginate 'repos/OWNER/REPO/pulls?state=open&per_page=100' --jq '.[] | select(.author_association == "CONTRIBUTOR" or .author_association == "FIRST_TIME_CONTRIBUTOR" or .author_association == "NONE")'
 ```
 
-Fetch each selected PR's full discussion separately. GitHub shares one number
+Fetch each selected PR's full discussion separately, including inline review
+comments with `gh api --method GET --paginate
+'repos/OWNER/REPO/pulls/NUMBER/comments?per_page=100'`. Use
+`gh pr view <number> --json number,title,body,author,state,labels,comments,reviews`
+for its structured context. GitHub shares one number
 space across issues and PRs; resolve a bare number with `gh pr view` and fall
 back to `gh issue view`.
 

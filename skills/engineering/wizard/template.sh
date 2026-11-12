@@ -161,21 +161,30 @@ ask_secret() {
   printf -v "$key" '%s' "$input"
 }
 
-# _check_env_file runs once, before the first write: it asks before writing
-# values to an ENV_FILE that Git does not ignore (including a tracked one) or
-# that is group- or world-readable. It never edits .gitignore or the mode.
+# _check_env_file REAL_PATH runs once, before the first write. It refuses an
+# ENV_FILE that Git tracks, and one Git does not ignore until the human adds it
+# to .gitignore; there is no override. REAL_PATH is ENV_FILE with any symlink
+# resolved, so the checks apply to the file that receives the values. It asks
+# before writing to a group- or world-readable file. It never edits .gitignore
+# or the mode.
 _check_env_file() {
   [[ "$_ENV_CHECKED" == 1 ]] && return 0
   _ENV_CHECKED=1
-  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    if ! git check-ignore -q -- "$ENV_FILE"; then
-      warn "$ENV_FILE is not ignored by Git, so a later 'git add' could commit these values."
-      confirm "Write to $ENV_FILE anyway?" || { warn "stopped: add $ENV_FILE to .gitignore, then re-run"; exit 1; }
+  local real="${1:-$ENV_FILE}" dir base
+  dir=$(dirname -- "$real"); base=$(basename -- "$real")
+  if git -C "$dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    if git -C "$dir" ls-files --error-unmatch -- "$base" >/dev/null 2>&1; then
+      warn "stopped: $ENV_FILE is tracked by Git; refusing to write secrets to it"; exit 1
+    fi
+    if ! git -C "$dir" check-ignore -q -- "$base"; then
+      warn "$ENV_FILE is not ignored by Git, so a later 'git add' could commit these values. Add it to .gitignore before any secret is written."
+      pause "Press Enter once it is in .gitignore"
+      git -C "$dir" check-ignore -q -- "$base" || { warn "stopped: $ENV_FILE is still not ignored; add it to .gitignore, then re-run"; exit 1; }
     fi
   else
     warn "not inside a Git repo: keep $ENV_FILE out of any repository you create here."
   fi
-  if [[ -e "$ENV_FILE" && -n "$(find -L "$ENV_FILE" -prune \( -perm -040 -o -perm -004 \) 2>/dev/null)" ]]; then
+  if [[ -e "$real" && -n "$(find -L "$real" -prune \( -perm -040 -o -perm -004 \) 2>/dev/null)" ]]; then
     warn "$ENV_FILE is readable by other users (consider: chmod 600 $ENV_FILE)."
     confirm "Write to $ENV_FILE anyway?" || { warn "stopped: tighten $ENV_FILE's mode, then re-run"; exit 1; }
   fi
@@ -197,16 +206,17 @@ _resolve_link() {
 # write_env KEY VALUE upserts KEY='VALUE' into ENV_FILE (replaces any existing
 # KEY=, KEY = or export KEY= line) and sets $KEY. Idempotent. Creates ENV_FILE
 # at mode 0600; writes through a symlink and keeps an existing file's mode.
+# Refuses a Git-tracked or unignored file (checked on the symlink's real file).
 # Values use shell single quotes (an apostrophe becomes '\''), which `source`
 # reads back exactly. The new file is built beside the target and renamed over
 # it only when complete, so a failed write leaves the old file intact.
 write_env() {
   local key="$1" value="$2" sq="'\\''" rc=0 dest="$ENV_FILE" mode
-  _check_env_file
-  [[ -e "$ENV_FILE" ]] || (umask 077 && : > "$ENV_FILE")
   if [[ -L "$dest" ]]; then
     dest=$(readlink -f -- "$ENV_FILE" 2>/dev/null || _resolve_link "$ENV_FILE") || { warn "couldn't resolve symlink $ENV_FILE; nothing written"; exit 1; }
   fi
+  _check_env_file "$dest"
+  [[ -e "$dest" ]] || (umask 077 && : > "$dest")
   mode=$(stat -c %a -- "$dest" 2>/dev/null || stat -f %Lp -- "$dest" 2>/dev/null) || mode=600
   _ENV_TMP=$(mktemp "$(dirname -- "$dest")/.wizard-env.XXXXXX")
   chmod "$mode" "$_ENV_TMP"

@@ -165,7 +165,7 @@ delivery unless requested. Required acceptance checks still apply.
 
 **It finished, but my ticket is still open and the acceptance criteria are still unchecked.**
 
-Record completion evidence and remaining requirements in the existing ticket. A commit or clean review does not close unmet acceptance gates. Accepted review findings are fixed in related batches, checked, committed and reviewed as a delta.
+Record completion evidence and remaining requirements in the existing ticket. A commit or clean review does not close unmet acceptance gates. Accepted review findings are fixed in related batches, checked, committed and reviewed as a delta. After two fix cycles, or the repository's own limit, the remaining findings are reported as blockers and any PR stays in draft.
 
 **Can I point it at all my tickets at once, or run several in parallel?**
 

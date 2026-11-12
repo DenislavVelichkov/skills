@@ -30,7 +30,7 @@ Apply the seam rules under Principles in [SKILL.md](SKILL.md) before introducing
 
 ## Testing strategy: replace, don't layer
 
-- Before deleting an old unit test on a shallow module, record which interface test covers each of its assertions and failure paths. Delete only tests that mapping proves redundant, or tests of behaviour intentionally removed. Keep any test with no equivalent.
+- Old unit tests on shallow modules become waste once tests at the deepened module's interface cover them. Before deleting one, record which interface test covers each of its assertions and failure paths, and confirm those interface tests pass. Delete only tests that mapping proves redundant, or tests of behaviour intentionally removed. Keep any test with no equivalent, and list the tests you removed.
 - Write new tests at the deepened module's interface. The **interface is the test surface**.
 - Tests assert on observable outcomes through the interface, not internal state.
 - Tests should survive internal refactors, since they describe behaviour, not implementation. If a test has to change when the implementation changes, it's testing past the interface.

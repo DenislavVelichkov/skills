@@ -81,6 +81,7 @@ This is a real bug, still unfixed, and users report it across [harnesses](https:
 - Research running in the background does not stall the round; only the questions that depend on it wait.
 - It stops at the end and asks you to confirm the understanding is shared, instead of starting work. When another skill invoked it, it returns the record to that skill instead.
 - Settled decisions carry forward; rounds contain only consequential unresolved questions.
+- If you stop early, it stops asking, summarises what is settled, and lists the open decisions with what each one blocks.
 
 ## Where it fits
 

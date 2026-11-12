@@ -1,5 +1,17 @@
 # mattpocock-skills
 
+## 1.3.2+codex.20261112diverged
+
+### Patch changes
+
+- Resolve the diverged skill items from the 2026-11-12 drift audit, so both family branches carry the same rules in their own conventions. `grilling` rounds use the `❓` and `➡️` format, the `improve-codebase-architecture` hot-spot scan ranks files by recent commit frequency, and the GitHub tracker doc files issues only into the user's own repository and reads inline PR review comments.
+- `triage` reads the execution paths first, runs external PR code or reporter commands unasked only in a disposable environment without host credentials, and otherwise waits for approval. It shows the drafted outcome before applying it, lands linked file changes before the comment that links them, reads the result back, and checks before retrying an uncertain write. A rejected enhancement PR is recorded in `.out-of-scope/` only when the concept is rejected.
+- `wayfinder` claims carry a session-unique identity, use the tracker's atomic claim operation when one is documented, and are re-read after claiming. Sensitive task effects (sign-ups, access changes, spend, data moves, commits) need confirmation or an authorization recorded in Notes. Research is committed in a separate worktree and pushed only when authorized, asking once per effort.
+- `implement` and `implement-spec` stop review fixes after two passes unless the repository defines another limit, keeping any PR in draft. `code-review` never runs a candidate-controlled visual manifest validator. `tdd` tightens a weak test, records behavior that already exists, and stops only when no seam reaches it.
+- `pr` resolves the base from an existing PR first, stops on an empty diff, warns about uncommitted changes, labels evidence `observed`, `static` or `proposed`, and redacts tokens and private URLs. `retro` merges both families' session-source, log-safety and steering rules. `improve-codebase-architecture` re-reads the report and inspects the rendered page when a browser tool is available.
+- `wizard` refuses a git-tracked or unignored `.env` with no override, applies those checks to the real file behind a symlink and writes through it, stores apostrophes with shell single-quote escaping, and warns outside a git repo.
+- `chief-of-staff`, `teach`, `grilling`, `writing-for-agents`, `codebase-design`, `to-tickets` and `ask-matt` carry the merged rules from both families. Keep the public docs consistent.
+
 ## 1.3.2+codex.20261112drift
 
 ### Patch changes

@@ -61,8 +61,8 @@ docs-only edits.
    following documented branch rules, then run code-review with the task-start
    commit and ticket scope. Batch accepted fixes, validate, commit, and review
    their delta plus affected callers, retaining the original coverage. After two
-   fix cycles, report remaining required findings as blockers instead of
-   starting another.
+   fix cycles (or the repository's own limit), report remaining required
+   findings as blockers and keep any PR in draft instead of starting another.
 8. **Finish.** Run the required final suite once on the stable candidate; repeat
    only checks affected by later changes or required by the project contract.
    Record the commits, actual checks, review outcomes, acceptance evidence and

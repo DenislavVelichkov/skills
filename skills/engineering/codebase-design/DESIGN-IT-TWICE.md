@@ -45,7 +45,7 @@ Each design includes:
 
 ### 3. Present and compare
 
-Before comparing, check each design against the Step 1 constraints, including error modes and ordering rules. Mark any constraint a design leaves unmet instead of dropping it from the comparison.
+Before comparing, check each design against the Step 1 constraints (required invariants, error modes, ordering rules, dependencies). Mark any constraint a design leaves unmet instead of dropping it from the comparison.
 
 Present designs sequentially so the user can absorb each one, then compare them in prose. Contrast by **depth** (leverage at the interface), **locality** (where change concentrates), and **seam placement**.
 

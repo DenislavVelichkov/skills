@@ -20,6 +20,8 @@ Work out every manual step the human must take and every value that gets capture
 - For setup: `.env.example`, key names only from `.env` and `.env.*` (`awk -f env-keys.awk .env` with this skill's [env-keys.awk](env-keys.awk); never read values into context), `README`, `docker-compose*`, framework config, and `.github/workflows/*` (every `secrets.*` / `vars.*` reference is a value the wizard must produce).
 - For a migration or transition: the current state, the target state, and the irreversible actions between them.
 
+If the wizard writes `.env` (or `$ENV_FILE`) inside a git repo, check that file before writing any secret to it: `git ls-files --error-unmatch <file>` succeeding means it is tracked, so stop and tell the user; `git check-ignore -q <file>` failing means it is not ignored, so propose adding it to `.gitignore` and add it only with the user's agreement. Outside a git repo, both checks pass. The template's `write_env` repeats these checks at run time with no override (it refuses a tracked file, and an unignored one until it is ignored), applies them to the real file behind a symlinked `ENV_FILE`, and warns outside a git repo. It stores each value in shell single quotes, with an apostrophe written as `'\''`.
+
 Show the ordered stages and the values each produces. Reuse choices and
 authorization already supplied. Ask only about missing decisions that change
 the procedure, and continue drafting the stages that are settled. Present the

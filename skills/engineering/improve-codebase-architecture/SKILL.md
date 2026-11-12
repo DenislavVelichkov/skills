@@ -24,7 +24,7 @@ This command is _informed_ by the project's domain model and built on a shared d
 **Scope before you scan: YAGNI.** Deepening a module pays off in future changes to it, so weight recently changed code. Decide *where* to look before you look:
 
 - If the user named a direction (a module, a subsystem, a pain point), take it, and skip the inference below.
-- Otherwise, walk back the last 200 commits (`git log --oneline -n 200 --name-only`) to find the codebase's hot spots, the files and areas that keep coming up, and let those paths pull your attention first. Widen the range only if no clear hot spot appears.
+- Otherwise, rank files by how often recent commits touched them (`git log --since=6.months --name-only --format= | grep -v '^$' | sort | uniq -c | sort -rn | head -30`) to find the codebase's hot spots, and let those paths pull your attention first. If the list is empty or the changes are scattered with no clear hot spot, widen the range (for example `--since=2.years`). Without a git repo or usable history, ask the user for a direction, or scan the top-level source directories and say so in the report.
 
 Read the project's domain glossary (`GLOSSARY.md`) and any ADRs in the area you're touching first.
 
@@ -54,7 +54,7 @@ End the report with a **Top recommendation** section: which candidate you'd tack
 
 Read [HTML-REPORT.md](HTML-REPORT.md) before writing the file: it holds the scaffold, card schema, diagram patterns, escaping rule and styling guidance.
 
-If a browser tool is available, inspect the rendered report once: the scripts loaded, every Mermaid diagram rendered, and every card shows its before/after diagram. Make one repair pass for any failure. Report anything still broken, or that no browser or network was available to check, before asking for a selection.
+After writing the file, re-read it and check that each card shows all its fields, and re-read each Mermaid block for syntax. Then, when a browser tool (or an already-installed headless browser or Mermaid parser) is available, inspect the rendered report once: the scripts loaded, every Mermaid diagram rendered, and every card shows its before/after diagram. Make one repair pass for any fault. Without such a tool, or without network, state that the render check was not run, give the path, and ask the user to confirm every diagram rendered. Name any fault that remains before asking for a selection.
 
 The report shows each candidate's responsibilities and what callers must know; leave concrete signatures until the user picks a candidate. After the file is written, ask the user: "Which of these would you like to explore?"
 

@@ -15,18 +15,18 @@ Work the tree in **rounds**. The **frontier** is every decision whose prerequisi
 Format a round like so:
 
 ```
-**Q1** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
+❓ **Q1** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
 
-Recommended: <your recommended answer>
+➡️ <your recommended answer>
 
 ---
 
-**Q2** - **<question title>**: <question body>
+❓ **Q2** - **<question title>**: <question body, might be multiple paragraphs, including multiple choices>
 
-Recommended: <your recommended answer>
+➡️ <your recommended answer>
 ```
 
-Word a yes/no question so "yes" accepts your recommendation; for multiple choice, label the options and mark the recommended one.
+Word each question so "yes" accepts your recommended answer; when the body lists choices, name the recommended one in the question (e.g. "Go with B?").
 
 Each round the user answers reshapes the tree: settled decisions push the frontier outward and unblock questions that depended on them. Recompute the frontier and ask the next round. A question whose answer depends on another question still open in this round belongs to a _later_ round, not this one.
 
@@ -34,4 +34,4 @@ Finding _facts_ is your job, never the user's. Look up facts from the environmen
 
 The session is done when the frontier is empty: every branch of the design tree visited, nothing left silently assumed. Then present a concise record of the accepted decisions and their limits. When the user invoked grilling directly, ask them to confirm that record; when another skill invoked it, return the record to that skill. Then finish without reopening settled choices.
 
-If the user asks to stop or declines to continue, stop asking. Summarize the decisions settled so far and list the open ones as unresolved. During already-authorized implementation, new questions pause only dependent work; they do not reopen settled approval or authorize new scope.
+If the user asks to stop early or declines to continue, stop asking. Summarize the decisions settled so far, then list the consequential decisions still unresolved and what each one blocks. During already-authorized implementation, new questions pause only dependent work; they do not reopen settled approval or authorize new scope.
