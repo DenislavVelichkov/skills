@@ -1,6 +1,6 @@
 ---
 name: codebase-design
-description: Provides shared vocabulary for designing deep modules and designs one module at a time. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when another skill needs the deep-module vocabulary. Not for a repo-wide architecture review report (use improve-codebase-architecture).
+description: Provides shared vocabulary for designing deep modules and designs one module at a time. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when another skill needs the deep-module vocabulary. Not for a repo-wide architecture review report (use improve-codebase-architecture) or for ordinary code review.
 ---
 
 # Codebase Design

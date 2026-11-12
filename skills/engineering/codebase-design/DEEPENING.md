@@ -12,7 +12,7 @@ Pure computation, in-memory state, no I/O. Always deepenable: merge the modules 
 
 ### 2. Local-substitutable
 
-Dependencies that have local test stand-ins (PGLite for Postgres, in-memory filesystem). Deepenable if the stand-in exists. The deepened module is tested with the stand-in running in the test suite. The seam is internal; no port at the module's external interface.
+Dependencies that have local test stand-ins (PGLite for Postgres, in-memory filesystem). Deepenable if the stand-in exists. The deepened module is tested with the stand-in running in the test suite. The seam is internal: there is no port at the module's external interface, and the stand-in is not exposed through it.
 
 ### 3. Remote but owned (Ports & Adapters)
 
@@ -31,6 +31,6 @@ Apply the seam rules under Principles in [SKILL.md](SKILL.md) before introducing
 ## Testing strategy: replace, don't layer
 
 - Old unit tests on shallow modules become waste once tests at the deepened module's interface cover them. Before deleting one, record which interface test covers each of its assertions and failure paths, and confirm those interface tests pass. Delete only tests that mapping proves redundant, or tests of behaviour intentionally removed. Keep any test with no equivalent, and list the tests you removed.
-- Write new tests at the deepened module's interface. The **interface is the test surface**.
+- Write new tests at the deepened module's interface. The **interface is the test surface**. Use a test at an internal seam only for a focused check of a part the external tests can't reach cheaply.
 - Tests assert on observable outcomes through the interface, not internal state.
 - Tests should survive internal refactors, since they describe behaviour, not implementation. If a test has to change when the implementation changes, it's testing past the interface.

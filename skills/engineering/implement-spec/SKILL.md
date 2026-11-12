@@ -9,7 +9,7 @@ Reuse the supplied tracker configuration or its repository instruction pointer. 
 
 Check that the host permits subagents and supports isolated worktrees. If it cannot run this workflow, report the missing capability and recommend user-invoked `/implement` per ticket. Do not silently replace it with implementation in a shared checkout.
 
-Load `tdd` and `code-review` through the host's skill tool, or discover and read each registered `SKILL.md` when no such tool exists. Report an unavailable required dependency before its dependent work.
+Load `tdd` and `code-review` through the host's skill tool, or discover and read each registered `SKILL.md` when no such tool exists. If a required skill is not installed, report it, stop the work that depends on it, and ask the user how to proceed.
 
 The goal is the entire spec implemented on a single **integration branch**, with every ticket resolved the way the issue tracker closes work.
 
@@ -71,12 +71,12 @@ Read [model execution verification](../implement/MODEL-EXECUTION.md) to distingu
 
 1. Read the spec and tickets to understand the task graph, and classify each ticket under [Model gate](#model-gate).
 
-2. (optional) Use an **exploration subagent** for exploration the tickets need (codebase files or external docs), so implementers can focus on implementation. It must be able to save its markdown notes in a directory outside the repo that all later subagents can read. Done when the notes path is in each implementer brief.
+2. (optional) Use an **exploration subagent** for exploration the tickets need (codebase files or external docs), so implementers can focus on implementation. It must be able to save its markdown notes in a directory outside the repo (default: the session's scratch or temporary directory) that all later subagents can read. Done when the notes path is in each implementer brief.
 
 3. Record the task-start commit and create the integration branch from the agreed base. On resume, verify and reuse this effort's existing branch and PR. If the issue tracker closes work through PRs, or the user asks for one, open a draft PR after the first merge in step 5 (a branch with no commits ahead of its base can't open one), marked as closing the spec and tickets. Check for an existing PR before retrying an uncertain creation.
 
 4. Use a fresh **implementer subagent** for each ticket, each in its own worktree on its own branch, with model settings and gate duties per [Model gate](#model-gate). Each implementer subagent:
-   - for an assessed ticket, binds its recommendation and returns the receipt before implementation;
+   - for an assessed ticket, binds its recommendation and returns the receipt before any implementation or worktree reset;
    - confirms its worktree is based on the integration branch before starting; preserves existing changes and commits if it is not, then uses a fresh worktree from the correct base;
    - follows the loaded `tdd` skill to build the ticket within its assigned scope, preserving other workers' changes;
    - merges the integration branch tip into its own branch and rechecks affected behavior before reporting its commits, actual checks and unresolved acceptance gates.
@@ -89,7 +89,7 @@ Read [model execution verification](../implement/MODEL-EXECUTION.md) to distingu
    whose dispatch is authorized by the project order, within the concurrency
    cap above. Continue other authorized checks and integration; a pending serial gate keeps its dependents blocked.
 
-7. Once all ticket implementations have landed, run required checks on the integrated candidate and follow the loaded `code-review` skill against the task-start commit and full spec. Route accepted fixes to the affected ticket implementers, bound per [Model gate](#model-gate), then validate and review their delta with affected callers. Run at most two review-fix passes unless the repository defines another limit. At the limit, keep any PR in draft, preserve the integration candidate, and report the recurring findings or acceptance blockers instead of looping.
+7. Once all ticket implementations have landed, run required checks on the integrated candidate and follow the loaded `code-review` skill against the task-start commit and full spec. Route accepted fixes to the affected ticket implementers, bound per [Model gate](#model-gate), then validate and review their delta with affected callers. Run at most two review-fix passes unless the repository defines another limit. At the limit, keep any PR in draft, preserve the integration candidate, and report the remaining findings or acceptance blockers instead of looping.
 
 8. Mark a draft PR ready or resolve tickets through the configured tracker only after all required checks, review fixes and acceptance gates pass. While a human response or other gate remains pending, preserve the draft and open tickets, report the implementation candidate and exact blocker, and follow the project's approval-request format.
 
@@ -97,4 +97,4 @@ Read [model execution verification](../implement/MODEL-EXECUTION.md) to distingu
 
 ## Closing report
 
-End with: each ticket's status (landed, blocked with its blocker, or pending a human gate); the integration branch; the PR URL, if any; the checks run and their results; remaining blockers; and, for assessed tickets, expected and observed model/effort and any mismatches. Report unassessed tickets without inventing recommendations or verification receipts.
+End with: each ticket's status (landed, blocked with its blocker, or pending a human gate); the integration branch; the PR URL or draft state, if any; the checks run and their results; remaining blockers; and, for assessed tickets, expected and observed model/effort and any mismatches. Report unassessed tickets without inventing recommendations or verification receipts.

@@ -1,5 +1,15 @@
 # mattpocock-skills
 
+## 1.3.2+codex.20261112skillrules
+
+### Patch changes
+
+- Carry the rules that only the Claude copies of `codebase-design` and `implement-spec` had, as decided one at a time on 2026-11-12. `setup-matt-pocock-skills` needed no change.
+- `codebase-design`: the description excludes ordinary code review. For a local-substitutable dependency, the stand-in is not exposed through the module's external interface. `DEEPENING.md` now carries the internal-seam test rule that `SKILL.md` already had.
+- `implement-spec`: when a required skill is not installed, the run stops the dependent work and asks the user how to proceed. Exploration notes default to the session's scratch or temporary directory. An assessed implementer binds its recommendation before any worktree reset.
+- `implement-spec`: at the review-fix limit the run reports the remaining findings, and the closing report gives the PR's draft state.
+- Keep the `codebase-design` and `implement-spec` docs pages aligned with these rules.
+
 ## 1.3.2+codex.20261112docs
 
 ### Patch changes

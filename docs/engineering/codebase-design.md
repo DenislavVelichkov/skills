@@ -40,7 +40,7 @@ The skill does *not* define depth as the ratio of implementation lines to interf
 
 - **Depth is a property of the interface, not the implementation.** A deep module can be built internally from small swappable parts. Callers just don't see them. A module can have internal seams its own tests use, and one external seam at its interface.
 - **The deletion test.** Imagine deleting the module. If complexity disappears, the module was a pass-through. If it reappears across N callers, the module was hiding real complexity.
-- **The interface is the test surface.** Callers and tests cross the same seam. If you want to test *past* the interface, the module is the wrong shape.
+- **The interface is the test surface.** Callers and tests cross the same seam. A test at an internal seam is only for a part the interface tests can't reach cheaply. If you want to test *past* the interface, the module is the wrong shape.
 - **One adapter means a hypothetical seam. Two adapters means a real one.** Don't cut a seam until at least two adapters are justified (typically production and test). A single-adapter seam is just indirection.
 
 The skill also gives three rules for an interface that tests easily: accept dependencies instead of creating them, return results from calculations and put required effects behind adapters, and keep the surface small while still testing every required behaviour and error mode.
