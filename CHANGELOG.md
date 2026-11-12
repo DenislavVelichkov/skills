@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.4.6
+
+### Patch Changes
+
+- Port the Codex diagnosis changes (`cee6836`, `0edd557`). `diagnosing-bugs` keeps a resumed diagnosis's trial budget and decision record, requires matching generated fixtures before a causal comparison, treats a passing diagnostic as a non-reproduction, and stops exhausted loops with the exact missing evidence. It also inspects the actual storage before changing callback cadence or read-ahead when measurements show I/O amplification. `implement` capped test runs retain tracebacks as errors occur and reuse the existing result callback. `ask-matt` and the public docs say the same.
+
 ## 1.4.5
 
 ### Patch Changes

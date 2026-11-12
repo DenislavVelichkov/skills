@@ -66,6 +66,24 @@ failures and elapsed time, then reassess the evidence before another batch.
 Stress and concurrency require authorized, isolated resources. Stop increasing
 the reproduction rate once it can distinguish the candidate explanations.
 
+Keep one compact decision record in the existing ticket: the exact symptom,
+ranked predictions, trials already consumed, input identities, current result
+and the remaining decision. Resuming, changing observers or writing another plan
+does not reset that budget. Carry explicit user stop conditions forward.
+
+Matching code hashes do not establish matching generated inputs. Before a
+causal comparison, verify the same relevant fixture bytes and starting state,
+including generated originals and database state when they affect the symptom.
+Reuse one isolated synthetic fixture within the authorized experiment; preserve
+required cleanup and never substitute actual user data. If inputs or observer
+behavior differ, report a confounded observation rather than a causal result.
+
+A passing diagnostic is a non-reproduction. State which prediction it tests
+and which decision its result supports. After the existing re-rank limit is
+exhausted, name the exact missing evidence or access and stop; do not propose
+another equivalent observation. Routine deterministic fixes need no experiment
+record or additional probes.
+
 ### When you genuinely cannot build a loop
 
 Stop and say so explicitly. List what you tried. Ask the user for: (a) access to whatever environment reproduces it, (b) a redacted captured artifact (HAR file, log dump, core dump, screen recording with timestamps), or (c) permission to add temporary production instrumentation. Do **not** proceed to hypothesise without a loop.
@@ -118,6 +136,15 @@ Tool preference:
 2. **Targeted logs** at the boundaries that distinguish hypotheses.
 
 **Tag every debug log** with a unique prefix, e.g. `[DEBUG-a4f2]`. Use `rg` to locate that prefix during cleanup.
+
+When measurements show I/O amplification or repeated reads after cache eviction,
+inspect the actual storage before changing callback cadence or read-ahead.
+Record the filesystem, mount options, compression and relevant file extents or
+layout with available read-only tools. Compare physical bytes read with useful
+input bytes on the retained fixture, then choose a bounded intervention that
+distinguishes storage amplification from callback CPU cost. Unavailable layout
+evidence remains a gap; do not infer it from elapsed time. This branch does not
+apply to a CPU-bound regression without evidence of amplified I/O.
 
 **Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second.
 

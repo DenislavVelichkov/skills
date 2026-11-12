@@ -7,6 +7,23 @@ import assert from "node:assert/strict";
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const read = (path) => readFileSync(join(root, path), "utf8");
 
+test("diagnostic resumptions preserve a finite experiment and comparable inputs", () => {
+  const diagnosis = read("skills/engineering/diagnosing-bugs/SKILL.md").replace(/\s+/gu, " ");
+  for (const requirement of [
+    "Resuming, changing observers or writing another plan does not reset that budget",
+    "Matching code hashes do not establish matching generated inputs",
+    "Keep one compact decision record in the existing ticket",
+    "A passing diagnostic is a non-reproduction",
+    "Routine deterministic fixes need no experiment record",
+  ]) assert.ok(diagnosis.includes(requirement), requirement);
+  const verification = read("skills/engineering/implement/VERIFICATION.md").replace(/\s+/gu, " ");
+  for (const requirement of [
+    "retain complete tracebacks when each error occurs",
+    "termination must not erase an already reported failure",
+    "Reuse the existing result callback",
+  ]) assert.ok(verification.includes(requirement), requirement);
+});
+
 // Issue 189 checks instruction decisions only; runtime adoption needs separate consumers.
 test("batch completion selects another authorized action", () => {
   for (const name of ["implement", "implement-spec"]) {

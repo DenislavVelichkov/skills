@@ -87,6 +87,12 @@ People often get two of these wrong, which is why the router gives the order and
 
 ## Common questions
 
+**Should an inconclusive diagnosis restart after resumption?**
+
+No. Keep its existing trial budget and unresolved decision. Another diagnostic
+is useful only when it distinguishes a remaining prediction within that budget;
+otherwise the next step is the exact missing evidence or access.
+
 **Isn't there just a list of the skills in the right order?**
 
 People keep asking for one in the README. This skill is that list. A static table would say `wayfinder → to-spec → to-tickets → implement → code-review → retro` and be wrong for most situations. The important parts are the branches: is there a codebase, does the build span sessions, can talking settle this question. The cost is that the router is maintained by hand, so it lags behind the repo. `/grilling` shipped long before the router named it.

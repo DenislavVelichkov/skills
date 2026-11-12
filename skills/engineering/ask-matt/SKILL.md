@@ -72,6 +72,10 @@ A starting situation that generates work, then merges onto the main flow.
 
 - **Something's broken** → **`/diagnosing-bugs`**. For the hard ones: the bug that resists a first glance, the intermittent flake, the regression that crept in between two known-good states. It starts with the error, owning code and smallest existing check. A clear cause gets a direct fix; uncertain failures use a **tight feedback loop** that exposes the actual bug. Shared-tooling repairs follow the bounded scope in [proportionate verification](../implement/VERIFICATION.md). Once the fix is in, recommend **`/retro`** to examine what would have prevented the bug. If there is no suitable seam for a regression test, recommend **`/improve-codebase-architecture`**.
 
+  For an inconclusive resumed diagnosis, keep its existing trial budget and
+  missing-evidence decision. Recommend the next discriminating action only when
+  that budget and authorization permit it; do not restart the diagnosis flow.
+
 - **A huge, foggy effort: a greenfield project or a huge feature build, too big for one session** → **`/wayfinder`**. It charts a **shared map** of **decision tickets** on the issue tracker and resolves them one at a time, producing **decisions, not deliverables**. Use **`/grill-with-docs`** instead for an idea that fits one session; never use wayfinder for a well-scoped feature.
 
   When the map clears, **it hands off, it doesn't build**: merge onto the main flow at **`/to-spec`**, which collapses the map's linked decisions into a buildable plan, then `/to-tickets` and `/implement` as usual. `/implement` must not build directly from the map or parent spec.

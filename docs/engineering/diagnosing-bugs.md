@@ -101,7 +101,18 @@ v1.0.0 renamed it to `/diagnosing-bugs`. The old name no longer exists. Anything
 - The commit or PR message names which hypothesis was right.
 - When it cannot lock the bug down with a test, it says so instead of writing a shallow one.
 
+For measured I/O amplification, the agent checks the actual filesystem,
+compression and file layout before changing callback cadence or read-ahead.
+Physical-read measurements distinguish storage rereads from callback CPU cost.
+CPU-bound bugs without that signal need no filesystem investigation.
+
 ## Where it fits
+
+A resumed diagnosis carries its existing trial budget and unresolved decision.
+Matching code alone does not make generated fixtures comparable. A passing
+diagnostic is a non-reproduction; exhausted inconclusive trials end with the
+specific missing evidence or access. Routine deterministic fixes gain no extra
+experiment record.
 
 `diagnosing-bugs` is a reach-for-it-anytime standalone. You start it when something is broken, and it ends when the fix and its regression test are in. It keeps no state and needs no prior setup. [ask-matt](https://aihero.dev/skills-ask-matt) routes "Something's broken" here.
 
