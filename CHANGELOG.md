@@ -1,5 +1,14 @@
 # mattpocock-skills
 
+## 1.4.12
+
+### Patch Changes
+
+- Resolve the last three items that differed between the family branches, as decided one at a time on 2026-11-12.
+- `codebase-design` regains the "Designing for testability" section next to "Designing one module": accept dependencies, return results from calculations and isolate required effects behind adapters, and keep the surface small while still testing every required behaviour, error mode and edge case. The repeated sentence in the test-surface principle is removed. The docs page lists the three rules, and its "It's working if" entry now describes the one-module process instead of saying the skill never reads files.
+- `implement-spec` says a branch with no commits ahead of its base cannot open a draft PR, since the agreed base is not always `main`.
+- `setup-matt-pocock-skills` drops the placeholder pre-commit skeleton from `local-verification.md`. The sentence that prefers a small native Git hook stays.
+
 ## 1.4.11
 
 ### Patch Changes

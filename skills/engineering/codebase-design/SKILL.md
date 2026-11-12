@@ -65,8 +65,38 @@ Use these terms exactly for the design concepts they define: don't substitute "c
 
 - **Depth is a property of a module, judged at its interface, not by implementation size.** A deep module can be internally composed of small, mockable, swappable parts; they just aren't part of the interface. A module can have **internal seams** (private to its implementation, used by its own tests) as well as the **external seam** at its interface.
 - **The deletion test.** Imagine deleting the module. If complexity vanishes, it was a pass-through. If complexity reappears across N callers, it was earning its keep.
-- **The interface is the test surface.** By default, test caller-visible behaviour through the same seam callers cross. A focused test through an internal seam is fine for implementation detail, but if you need to test *past* the interface to check caller-visible behaviour, the module is probably the wrong shape. Accept dependencies instead of creating them, return results instead of producing side effects, and keep the interface small so tests need little setup.
+- **The interface is the test surface.** By default, test caller-visible behaviour through the same seam callers cross. A focused test through an internal seam is fine for implementation detail, but if you need to test *past* the interface to check caller-visible behaviour, the module is probably the wrong shape.
 - **One adapter means a hypothetical seam. Two adapters means a real one.** Don't introduce a seam or port unless at least two adapters are justified (typically production + test). A single-adapter seam is just indirection.
+
+## Designing for testability
+
+Good interfaces make testing natural:
+
+1. **Accept dependencies, don't create them.**
+
+   ```typescript
+   // Testable
+   function processOrder(order, paymentGateway) {}
+
+   // Hard to test
+   function processOrder(order) {
+     const gateway = new StripeGateway();
+   }
+   ```
+
+2. **Return results from calculations; isolate required effects behind adapters.** Writes to a repository or calls to an external service still happen, through an injected adapter rather than inside the calculation.
+
+   ```typescript
+   // Testable
+   function calculateDiscount(cart): Discount {}
+
+   // Hard to test
+   function applyDiscount(cart): void {
+     cart.total -= discount;
+   }
+   ```
+
+3. **Small surface area.** Fewer methods and params mean simpler test setup and less coupling. Still test every required behaviour, error mode and edge case.
 
 ## Relationships
 

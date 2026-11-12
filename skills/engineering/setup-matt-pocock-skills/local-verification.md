@@ -29,17 +29,8 @@ of remote URLs. An exception needs a bounded reason, not a blanket exclusion
 for changed files or an automatic fallback to working-copy content.
 
 Use the repository's existing staged checker where it meets this contract.
-Prefer a small native Git hook when no hook manager exists, for example:
-
-```sh
-#!/bin/sh
-# pre-commit in the active hooks directory; replace every <PLACEHOLDER>
-set -e
-<STAGED_LINT_COMMAND>
-<STAGED_LINK_CHECK_COMMAND>
-```
-
-Add a dependency only when installed tools cannot cover a required case. Commit checks must not
+Prefer a small native Git hook when no hook manager exists. Add a dependency
+only when installed tools cannot cover a required case. Commit checks must not
 install packages, build applications, start services or launch emulators.
 Type checks, full tests and native journeys remain explicit required workflow
 checks. Preserve a local-only choice; hosted CI/CD needs its own authorization.

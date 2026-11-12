@@ -43,6 +43,8 @@ The skill does *not* define depth as the ratio of implementation lines to interf
 - **The interface is the test surface.** Callers and tests cross the same seam. If you want to test *past* the interface, the module is the wrong shape.
 - **One adapter means a hypothetical seam. Two adapters means a real one.** Don't cut a seam until at least two adapters are justified (typically production and test). A single-adapter seam is just indirection.
 
+The skill also gives three rules for an interface that tests easily: accept dependencies instead of creating them, return results from calculations and put required effects behind adapters, and keep the surface small while still testing every required behaviour and error mode.
+
 Two supporting files go further, and the skill reads them on demand rather than up front. [DEEPENING.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/DEEPENING.md) classifies a candidate's dependencies into four categories (in-process, local-substitutable, remote-but-owned, true-external), because the category decides how you test the deepened module across its seam. [DESIGN-IT-TWICE.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/DESIGN-IT-TWICE.md) starts parallel [sub-agents](https://www.aihero.dev/ai-coding-dictionary/subagent) to produce three or more radically different interfaces for the same module, then compares them on depth, locality and seam placement.
 
 ## Common questions
@@ -81,7 +83,7 @@ People have proposed those. [Issue #180](https://github.com/mattpocock/skills/is
 - Someone can point at a proposed extraction and say whether it passes the deletion test, without hedging.
 - A proposed seam comes with a second adapter named, not just the first one.
 - Discussion of an interface covers invariants, ordering and error modes, not only the type signature.
-- Invoking it does not start a session. If the agent begins reading files and proposing refactors from `/codebase-design` alone, it has mistaken the reference for a driver.
+- Asked to design one module, it returns the interface, the seam, the tests at the interface and the unresolved decisions, then stops. If the agent begins surveying the codebase or proposing refactors you did not ask for, it has mistaken the reference for a driver.
 - A dependency that crosses a seam is described as a port (the interface defined at that seam) with the adapters that satisfy it, and no port appears with fewer than two justified adapters.
 - Before an old unit test is deleted, the interface test that covers each of its assertions is named and passing, and the removed tests are listed.
 
