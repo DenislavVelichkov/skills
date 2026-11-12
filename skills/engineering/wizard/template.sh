@@ -102,19 +102,22 @@ confirm() {
   [[ "$reply" =~ ^[Yy] ]]
 }
 
-# _existing KEY: current value of KEY in ENV_FILE, if any, with write_env's single
-# quotes (and its '\'' apostrophe escape) or a plain dotenv double-quoted value undone.
+# _existing KEY: current value of KEY in ENV_FILE, if any, from a KEY=, KEY = or
+# export KEY= line, with write_env's single quotes (and its '\'' apostrophe
+# escape) or a plain dotenv double-quoted value undone. Fails (so the wizard asks
+# again) on forms it can't decode safely, such as an inline `# comment`.
 _existing() {
   [[ -f "$ENV_FILE" ]] || return 1
-  local line value sq="'\\''"; line=$(grep -E "^${1}=" "$ENV_FILE" | tail -n1) || return 1
-  value="${line#*=}"
-  if [[ "$value" == \'*\' ]]; then value="${value:1:${#value}-2}"; value="${value//"$sq"/\'}"
+  local line value sq="'\\''"
+  line=$(grep -E "^(export[[:space:]]+)?${1}[[:space:]]*=" "$ENV_FILE" | tail -n1) || return 1
+  value="${line#*=}"; value="${value#"${value%%[![:space:]]*}"}"
+  if [[ "$value" == \'*\' ]]; then value="${value:1:${#value}-2}"
+    local bare="${value//"$sq"/}"; [[ "$bare" == *\'* ]] && return 1   # e.g. 'a' # it's'
+    value="${value//"$sq"/\'}"
   elif [[ "$value" == \"*\" ]]; then
     value="${value:1:${#value}-2}"
     [[ "$value" == *[\\\$\"]* ]] && return 1   # escapes, $ or ": can't decode safely; ask again
-  else
-    value="${value%%[[:space:]]#*}"                  # drop a trailing " # comment"
-    value="${value%"${value##*[![:space:]]}"}"       # and trailing whitespace
+  elif [[ "$value" == *[\#\'\"]* ]]; then return 1   # inline comment or partial quoting
   fi
   printf '%s' "$value"
 }
@@ -195,30 +198,35 @@ _resolve_link() {
 }
 
 # write_env KEY VALUE upserts KEY='VALUE' into ENV_FILE (replaces any existing
-# line) and sets $KEY. Idempotent. Creates ENV_FILE at mode 0600, keeps an
-# existing file's mode, offers chmod 600 when other users can read it, and
-# replaces it atomically. Writes through a symlinked ENV_FILE to its real file.
+# KEY=, KEY = or export KEY= line) and sets $KEY. Idempotent. Creates ENV_FILE
+# at mode 0600, keeps an existing file's mode, and replaces it atomically. When
+# other users can read the file it offers chmod 600 and, if that is declined,
+# asks before writing. Writes through a symlinked ENV_FILE to its real file.
 # Values use shell single quotes (an apostrophe becomes '\''), which `source`
-# reads back exactly. Refuses a git-tracked or unignored file. On failure the
-# file is unchanged.
+# reads back exactly. Refuses a git-tracked or unignored file. A refusal or a
+# failed write stops the wizard and leaves the file unchanged.
 write_env() {
   local key="$1" value="$2" target="$ENV_FILE" perms rc=0 sq="'\\''"
   if [[ -L "$target" ]]; then
-    target=$(readlink -f -- "$ENV_FILE" 2>/dev/null || _resolve_link "$ENV_FILE") || { warn "couldn't resolve symlink $ENV_FILE; $key not written"; return 1; }
+    target=$(readlink -f -- "$ENV_FILE" 2>/dev/null || _resolve_link "$ENV_FILE") || { warn "stopped: couldn't resolve symlink $ENV_FILE; $key not written"; exit 1; }
   fi
-  _env_git_guard "$target" || { warn "$key not written"; return 1; }
-  [[ -e "$target" ]] || (umask 077 && : > "$target")
+  _env_git_guard "$target" || { warn "stopped: $key not written"; exit 1; }
+  [[ -e "$target" ]] || (umask 077 && : > "$target") || { warn "stopped: couldn't create $ENV_FILE; $key not written"; exit 1; }
   perms=$(ls -ld "$target")
   if [[ -z "${_ENV_MODE_CHECKED:-}" && ( "${perms:4:1}" == r || "${perms:7:1}" == r ) ]]; then
     _ENV_MODE_CHECKED=1
     warn "$ENV_FILE is readable by other users."
-    confirm "Restrict it to you (chmod 600)?" && chmod 600 "$target"
+    if confirm "Restrict it to you (chmod 600)?"; then
+      chmod 600 "$target" || { warn "stopped: couldn't chmod $ENV_FILE; $key not written"; exit 1; }
+    else
+      confirm "Write to $ENV_FILE anyway?" || { warn "stopped: tighten $ENV_FILE's mode, then re-run"; exit 1; }
+    fi
   fi
-  _ENV_TMP=$(mktemp "$(dirname -- "$target")/.wizard-env.XXXXXX") || return 1
-  cp -p "$target" "$_ENV_TMP" || { rm -f "$_ENV_TMP"; _ENV_TMP=""; return 1; }   # copies the mode
-  grep -vE "^${key}=" "$target" > "$_ENV_TMP" || rc=$?    # 1 = no other lines, 2 = read error
+  _ENV_TMP=$(mktemp "$(dirname -- "$target")/.wizard-env.XXXXXX") || { warn "stopped: couldn't write $key to $ENV_FILE; it is unchanged"; exit 1; }
+  cp -p "$target" "$_ENV_TMP" || rc=2                                             # copies the mode
+  (( rc > 1 )) || grep -vE "^(export[[:space:]]+)?${key}[[:space:]]*=" "$target" > "$_ENV_TMP" || rc=$?    # 1 = no other lines, 2 = read error
   if (( rc > 1 )) || ! printf "%s='%s'\n" "$key" "${value//\'/$sq}" >> "$_ENV_TMP" || ! mv -f -- "$_ENV_TMP" "$target"; then
-    rm -f "$_ENV_TMP"; _ENV_TMP=""; warn "couldn't write $key to $ENV_FILE; it is unchanged"; return 1
+    rm -f "$_ENV_TMP"; _ENV_TMP=""; warn "stopped: couldn't write $key to $ENV_FILE; it is unchanged"; exit 1
   fi
   _ENV_TMP=""
   [[ "$(_existing "$key" || true)" == "$value" ]] || warn "$key did not read back unchanged from $ENV_FILE; check it by hand"

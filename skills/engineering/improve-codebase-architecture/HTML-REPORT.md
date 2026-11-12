@@ -62,7 +62,7 @@ Pick the pattern that fits each candidate.
 
 ### Mermaid graph (the workhorse for dependencies / call flow)
 
-Use a Mermaid `flowchart` or `graph` when the point is "X calls Y calls Z, and look at the mess." Wrap it in a Tailwind-styled card so it doesn't feel parachuted in. Colour leakage edges red with `linkStyle <edge index>` (edges count from 0 in declaration order) and the deep module dark with classDef. Escape repository-derived names in labels (quote them, and replace `<`, `>`, `"` and `&`). Sequence diagrams work well for "before: 6 round-trips; after: 1."
+Use a Mermaid `flowchart` or `graph` when the point is "X calls Y calls Z, and look at the mess." Wrap it in a Tailwind-styled card so it doesn't feel parachuted in. Colour leakage edges red with `linkStyle <edge index>` (edges count from 0 in declaration order) and the deep module dark with classDef. Escape repository-derived names in labels: wrap the label in double quotes, replace `"` with `#quot;`, and HTML-escape `&`, `<` and `>`, because the diagram source sits inside an HTML `<pre>`. Sequence diagrams work well for "before: 6 round-trips; after: 1."
 
 ```html
 <div class="rounded-lg border border-slate-200 bg-white p-4">

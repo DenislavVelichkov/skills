@@ -30,7 +30,7 @@ What accumulates in that directory:
 | `MISSION.md` | Why you are learning this. Every other file depends on it. If it is missing or unclear, `teach` first asks why you want to learn this, and writes it once you confirm. If it is missing but the directory already holds other files, `teach` first asks you to confirm the directory as the workspace or pick a new one |
 | `RESOURCES.md` | The vetted sources it teaches from, split into Knowledge and Wisdom (communities) |
 | `lessons/*.html` | The numbered lessons: the primary unit of teaching |
-| `reference/*.html` | Compressed cheat-sheets, algorithms, glossaries: the documents you return to |
+| `reference/*.html` | Compressed cheat-sheets, algorithms, syntax tables: the documents you return to |
 | `learning-records/*.md` | ADR-style notes on what you have demonstrably learned, used to decide what to teach next. A contradicted record is kept and marked with a `Status: superseded by ...` line |
 | `GLOSSARY.md` | The canonical terms for the topic, started once you understand the first term and extended as you can use more |
 | `assets/*` | Reusable components, starting with a shared stylesheet, so the lessons look like one course |
@@ -50,7 +50,7 @@ Storage strength is also why the skill pushes back instead of agreeing. A questi
 
 A **lesson** is one self-contained HTML file, short enough to finish in a sitting, tied to the mission, giving one tangible win. It cites its sources, recommends one primary source to go and read yourself, and links to sibling lessons and reference documents.
 
-You rarely go back to a lesson, but you do go back to reference documents. So the short form of a lesson (the syntax table, the algorithm, the pose sequence, the glossary) belongs in `reference/`, not buried in the lesson that introduced it.
+You rarely go back to a lesson, but you do go back to reference documents. So the short form of a lesson (the syntax table, the algorithm, the pose sequence) belongs in `reference/`, not buried in the lesson that introduced it.
 
 Lessons are built from **components** in `assets/`: stylesheets, quiz widgets, simulators, diagram helpers. Reuse is the default. The agent reads `assets/` before authoring a lesson and builds from what is there. It writes anything new that a second lesson could use as a component, not inline. The shared stylesheet is the first component in every workspace, and it makes the lessons look like one course instead of many unrelated pages.
 

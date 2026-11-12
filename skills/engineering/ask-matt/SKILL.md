@@ -9,8 +9,8 @@ disable-model-invocation: true
 Recommend the next skill or flow and stop; this router does not execute it.
 Reply with: the recommended skill or flow, a one-line reason, the result of the
 availability and precondition check, and one alternative when the situation is
-ambiguous. If nothing fits, say so and name the closest skill with what it does
-not cover.
+ambiguous. If nothing fits, say so and suggest proceeding without a skill; name
+the closest skill and what it does not cover only when one is near enough to help.
 Before recommending, check the loaded plugin's selection and the relevant
 `SKILL.md` as reference material: the summaries here are for orientation only.
 In this Claude plugin, `.claude-plugin/plugin.json` lists the selected skills. A

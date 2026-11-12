@@ -27,23 +27,23 @@ None to generate one. The wizard it writes runs on bash, and uses `gh` when a st
 
 A **stage** is one focused task on one screen. The script clears the terminal between stages, so a stage that overflows the screen loses the part that scrolled away. You author stages in dependency order and set `TOTAL_STAGES`, which drives the progress display.
 
-The [skill](https://www.aihero.dev/ai-coding-dictionary/skill) scopes the procedure before it writes any script. It reads the repo instead of asking cold: `.env*`, `docker-compose*`, framework config, and every `secrets.*` / `vars.*` reference in `.github/workflows/`. Each of those references is a value the wizard has to produce. It then shows you the ordered stage list to confirm. Only after you confirm does it map each stage to the exact path a human follows ("Dashboard → Developers → API keys → Reveal test key → copy"). Where it doesn't know the current UI, it asks you or checks the docs rather than inventing clicks.
+The [skill](https://www.aihero.dev/ai-coding-dictionary/skill) scopes the procedure before it writes any script. It reads the repo instead of asking cold: `.env*`, `docker-compose*`, framework config, and every `secrets.*` / `vars.*` reference in `.github/workflows/`. Each of those references is a value the wizard has to produce. It then shows you the ordered stage list, which you can add to, cut, or reorder. It asks only about decisions that are still missing and keeps drafting the stages that are settled, mapping each stage to the exact path a human follows ("Dashboard → Developers → API keys → Reveal test key → copy"). Where it doesn't know the current UI, it asks you or checks the docs rather than inventing clicks.
 
 For each captured value, scoping decides where it goes:
 
 | Destination | When |
 | --- | --- |
 | `.env` only | Local dev needs it, CI doesn't |
-| GitHub secret | CI reads it, and it's sensitive |
-| GitHub variable | CI reads it, and it's public |
+| GitHub secret only | CI reads it, it's sensitive, and local dev doesn't need it |
+| GitHub variable only | CI reads it, it's public, and local dev doesn't need it |
 | Both `.env` and a secret | Local dev and CI both need it |
 | Nowhere | The stage is a pure action: a switch flipped, a plan upgraded |
 
 ## The template already solves the UX
 
-The [template](https://github.com/mattpocock/skills/blob/main/skills/engineering/wizard/template.sh) ships the whole experience: progress with time remaining, confirmation gates, cross-platform URL opening including WSL, hidden entry for secrets, idempotent `.env` upserts in shell single-quote form (check that your env loader reads them as `source` does if a value can contain an apostrophe), `gh secret` / `gh variable` writes, and a closing summary that reports setup as incomplete and lists everything it had to skip. Its `write_env` refuses a git-tracked `.env`, and waits for you to add an unignored one to `.gitignore` and refuses it if it is still not ignored; there is no override. It writes through a symlinked `.env` to its target and applies those checks to that real file. Everything above the `STAGES` marker is a fixed library, identical in every wizard and never hand-edited. Because the library never changes, every wizard behaves the same way. The only work per wizard is to scope the procedure and author its stages.
+The [template](https://github.com/mattpocock/skills/blob/main/skills/engineering/wizard/template.sh) ships the whole experience: progress with time remaining, confirmation gates, cross-platform URL opening including WSL, hidden entry for secrets, idempotent `.env` upserts in shell single-quote form (check that your env loader reads them as `source` does if a value can contain an apostrophe), `gh secret` / `gh variable` writes, and a closing summary that reports setup as incomplete and lists everything it had to skip. Its `write_env` refuses a git-tracked `.env`, and waits for you to add an unignored one to `.gitignore` and refuses it if it is still not ignored; there is no override. When other users can read the file, it offers to restrict it with `chmod 600`, and if you decline it asks before writing. A refusal or a failed write stops the wizard and leaves the file as it was. It replaces an existing `KEY=`, `KEY =` or `export KEY=` line. It writes through a symlinked `.env` to its target and applies those checks to that real file. Everything above the `STAGES` marker is a fixed library, identical in every wizard and never hand-edited. Because the library never changes, every wizard behaves the same way. The only work per wizard is to scope the procedure and author its stages.
 
-The agent that writes a wizard never runs it end to end, because the script opens browsers and waits for human input. The agent checks it statically instead: `bash -n`, `shellcheck` where available, a check that the number of stages equals `TOTAL_STAGES`, and a trace that every value lands where scoping said it would, with every `set_secret` name matching a real `secrets.*` reference in CI. So the first run is yours, and that run is the test.
+The agent that writes a wizard never runs it end to end, because the script opens browsers and waits for human input. The agent checks it statically instead: `bash -n`, `shellcheck` where available (it fixes reported issues at most twice, then reports what remains, and does not call a wizard that still fails ready to run), a check that the number of stages equals `TOTAL_STAGES`, and a trace that every value lands where scoping said it would, with every `set_secret` name matching a real `secrets.*` reference in CI. So the first run is yours, and that run is the test.
 
 ## Ephemeral by default
 
@@ -60,7 +60,7 @@ No. The agent writes a script; it doesn't run it. You run the script yourself, a
 
 **Can I go back and fix a value I mistyped?**
 
-Not mid-run. There is no back button. The stages run forward, and a wrong answer on stage 3 means Ctrl-C and re-run. Re-running is cheap, because any value already written to `.env` is offered back as a default, so you press Enter through the stages you got right and retype only the wrong one. Users asked for this in launch week, and it is still open: "loved it! One thing though, is there a way to go back and correct what you've entered?"
+Not mid-run. There is no back button. The stages run forward, and a wrong answer on stage 3 means Ctrl-C and re-run. Re-running is cheap, because any value already written to `.env` is offered back as a default (a line it can't decode safely, such as one with an inline `# comment`, is asked for again), so you press Enter through the stages you got right and retype only the wrong one. Users asked for this in launch week, and it is still open: "loved it! One thing though, is there a way to go back and correct what you've entered?"
 
 **Does it know what I've already set up?**
 
@@ -84,7 +84,7 @@ It did. It's now model-invoked, so the agent reaches for it unprompted when it h
 
 ## It's working if
 
-- You're shown an ordered list of stages, and the values each one produces, and asked to confirm, before any script exists.
+- You're shown an ordered list of stages, and the values each one produces, and can add, drop, or reorder them. The agent asks only about decisions that are still missing, and shows you the finished script before anything external happens that you have not approved.
 - Every URL is opened before the value from that page is asked for. You're never asked to paste something you haven't been sent to fetch.
 - Secrets are typed blind. Nothing sensitive echoes into your scrollback.
 - Each stage fits one screen. Nothing you still need has scrolled away.

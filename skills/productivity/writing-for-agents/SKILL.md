@@ -57,8 +57,8 @@ Splitting spends one of the two loads, so split only when the cut earns it:
 
 ## Negation
 
-- Rewrite a prohibition as the positive target behaviour ("write one-line comments"); a prohibition makes the banned behaviour more available, not less.
-- Keep a prohibition only as a hard guardrail you cannot phrase positively, and pair it with the positive target. A "Not for X" exclusion in a description is such a guardrail: keep it next to the positive "Use when" trigger.
+- Rewrite a prohibition as the positive target behaviour ("write one-line comments"); a prohibition names the banned behaviour and can make it more available.
+- Keep a prohibition that guards scope, permissions, or correctness, or that you cannot phrase positively, and pair it with the positive target. How negation affects a particular model is a hypothesis to test in that runtime, not a reason to remove a required constraint. A "Not for X" exclusion in a description is such a guardrail: keep it next to the positive "Use when" trigger.
 - Check: every remaining prohibition has its positive target beside it.
 
 ## Pruning
@@ -66,5 +66,6 @@ Splitting spends one of the two loads, so split only when the cut earns it:
 - Keep each meaning in a **single source of truth**, so a behaviour change is a one-place edit; delete duplicates. (A leading word repeats a token on purpose, never the meaning.)
 - Leave one-file, one-command lookups (`package.json` scripts, config files, the directory layout, `--help` output) to the environment. Write down only what looking cannot find: the unwritten convention, the reason behind a choice, the gotcha no config confesses.
 - Delete each line that no longer bears on what the document does: mere exposition, a branch that should be disclosed, or a stale description of changed behaviour.
-- Delete **no-ops** sentence by sentence: instructions the model already obeys by default. Delete the whole sentence, not words from it. A leading word too weak to beat the default (_be thorough_) is a no-op; replace it with a stronger word (_relentless_).
+- Delete **no-ops** sentence by sentence: instructions the model already obeys by default. Delete the whole sentence, not words from it. Keep a scope, permission, or correctness constraint unless a comparison run shows it is not needed.
+- Fix an instruction too vague to beat the default (_be thorough_) by naming the action and an observable completion criterion. A stronger word (_relentless_) is the second choice, and alone it does not establish that the behaviour changes.
 - Settle a disputed no-op or leading word by test, not debate: run the old and new versions on the same prompt and compare the steps the agent takes.

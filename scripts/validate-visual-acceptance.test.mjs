@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { afterEach, test } from "node:test";
@@ -187,6 +187,25 @@ test("rejects evidence paths outside the repository", () => {
     { root },
   );
   assert.match(result.errors.join("\n"), /escapes the repository root/u);
+});
+
+test("rejects an evidence symlink whose target leaves the repository", () => {
+  const { root, surface } = fixture();
+  const outside = mkdtempSync(join(tmpdir(), "visual-acceptance-outside-"));
+  roots.push(outside);
+  writeFileSync(join(outside, "reference.png"), "reference");
+  const path = "docs/visual-acceptance/redesign/references/linked.png";
+  symlinkSync(join(outside, "reference.png"), join(root, path));
+  surface.references[0].path = path;
+  surface.references[0].sha256 = sha256("reference");
+  const result = validateManifest(
+    { version: 1, initiative: "redesign", surfaces: [surface] },
+    { root },
+  );
+  assert.match(
+    result.errors.join("\n"),
+    /resolves outside the repository root: docs\/visual-acceptance\/redesign\/references\/linked\.png/u,
+  );
 });
 
 test("rejects a visual surface with no required regions", () => {

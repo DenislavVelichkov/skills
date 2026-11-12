@@ -29,7 +29,8 @@ Once you think in these two loads, most authoring decisions (split or don't, inl
 - **Information hierarchy**: the ladder from in-file step, to in-file reference, to disclosed reference behind a pointer. **[Progressive disclosure](https://www.aihero.dev/ai-coding-dictionary/progressive-disclosure)** is moving material down that ladder so the top stays easy to read.
 - **Completion criteria**: how clear and demanding each step's done-condition is, and the **legwork** that demand causes. They are the defence against **premature completion**.
 - **Leading words**: a compact concept already in the model's pretraining (*tight*, *red*, *tracer bullet*) that the agent thinks with while running the document. It works in two places. In the body it guides execution, and in the pointer it triggers invocation.
-- **Pruning**: single source of truth, relevance, and the no-op test applied sentence by sentence, against **duplication**, **sediment** and **sprawl**.
+- **Pruning**: single source of truth, relevance, and the no-op test applied sentence by sentence, against **duplication**, **sediment** and **sprawl**. Scope, permission and correctness constraints stay unless a comparison run shows they are not needed.
+- **Negation**: state the positive action in place of a prohibition, and keep the prohibitions that guard scope, permissions or correctness beside it. A vague demand gets a concrete action and an observable completion criterion before a stronger word.
 
 ## Common questions
 
