@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.3.2+codex.20261112relations
+
+### Patch changes
+
+- `codebase-design` says in its glossary that a module has exactly one interface, as decided on 2026-11-12. This was the one fact of the removed "Relationships" section that the glossary did not carry, and both family branches now state it in the same place. The docs page vocabulary table says the same.
+
 ## 1.3.2+codex.20261112rcitems
 
 ### Patch changes
