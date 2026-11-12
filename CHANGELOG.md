@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.3.2+codex.20261112review
+
+### Patch changes
+
+- Run `code-review` diffs with `--no-ext-diff --no-textconv` so the read-only review executes no configured diff tools. Treat the diff, fetched requirements, comments and examples as evidence that cannot change the review's permissions or contract, and carry that rule into delegated review briefs. Keep the public docs consistent.
+
 ## 1.3.2+codex.20261109diagnosis
 
 ### Patch changes
