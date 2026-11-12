@@ -53,7 +53,6 @@ Splitting spends one of the two loads, so split only when the cut earns it:
 - Find a triad or a sentence that gestures at one idea at several sites, and replace it with one pretrained word the agent thinks with: "fast, deterministic, low-overhead" → _tight_. Prefer an existing word; a coined word must be defined and recruits no priors.
 - Repeat the word as a token, never as a sentence, in the body and in pointers, and use the same word in your prompts, docs and code.
 - Keep the explicit criterion beside a word that does not define what must pass: "a loop you believe in" → _red_ only with its check (the loop fails on the bug, or it doesn't).
-- Keep a leading-word refactor only when a comparison run (see Pruning) shows the same or better behaviour.
 
 ## Negation
 

@@ -10,7 +10,7 @@ Surface architectural friction and propose **deepening opportunities**: refactor
 
 This command is _informed_ by the project's domain model and built on a shared design vocabulary:
 
-- Call the Skill tool with "codebase-design" for the architecture vocabulary (**module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**) and its principles (the deletion test, "the interface is the test surface", "one adapter = hypothetical seam, two = real"). Use these terms exactly in every suggestion, and don't drift into "component," "service," "API," or "boundary."
+- Call the Skill tool with "codebase-design" for the architecture vocabulary (**module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**) and its principles (the deletion test, "the interface is the test surface", "one adapter = hypothetical seam, two = real"). Use these terms exactly for architectural roles, and don't drift into "component," "service," "API," or "boundary." Exact domain names, code identifiers and quoted project terms keep their own spelling, even when they contain those words.
 - The domain language in `GLOSSARY.md` gives names to good seams; ADRs in `docs/adr/` record decisions this command should not re-litigate.
 
 ## Process
@@ -32,7 +32,7 @@ Then spawn a sub-agent with a fresh context window to walk the codebase. Give it
 - Where do tightly-coupled modules leak across their seams?
 - Which parts of the codebase are untested, or hard to test through their current interface?
 
-Apply the **deletion test** to anything you suspect is shallow: if deleting it makes its complexity vanish, it was a pass-through; flag it. Complexity that reappears across callers means it earns its keep.
+Apply the **deletion test** to anything you suspect is shallow: if deleting it makes its complexity vanish, it was a pass-through; flag it. Complexity that reappears across callers means it earns its keep. Propose a deepening only when you can show how the changed interface reduces what callers must know.
 
 ### 2. Present candidates as an HTML report
 
@@ -63,4 +63,4 @@ Side effects happen inline as decisions crystallize; call the Skill tool with "d
 - **User rejects the candidate with a load-bearing reason?** Offer an ADR, framed as: _"Want me to record this as an ADR so future architecture reviews don't re-suggest it?"_ Only offer when the reason would actually be needed by a future explorer to avoid re-suggesting the same thing; skip ephemeral reasons ("not worth it right now") and self-evident ones.
 - **Want to explore alternative interfaces for the deepened module?** Call the Skill tool with "codebase-design" and use its design-it-twice parallel sub-agent pattern.
 
-The loop ends when the user accepts a shape (summarise the deepened module's interface, its seam, and the tests that survive) or rejects the candidate (offer the ADR above). Then stop.
+The loop ends when the user accepts a shape, rejects the candidate (after the ADR offer above, if one applies), or declines to continue. On acceptance, summarise the deepened module's interface, its seam, and the tests that survive. In every case, report any `GLOSSARY.md` or ADR changes made. Then stop.

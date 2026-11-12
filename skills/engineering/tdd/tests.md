@@ -60,7 +60,7 @@ test("createUser makes user retrievable", async () => {
 });
 ```
 
-**Duplicated expectation logic**: The test recomputes the expected value the way the code does, so a shared mistake passes in both.
+**Tautological tests**: Expected value restates the implementation, so the test passes by construction.
 
 ```typescript
 // BAD: Expected value is recomputed the way the code computes it

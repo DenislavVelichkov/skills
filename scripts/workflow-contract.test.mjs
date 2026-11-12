@@ -439,7 +439,10 @@ test("visual parity gates require an explicit reference comparison", () => {
     visualAcceptance,
     /A proposed manifest path or a\nrequest to create a new manifest does not establish it/u,
   );
-  assert.match(setup, /UI\s+work\s+without that comparison uses no manifest/u);
+  assert.match(
+    setup,
+    /links a visual-acceptance manifest, read `docs\/agents\/visual-acceptance.md`/u,
+  );
 
   for (const skill of [wayfinder, toSpec, toTickets, implement, codeReview]) {
     assert.match(skill, /visual parity action/u);

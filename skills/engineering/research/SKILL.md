@@ -12,6 +12,6 @@ Its job:
 3. Write the cited findings to a single Markdown file, in this order: question and scope, answer, findings with citations, retrieval date (and source versions where they matter), and open gaps.
 4. Save it where the repo already keeps such notes; if there is no convention, use `docs/research/<slug>.md`. If the target file already exists, never overwrite it: pick a distinct filename, or append a dated section only when the user asked to revise that note, and report which you did.
 5. Reread the saved note: confirm every claim cites a source, mark any source that could not be read, cite or remove each uncited claim and reread once more, then list the open questions and gaps.
-6. Return the file path and a three-line summary.
+6. Return the file path and a three-line summary that states the answer and any unresolved gap.
 
 When it finishes, relay the path and summary to the user.

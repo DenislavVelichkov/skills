@@ -44,7 +44,8 @@ choosing checks; "Bound verification tooling work" before changing verification
 tooling; "Prepare expensive execution" and "Diagnose before repeating expensive
 work" before a long, native or stateful run or a retry; "Reuse evidence safely"
 before reusing evidence; "Separate reports from execution" and "Schedule without
-repeated work" before live validation or a report. Checklist:
+repeated work" before live validation or a report. Its native UI and capture
+rules apply only to native UI or visual captures. Checklist:
 
 - Run the smallest relevant check after each meaningful change.
 - After each batch or result, follow [Select the next action](VERIFICATION.md#select-the-next-action)

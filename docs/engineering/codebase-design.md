@@ -1,6 +1,6 @@
 ## What it does
 
-`codebase-design` fixes the words you use to design a module: **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**. It defines each one precisely, bans the loose substitutes ("component", "service", "API", "boundary"), and states the handful of principles that follow from them.
+`codebase-design` fixes the words you use to design a module: **module**, **interface**, **depth**, **seam**, **adapter**, **leverage**, **locality**. It defines each one precisely, bans the loose substitutes ("component", "service", "API", "boundary") for those design concepts while keeping existing domain names, framework terms and quoted identifiers such as `OrderService`, and states the handful of principles that follow from them.
 
 It is mostly a reference. Every other skill that touches design uses its vocabulary. Its only process is a short one for designing one module: read the callers and constraints, classify the dependencies, place the seam, write the interface, check it against representative callers, and return the interface, seam, tests and unresolved decisions. It has no checkpoints and never stops to ask you a question, so know this before you invoke it: if you point a [session](https://www.aihero.dev/ai-coding-dictionary/session) at it with an open-ended "go", the agent can still invent a bigger process. The questions below show what that looks like.
 

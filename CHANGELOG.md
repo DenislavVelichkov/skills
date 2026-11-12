@@ -1,5 +1,16 @@
 # mattpocock-skills
 
+## 1.4.11
+
+### Patch Changes
+
+- Resolve the 19 one-side-only rules from the 2026-11-12 re-audit, so both family branches carry the same rules in their own conventions.
+- `codebase-design` and `improve-codebase-architecture` apply the exact architecture terms to design concepts only: domain names, code identifiers and quoted project terms keep their own spelling. A deepening is proposed only when the changed interface reduces what callers must know. The grilling loop ends on an accepted shape, a rejected candidate or a declined continuation, and reports any `GLOSSARY.md` or ADR changes. Report wins name the gain in locality, leverage or tests, and diagram patterns are mixed.
+- `implement` limits the native UI and capture rules of the verification reference to native UI or visual captures. `tdd` is done when every requested behaviour has a passing test at its seam, and reports the seam each test exercises. It goes back to the single "Tautological" anti-pattern entry, in `SKILL.md`, `tests.md` and the docs page.
+- `research` returns a three-line summary that states the answer and any unresolved gap. `writing-for-agents` tests a leading-word swap only when it is disputed, as the Pruning section already said.
+- `setup-matt-pocock-skills` writes a three-line visual-acceptance pointer into the instruction file and leaves the full definition in `docs/agents/visual-acceptance.md`. Its description lists triage labels and visual-acceptance support. The workflow contract test checks for the pointer.
+- Keep the public docs for `codebase-design`, `improve-codebase-architecture`, `research`, `tdd` and `handoff` aligned with these rules.
+
 ## 1.4.10
 
 ### Patch Changes

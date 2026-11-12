@@ -49,7 +49,7 @@ The three anti-patterns it is written to prevent:
 | Anti-pattern | The tell |
 | --- | --- |
 | Implementation-coupled | The test breaks when you rename an internal function, though behaviour did not change. Mocked internal collaborators, asserted call counts, database queries used to verify instead of the interface. |
-| Duplicated expectation logic | The expected value is computed the way the code computes it, so a shared mistake passes in both. Expected values have to come from somewhere else: a known-good literal, a worked example, the spec. |
+| Tautological | The expected value is computed the way the code computes it, so the test passes by construction. Expected values have to come from somewhere else: a known-good literal, a worked example, the spec. |
 | Horizontal slicing | A batch of tests landed before any implementation. |
 
 Mocks are for system boundaries only: external APIs, time, randomness, sometimes the filesystem or the database. Never mock your own modules.

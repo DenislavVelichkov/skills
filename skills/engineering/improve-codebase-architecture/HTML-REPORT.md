@@ -51,14 +51,14 @@ Each candidate is one `<article>`:
 - **Before / After diagram**: the centrepiece. Two columns, side by side. See patterns below.
 - **Problem**: one sentence. What hurts.
 - **Solution**: one sentence. What changes.
-- **Wins**: bullets, ≤6 words each. e.g. "Tests hit one interface", "Pricing logic stops leaking", "Delete 4 shallow modules".
+- **Wins**: bullets, ≤6 words each, naming the gain in locality, leverage, or how tests improve. e.g. "Tests hit one interface", "Pricing logic stops leaking", "Delete 4 shallow modules".
 - **ADR callout** (if applicable): one line in an amber-tinted box.
 
 No paragraphs of explanation. If the diagram needs a paragraph to be understood, redraw the diagram.
 
 ## Diagram patterns
 
-Pick the pattern that fits each candidate.
+Pick the pattern that fits each candidate. Mix them. Don't make every diagram look the same. Variety is part of the point.
 
 ### Mermaid graph (the workhorse for dependencies / call flow)
 

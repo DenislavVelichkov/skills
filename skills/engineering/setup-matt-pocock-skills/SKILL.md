@@ -1,6 +1,6 @@
 ---
 name: setup-matt-pocock-skills
-description: "Configures repository issue tracking, domain docs, review guidance and local commit checks. Run before the engineering workflow, or to update an existing setup."
+description: "Configures repository issue tracking, triage labels, domain docs, visual-acceptance support, review guidance and local commit checks. Run before the engineering workflow, or to update an existing setup."
 disable-model-invocation: true
 ---
 
@@ -164,13 +164,9 @@ The block:
 
 ### Visual acceptance
 
-A visual parity action exists only when the source requires a named production
-surface to be compared against a visual reference, requires selecting and
-freezing that reference for the later comparison, or links an existing manifest
-that records either obligation. Only then create and validate an initiative
-manifest before drafting implementation tickets or editing production code. UI
-work without that comparison uses no manifest. See
-`docs/agents/visual-acceptance.md`.
+Before drafting tickets or editing production code for work that compares, or
+selects and freezes, a visual reference for a named production surface, or that
+links a visual-acceptance manifest, read `docs/agents/visual-acceptance.md`.
 
 ### Local verification
 

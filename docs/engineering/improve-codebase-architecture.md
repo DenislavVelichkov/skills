@@ -41,7 +41,7 @@ The skill rests on one idea: **depth**. A deep module puts a lot of behaviour be
 
 For each one, it proposes the deepening that fixes it.
 
-Each candidate is a card with the files involved, the friction, a plain-English solution, the benefit in terms of **locality** and **leverage**, a before/after diagram, and a strength badge.
+Each candidate is a card with the files involved, the friction, a plain-English solution, the benefit in terms of **locality** and **leverage**, a before/after diagram, and a strength badge. A deepening is proposed only when the changed interface reduces what callers must know.
 
 | Badge | What it means for you |
 | --- | --- |
@@ -53,7 +53,7 @@ The report ends with a **Top recommendation**, the candidate it would do first, 
 
 ## What happens after you pick one
 
-When you pick a candidate, a [grilling](https://aihero.dev/skills-grilling) session starts on it. It covers the constraints, what goes behind the seam, which tests survive, and what the deepened interface should look like. The output of that session is a decision, not a diff. From there the normal flow applies: take the decision into [to-spec](https://aihero.dev/skills-to-spec), then [to-tickets](https://aihero.dev/skills-to-tickets), then [implement](https://aihero.dev/skills-implement).
+When you pick a candidate, a [grilling](https://aihero.dev/skills-grilling) session starts on it. It covers the constraints, what goes behind the seam, which tests survive, and what the deepened interface should look like. The output of that session is a decision, not a diff. The session ends when you accept a shape, reject the candidate or decline to continue. On acceptance it summarises the deepened module's interface, its seam and the tests that survive, and in every case it reports any `GLOSSARY.md` or ADR changes. From there the normal flow applies: take the decision into [to-spec](https://aihero.dev/skills-to-spec), then [to-tickets](https://aihero.dev/skills-to-tickets), then [implement](https://aihero.dev/skills-implement).
 
 ## Common questions
 

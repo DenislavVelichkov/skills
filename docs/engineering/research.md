@@ -22,7 +22,7 @@ The line between `research` and `grill-with-docs` is the **shelf life of what co
 
 ## Delegated legwork
 
-If the question or scope is ambiguous, it first asks you one clarifying question. The reading then runs as a **background agent**, briefed with the question, output path, any sources you named, and the skill's steps verbatim. You keep working while it follows each claim to its primary source, writes one Markdown file, and reports back. Research is legwork you delegate, not thinking you outsource. You get a document to grill, plan, or design against, and you still make the decision.
+If the question or scope is ambiguous, it first asks you one clarifying question. The reading then runs as a **background agent**, briefed with the question, output path, any sources you named, and the skill's steps verbatim. You keep working while it follows each claim to its primary source, writes one Markdown file, and reports back the file path and a three-line summary that states the answer and any unresolved gap. Research is legwork you delegate, not thinking you outsource. You get a document to grill, plan, or design against, and you still make the decision.
 
 An agent that is already delegated, or that cannot start a background agent, says so and does the research itself. That rule is only an instruction, so nesting remains the skill's best-documented problem.
 
