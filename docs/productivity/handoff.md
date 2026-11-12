@@ -76,6 +76,8 @@ Both work; they suit different situations. As a skill, it ships and updates thro
 - In the fork case, your original session is unchanged when you come back to it.
 - The suggested-skills section names the skill you'd have reached for yourself.
 - Nothing in it is a key, a token, or a password.
+- The document uses the fixed headings in order (Objective, Authorization, Decisions, Done, State, Remaining, Blockers, Next action, Suggested skills), its file name starts with `handoff-`, and each authorization carries its scope and source.
+- When the next session may run elsewhere or after a restart, it says the temp path is ephemeral and offers a durable location.
 
 ## Where it fits
 

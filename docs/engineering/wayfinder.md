@@ -115,6 +115,7 @@ It is this skill. v1.1 renamed it to `wayfinder`, and you invoke it as `/wayfind
 - The session that finishes the map summarises the route in it, closes the map issue, and points you toward a spec, not a pull request.
 - A map with a visual parity action cannot clear while its comparison target
   lacks a durable, hashed reference in the acceptance manifest.
+- Resuming a map restores any *Decisions so far* pointer that a closed, answered ticket is missing.
 
 ## Where it fits
 

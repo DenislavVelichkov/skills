@@ -81,6 +81,7 @@ This is a real bug, still unfixed, and users report it across [harnesses](https:
 - Research running in the background does not stall the round; only the questions that depend on it wait.
 - It stops at the end and asks you to confirm the understanding is shared, instead of starting work.
 - Settled decisions carry forward; rounds contain only consequential unresolved questions.
+- When another skill started the interview, the settled decisions go back to that skill instead of a confirmation question.
 
 ## Where it fits
 

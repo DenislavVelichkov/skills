@@ -47,7 +47,10 @@ Summarise what's present and what's missing. Resolve each section from existing
 answers and repository conventions first. Ask one question at a time only for
 choices that remain unresolved, and continue independent preparation.
 
-Lead each section with the recommended answer so the user can accept it in a word. Give a one-line explainer only when the choice genuinely branches; skip the section entirely when exploration already settled it (Section B when `triage` isn't installed, Section C when there's no monorepo).
+Lead each section with the recommended answer so the user can accept it in a word. Give a one-line explainer only when the choice genuinely branches; skip what exploration already settled:
+
+- No `triage` installed: skip all of Section B.
+- No monorepo: skip only the Section C question; still prepare the single-context `docs/agents/domain.md`.
 
 **Section A: Issue tracker.**
 
@@ -73,7 +76,7 @@ tracker without copying the complete publication procedure into each skill.
 
 Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off**. Leave it off and don't raise it: a user who wants external PRs in the triage queue can flip the flag in the file later.
 
-A GitHub or GitLab tracker needs a reachable repo. When the user picks one and no `git remote` points at that host, get the repo URL from them and wire it up (`git init` if needed, `git remote add origin <url>`) before going further. Done when `gh repo view` / `glab repo view` prints the project from inside this directory; if it can't, stop and tell the user what's missing.
+A GitHub or GitLab tracker needs a reachable repo. When the user picks one and no `git remote` points at that host, get the repo URL from them and wire it up before going further: `git init` if needed, then add the remote. Check `git remote -v` first. If `origin` already points at another host, add the new remote under an unused name (for example the host name) or get the user's explicit decision before changing `origin`, and pass that remote or repo explicitly to `gh`/`glab`. These commands are part of the step 3 draft. Done when `gh repo view` / `glab repo view` prints the project from inside this directory; if it can't, stop and tell the user what's missing.
 
 **Section B: Triage label vocabulary.** Skip this section entirely if the `triage` skill isn't installed (exploration told you), since an uninstalled skill needs no labels.
 
@@ -107,13 +110,16 @@ Show the user a draft of:
   `./scripts/validate-visual-acceptance.mjs` (target repository root)
 - When Section B ran on GitHub or GitLab, the labels to create on the remote
   tracker
+- Every other repository or tracker command setup will run: `git init`,
+  `git remote add`, and `git mv` of legacy glossary files
 - The local hook and check commands, `docs/agents/local-verification.md`, and
   updates to existing review, native, evidence and progress guidance where
   applicable
 
 Apply any corrections the user already supplied. Show this draft once and let
 the user edit it; on a rerun, the draft shows the in-place updates to existing
-files. Write nothing, and create no labels, until the user accepts the draft.
+files. Write nothing, run none of the listed commands, and create no labels,
+until the user accepts the draft.
 An acceptance covers only the scope shown; show any added file or label again.
 
 Plugin refresh does not migrate repository-local tracker or protocol copies.
@@ -218,8 +224,10 @@ commit candidate passes, a lint failure and a broken local link each block,
 and an unstaged repair cannot hide either staged failure. Verify renamed or
 deleted link targets, run from a subdirectory, and confirm index/worktree bytes
 and unrelated hooks remain unchanged. Use the project's temporary directory
-and remove only these owned examples. If a case fails, make one focused fix,
-rerun the cases once, and report any remaining failures as blockers. Report hook
+and remove only these owned examples. A blocked case must exit non-zero and a
+passing case zero; record the actual commands used and their exit statuses.
+If a case fails, make one focused fix, rerun the cases once, and report any
+remaining failures as blockers without claiming the hook is active. Report hook
 activation separately from source files or a successful manual check.
 
 ### 5. Done

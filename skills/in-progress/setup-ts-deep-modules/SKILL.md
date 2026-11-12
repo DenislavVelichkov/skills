@@ -52,9 +52,9 @@ Install `dependency-cruiser` as a devDependency with the detected package manage
 
 ### 3. Write the config
 
-Copy [`dependency-cruiser.config.cjs`](./dependency-cruiser.config.cjs) to the repo root as `.dependency-cruiser.cjs`. Set `PACKAGES_ROOT` to the root detected in step 1. The rules are path-depth based and extension-agnostic, so nothing else needs adapting.
+Use [`dependency-cruiser.config.cjs`](./dependency-cruiser.config.cjs) as the source for the four rules. Copy it to the repo root as `.dependency-cruiser.cjs` only when no config exists; otherwise merge the rules into the existing config without replacing its other rules or options. Set `PACKAGES_ROOT` to the root detected in step 1. The rules are path-depth based and extension-agnostic, so nothing else needs adapting.
 
-**Done when:** `.dependency-cruiser.cjs` exists with the correct `PACKAGES_ROOT`, and the four forbidden rules are present.
+**Done when:** the active config has the correct `PACKAGES_ROOT` and the four forbidden rules, with existing project rules and options preserved.
 
 ### 4. Wire it into the checks
 
@@ -62,11 +62,13 @@ Copy [`dependency-cruiser.config.cjs`](./dependency-cruiser.config.cjs) to the r
 - Fold it into the repo's umbrella check command, the one that already runs typecheck (e.g. a `check` / `ci` / `validate` script). Do **not** touch `tsconfig` or add path aliases.
 - If there is no umbrella script, add `lint:boundaries` and tell the user to include it in CI.
 
-**Done when:** `lint:boundaries` exists and runs as part of the same command as typecheck.
+**Done when:** `lint:boundaries` exists and runs as part of the same command as typecheck. If no umbrella check exists, report that limitation and the standalone command.
 
 ### 5. Scaffold the example package
 
 Create a committed `<packages-root>/example/` as a copy-me template:
+
+If that path exists, inspect and reuse an equivalent example or choose an unused name. Preserve existing files and use the chosen example path in the proof steps below.
 
 - `index.ts` is an entry point. Export one function that delegates to an internal file (so the package is visibly *deep*, not a pass-through).
 - `lib/impl.ts`: an internal file in a **subfolder**, imported by `index.ts`, not reachable from outside.

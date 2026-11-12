@@ -82,6 +82,7 @@ People have proposed those. [Issue #180](https://github.com/mattpocock/skills/is
 - A proposed seam comes with a second adapter named, not just the first one.
 - Discussion of an interface covers invariants, ordering and error modes, not only the type signature.
 - Invoking it does not start a session. If the agent begins reading files and proposing refactors from `/codebase-design` alone, it has mistaken the reference for a driver.
+- A dependency that crosses a seam is described as a port (the interface defined at that seam) with the adapters that satisfy it, and no port appears where nothing varies.
 
 ## Where it fits
 

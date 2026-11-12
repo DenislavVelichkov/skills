@@ -101,6 +101,7 @@ The skill does not ship a good answer. People often ask for a `TYPESCRIPT.md` wi
 - It stops after the report and asks which candidate you want. It does not continue on its own.
 - Each card explains the payoff as locality or leverage, and says which tests get simpler, not just "this is cleaner."
 - When you reject a candidate for a lasting reason, it offers to record an ADR, so the next run does not suggest it again.
+- Each card carries a dependency-category tag (in-process, local-substitutable, ports & adapters or mock) next to its recommendation strength.
 
 ## Where it fits
 

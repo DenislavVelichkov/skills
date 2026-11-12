@@ -191,6 +191,8 @@ One long-standing complaint says yes, in these words: _"having a skill to set up
 - Repositories expose the visual parity action test through the instruction
   file the active harness reads. UI work without a production-to-reference
   comparison creates no manifest.
+- You see one draft that lists every file and every command setup will run (`git init`, `git remote add`, label creation) before anything is written, and an `origin` that points at another host is left alone.
+- The hook check records the commands it ran and their exit statuses: non-zero for a blocked case, zero for a passing one.
 
 ## Where it fits
 

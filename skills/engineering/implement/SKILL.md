@@ -19,11 +19,16 @@ when present.
 Resolve bare numbers only against the configured tracker, never an unrelated
 list. If identity, implementation authorization or blocker status is unresolved,
 ask for the missing input before dependent work. State the resolved identity,
-title and scope without asking again for settled approval.
-For conversation-only work, restate the agreed scope.
+title, scope and commit branch without asking again for settled approval.
+For conversation-only work, restate the agreed scope and branch.
 
-Before implementation, follow [model execution verification](MODEL-EXECUTION.md);
-with no applicable model assessment, continue with the current settings.
+Before implementation, follow [model execution verification](MODEL-EXECUTION.md).
+With no applicable model assessment for this ticket, plan or conversation,
+continue with the current or inherited settings; require no selector, model
+choice or gate receipt. If a recommendation exists for this client and scope,
+bind it in this session and verify the runtime model and reasoning level. Stop
+on mismatches or missing evidence. The gate stays active through fixes and
+checks and finishes before you report completion.
 
 Record the current branch and task-start commit before editing, preserving
 unrelated changes. If the current branch is the default branch, create a
@@ -49,6 +54,8 @@ repeated work" before live validation or a report. Checklist:
 - Run the required final suite once on the stable candidate; repeat only checks
   affected by later changes or required by the project contract.
 
+Planning is done when each batch's entry, behavior and checks are recorded.
+
 First decide whether the ticket or parent spec contains a visual parity action.
 It does only when either document requires a named production surface to be
 compared against a visual reference, requires selecting and freezing that
@@ -57,7 +64,8 @@ either obligation. UI work without that obligation uses the normal
 implementation path and no manifest.
 
 For a visual parity action, follow [VISUAL-PARITY.md](VISUAL-PARITY.md) from
-its prerequisite before editing production code.
+its prerequisite before editing production code. Never infer approval from
+"continue", prototype selection, green tests or a clean review.
 
 For either implementation path, commit the integrated candidate so the full
 change is visible, then call the Skill tool with "code-review" to review the

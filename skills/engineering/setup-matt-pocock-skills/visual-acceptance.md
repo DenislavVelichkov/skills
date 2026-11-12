@@ -116,7 +116,76 @@ order:
 The manifest records one row per surface. Each row names the route, selected
 option, required regions and interactions, and every reference viewport,
 locale, and scenario. Reference files and hashes are fixed at
-`design_selected`.
+`design_selected`. Populated fields follow
+[Evidence and approval fields](#evidence-and-approval-fields).
+
+## Evidence and approval fields
+
+Digests are `sha256:` followed by 64 lowercase hex characters of the file
+bytes. Timestamps are UTC ISO strings in `toISOString()` form
+(`2026-01-02T03:04:05.000Z`). Paths are repository-relative.
+
+- `references`, `candidates`, `baselines` entries: `path`, `sha256`, `locale`,
+  `viewport` (`WIDTHxHEIGHT`), `scenario`. Candidates and baselines cover
+  exactly the references' locale, viewport and scenario keys; each baseline
+  matches its accepted candidate's digest.
+- `comparison` (from `compared`): `path`, `sha256`.
+- `deviations[]`: `description`, `approved` (boolean). Every deviation is
+  `approved: true` by `member_accepted`.
+- `approvalRequest` (from `approval_requested`): `requestedAt`, `source`,
+  `candidateSetSha256`.
+- `approval` (from `member_accepted`): `approvedBy`, `approvedAt`, `source`,
+  `candidateSetSha256`.
+
+`candidateSetSha256` is the digest the validator's exported
+`candidateSetSha256(candidates)` computes over the candidate entries. A
+`member_accepted` row, with placeholders for every fact:
+
+```json
+{
+  "id": "checkout-summary",
+  "route": "/checkout",
+  "selection": "Option B",
+  "requiredRegions": ["order-summary"],
+  "requiredInteractions": [],
+  "state": "member_accepted",
+  "references": [
+    {
+      "path": "docs/visual-acceptance/<initiative>/reference.png",
+      "sha256": "sha256:<64 hex>",
+      "locale": "en-US",
+      "viewport": "1280x800",
+      "scenario": "default"
+    }
+  ],
+  "candidates": [
+    {
+      "path": "docs/visual-acceptance/<initiative>/candidate.png",
+      "sha256": "sha256:<64 hex>",
+      "locale": "en-US",
+      "viewport": "1280x800",
+      "scenario": "default"
+    }
+  ],
+  "comparison": {
+    "path": "docs/visual-acceptance/<initiative>/comparison.html",
+    "sha256": "sha256:<64 hex>"
+  },
+  "deviations": [],
+  "approvalRequest": {
+    "requestedAt": "2026-01-02T03:04:05.000Z",
+    "source": "<conversation or review reference>",
+    "candidateSetSha256": "sha256:<64 hex>"
+  },
+  "approval": {
+    "approvedBy": "<human approver>",
+    "approvedAt": "2026-01-02T03:10:00.000Z",
+    "source": "<conversation or review reference>",
+    "candidateSetSha256": "sha256:<64 hex>"
+  },
+  "baselines": []
+}
+```
 
 ## Implementation loop
 

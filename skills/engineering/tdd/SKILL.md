@@ -11,6 +11,8 @@ selecting validation. If that file is missing, use the project's focused test
 command and final suite, and report the missing file. Red-green cycles are not
 separate delivery or review checkpoints.
 
+Apply every section below on every red-green cycle, before and during the loop, not after.
+
 When exploring the codebase, read `GLOSSARY.md` (if it exists) so test names and interface vocabulary match the project's domain language, and respect ADRs in the area you're touching.
 
 ## What a good test is

@@ -49,9 +49,9 @@ The route most work travels. You have an idea and want it built.
 
    If the source requires a visual reference comparison, carry its visual parity manifest through `/to-spec` and `/to-tickets`.
 
-   When the work goes up as a pull request, the agent reaches for the model-invoked **`/pr`**.
+   When the work goes up as a pull request, the agent reaches for the model-invoked **`/pr`**, which shapes the body with a small visual, before/after evidence and a merge-danger call.
 
-4. **`/retro`** reviews the completed session and proposes changes to the agent's environment. It stops after presenting the recommendations unless the user has authorized their implementation.
+4. **`/retro`** reviews the completed session and proposes changes to the agent's environment. Workflow lessons name their existing skill owner, overlapping guidance and an observable evaluation; it recommends automated checks for mechanical mistakes and coding standards for judgement calls. It stops after presenting the recommendations unless the user has authorized their implementation.
 
 ### Context hygiene
 

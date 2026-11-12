@@ -26,7 +26,17 @@ _STAGE_INDEX=0
 ENV_FILE="${ENV_FILE:-.env}"
 WRITTEN_ENV=()    # KEYs written to ENV_FILE this run
 WRITTEN_SECRET=() # secret NAMEs set this run
+WRITTEN_VAR=()    # variable NAMEs set this run
 SKIPPED=()        # things we couldn't do (e.g. gh missing)
+_ENV_TMP=""
+_GH_CHECKED=0
+_GH_OK=0
+
+# Remove write_env's temp file on any exit, including Ctrl-C.
+_cleanup() { [[ -z "$_ENV_TMP" ]] || rm -f "$_ENV_TMP"; }
+trap _cleanup EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 # _clear wipes the terminal so only the current step is on screen. No-op when
 # output isn't a terminal, so piped logs stay readable.
@@ -54,6 +64,7 @@ stage() {
   _STAGE_INDEX=$((_STAGE_INDEX + 1))
   printf '\n%s%s▸ Stage %s/%s · %s%s\n' \
     "$BOLD" "$BLUE" "$_STAGE_INDEX" "$TOTAL_STAGES" "$1" "$RESET"
+  (( _STAGE_INDEX <= TOTAL_STAGES )) || warn "TOTAL_STAGES=$TOTAL_STAGES is lower than the stages written"
 }
 
 # say "..." prints a plain instruction line.
@@ -81,7 +92,9 @@ pause() {
   read -r _ || true
 }
 
-# confirm "question" is a y/N gate; returns success on yes.
+# confirm "question" is a y/N gate; returns success on yes. It returns 1 on no,
+# which ends the wizard under set -e, so call it as `if confirm ...; then` or
+# `confirm ... || { warn "..."; exit 1; }`.
 confirm() {
   local reply=""
   printf '  %s? %s [y/N] ' "$YELLOW" "$1"
@@ -108,32 +121,40 @@ _existing() {
 
 # ask KEY "Prompt" reads a value into $KEY. Offers the existing .env value as
 # a default on re-runs (Enter keeps it). Visible input (non-secret), edited
-# with Readline. Fails at EOF with no input.
+# with Readline. Re-prompts on empty input; fails at EOF with no input.
 ask() {
-  local key="$1" prompt="$2" current input s=$'\001' e=$'\002' p rc=0
+  local key="$1" prompt="$2" current input s=$'\001' e=$'\002' p rc
   current=$(_existing "$key" || true)
   # Readline needs the colour codes wrapped in \001..\002 to place the cursor.
   p="  $s$BOLD$e$prompt$s$RESET$e "
   [[ -n "$current" ]] && p+="$s$DIM$e[Enter keeps current]$s$RESET$e "
-  read -e -r -p "$p" input || rc=1
-  if (( rc )) && [[ -z "$input" ]]; then return 1; fi
-  [[ -z "$input" && -n "$current" ]] && input="$current"
+  while :; do
+    rc=0; read -e -r -p "$p" input || rc=1
+    if (( rc )) && [[ -z "$input" ]]; then return 1; fi
+    [[ -z "$input" && -n "$current" ]] && input="$current"
+    [[ -z "$input" ]] || break
+    warn "a value is required"
+  done
   printf -v "$key" '%s' "$input"
 }
 
 # ask_secret KEY "Prompt" is like ask, but input is hidden.
 ask_secret() {
-  local key="$1" prompt="$2" current input rc=0
+  local key="$1" prompt="$2" current input rc
   current=$(_existing "$key" || true)
-  if [[ -n "$current" ]]; then
-    printf '  %s%s%s %s[Enter keeps current]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
-  else
-    printf '  %s%s%s ' "$BOLD" "$prompt" "$RESET"
-  fi
-  read -rs input || rc=1
-  printf '\n'
-  if (( rc )) && [[ -z "$input" ]]; then return 1; fi
-  [[ -z "$input" && -n "$current" ]] && input="$current"
+  while :; do
+    if [[ -n "$current" ]]; then
+      printf '  %s%s%s %s[Enter keeps current]%s ' "$BOLD" "$prompt" "$RESET" "$DIM" "$RESET"
+    else
+      printf '  %s%s%s ' "$BOLD" "$prompt" "$RESET"
+    fi
+    rc=0; read -rs input || rc=1
+    printf '\n'
+    if (( rc )) && [[ -z "$input" ]]; then return 1; fi
+    [[ -z "$input" && -n "$current" ]] && input="$current"
+    [[ -z "$input" ]] || break
+    warn "a value is required"
+  done
   printf -v "$key" '%s' "$input"
 }
 
@@ -160,7 +181,7 @@ _env_git_guard() {
 # replaces it atomically. Refuses a symlinked ENV_FILE, a git-tracked or
 # unignored one, and a value containing a single quote. On failure the file is unchanged.
 write_env() {
-  local key="$1" value="$2" target="$ENV_FILE" tmp perms rc=0
+  local key="$1" value="$2" target="$ENV_FILE" perms rc=0
   if [[ -L "$target" ]]; then
     warn "$target is a symlink; point ENV_FILE at the real file. $key not written"; return 1
   fi
@@ -175,55 +196,76 @@ write_env() {
     warn "$target is readable by other users."
     confirm "Restrict it to you (chmod 600)?" && chmod 600 "$target"
   fi
-  tmp=$(mktemp "$(dirname "$target")/.wizard-env.XXXXXX") || return 1
-  cp -p "$target" "$tmp" || { rm -f "$tmp"; return 1; }   # copies the mode
-  grep -vE "^${key}=" "$target" > "$tmp" || rc=$?         # 1 = no other lines, 2 = read error
-  if (( rc > 1 )) || ! printf "%s='%s'\n" "$key" "$value" >> "$tmp" || ! mv -f "$tmp" "$target"; then
-    rm -f "$tmp"; warn "couldn't write $key to $target; it is unchanged"; return 1
+  _ENV_TMP=$(mktemp "$(dirname "$target")/.wizard-env.XXXXXX") || return 1
+  cp -p "$target" "$_ENV_TMP" || { rm -f "$_ENV_TMP"; _ENV_TMP=""; return 1; }   # copies the mode
+  grep -vE "^${key}=" "$target" > "$_ENV_TMP" || rc=$?    # 1 = no other lines, 2 = read error
+  if (( rc > 1 )) || ! printf "%s='%s'\n" "$key" "$value" >> "$_ENV_TMP" || ! mv -f "$_ENV_TMP" "$target"; then
+    rm -f "$_ENV_TMP"; _ENV_TMP=""; warn "couldn't write $key to $target; it is unchanged"; return 1
   fi
+  _ENV_TMP=""
   printf -v "$key" '%s' "$value"
   WRITTEN_ENV+=("$key")
   printf '  %s✓ wrote%s %s → %s\n' "$GREEN" "$RESET" "$key" "$ENV_FILE"
 }
 
+# _check_gh_repo runs once, before the first gh write: it shows the repository
+# gh will write to and asks the human to confirm it. Returns 1 if not confirmed.
+_check_gh_repo() {
+  if [[ "$_GH_CHECKED" == 0 ]]; then
+    _GH_CHECKED=1
+    local repo
+    repo=$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null) || repo=""
+    if [[ -n "$repo" ]] && confirm "Write GitHub secrets and variables to $repo?"; then _GH_OK=1; fi
+  fi
+  [[ "$_GH_OK" == 1 ]]
+}
+
 # set_secret NAME VALUE sets a GitHub Actions repo secret via gh. Falls back
 # to a warning (and records it) if gh is unavailable or unauthenticated.
 set_secret() {
-  local name="$1" value="$2"
+  local name="$1" value="$2" err="gh not installed or not authenticated"
   if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
-    if printf '%s' "$value" | gh secret set "$name" >/dev/null 2>&1; then
+    _check_gh_repo || { SKIPPED+=("GitHub secret $name (target repository not confirmed; set it manually: gh secret set $name)"); warn "skipped GitHub secret $name: target repository not confirmed"; return; }
+    # The value goes in on stdin, so gh's stderr cannot echo it.
+    if err=$(printf '%s' "$value" | gh secret set "$name" 2>&1 >/dev/null); then
       WRITTEN_SECRET+=("$name")
       printf '  %s✓ set%s GitHub secret %s\n' "$GREEN" "$RESET" "$name"
       return
     fi
+    err="${err%%$'\n'*}"
   fi
-  SKIPPED+=("GitHub secret $name (set it manually: gh secret set $name)")
-  warn "skipped GitHub secret $name: gh not ready; set it later"
+  SKIPPED+=("GitHub secret $name (${err:-gh failed}; set it manually: gh secret set $name)")
+  warn "skipped GitHub secret $name: ${err:-gh failed}; set it later"
 }
 
 # set_var NAME VALUE sets a GitHub Actions repo variable (non-secret).
 set_var() {
-  local name="$1" value="$2"
+  local name="$1" value="$2" err="gh not installed or not authenticated"
   if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
-    if gh variable set "$name" --body "$value" >/dev/null 2>&1; then
+    _check_gh_repo || { SKIPPED+=("GitHub variable $name (target repository not confirmed; set it manually: gh variable set $name)"); warn "skipped GitHub variable $name: target repository not confirmed"; return; }
+    if err=$(gh variable set "$name" --body "$value" 2>&1 >/dev/null); then
+      WRITTEN_VAR+=("$name")
       printf '  %s✓ set%s GitHub variable %s\n' "$GREEN" "$RESET" "$name"
       return
     fi
+    err="${err%%$'\n'*}"
   fi
-  SKIPPED+=("GitHub variable $name (set it manually: gh variable set $name)")
-  warn "skipped GitHub variable $name, gh not ready; set it later"
+  SKIPPED+=("GitHub variable $name (${err:-gh failed}; set it manually: gh variable set $name)")
+  warn "skipped GitHub variable $name: ${err:-gh failed}; set it later"
 }
 
 # finish clears, then shows a closing summary of everything configured.
 finish() {
   _clear
   if (( ${#SKIPPED[@]} )); then
-    printf '\n%s%s  ⚠ Setup incomplete%s\n' "$BOLD" "$YELLOW" "$RESET"
+    printf '\n%s%s  ⚠ Setup incomplete: %s item(s) still to do%s\n' "$BOLD" "$YELLOW" "${#SKIPPED[@]}" "$RESET"
   else
     printf '\n%s%s  ✓ Setup complete%s\n' "$BOLD" "$GREEN" "$RESET"
   fi
   (( ${#WRITTEN_ENV[@]} ))    && note "wrote ${#WRITTEN_ENV[@]} value(s) to $ENV_FILE: ${WRITTEN_ENV[*]}"
   (( ${#WRITTEN_SECRET[@]} )) && note "set ${#WRITTEN_SECRET[@]} GitHub secret(s): ${WRITTEN_SECRET[*]}"
+  (( ${#WRITTEN_VAR[@]} ))    && note "set ${#WRITTEN_VAR[@]} GitHub variable(s): ${WRITTEN_VAR[*]}"
+  (( _STAGE_INDEX == TOTAL_STAGES )) || warn "TOTAL_STAGES=$TOTAL_STAGES but $_STAGE_INDEX stage(s) ran; fix TOTAL_STAGES"
   if (( ${#SKIPPED[@]} )); then
     printf '\n'; warn "still to do by hand:"
     for s in "${SKIPPED[@]}"; do note "  - $s"; done

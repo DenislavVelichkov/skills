@@ -4,6 +4,17 @@ Evidence supports a particular claim under particular inputs. A new commit
 does not by itself change every claim. Before repeating work, identify the
 changed input and the evidence it can invalidate.
 
+Terms used below:
+
+- Controller (proof controller): the project's existing tool or script that
+  runs checks and records which evidence applies to which candidate.
+- Observer: the tool that watches or captures runtime behavior, such as a
+  browser driver, device harness or screenshot capture.
+- Lease: a time-bounded claim on a shared device, environment or account that
+  a run holds while it uses that resource.
+- Proof policy: the project's rules for which evidence satisfies a claim and
+  which input changes invalidate it.
+
 ## Connected delivery
 
 Before substantial implementation or ticket drafting, trace the real user path

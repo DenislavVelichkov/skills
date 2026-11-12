@@ -7,7 +7,7 @@ description: Generates an interactive bash wizard that walks a human through ste
 
 A **wizard** is a bash script that walks a human, step by step, through a manual procedure that's tedious to do by hand and tedious to re-explain to an AI every time. It opens each URL, says exactly what to click and copy, captures the values, writes them where they belong (`.env`, GitHub secrets), confirms at every stage, and shows how many stages are left.
 
-The delightful UX is already solved by [template.sh](template.sh): stage-by-stage progress, confirmation gates, cross-platform URL opening (including WSL), hidden secret entry, idempotent `.env` upserts, `gh secret`/`gh variable` writes, and a closing summary. **Your job is only to scope the procedure and author its stages.** The library above the `STAGES` marker is identical in every wizard; that consistency is the point: never hand-edit it.
+The delightful UX is already solved by [template.sh](template.sh): stage-by-stage progress, confirmation gates, cross-platform URL opening (including WSL), hidden secret entry, idempotent `.env` upserts, `gh secret`/`gh variable` writes (after the human confirms the target repository), and a closing summary. **Your job is only to scope the procedure and author its stages.** The library above the `STAGES` marker is identical in every wizard; that consistency is the point: never hand-edit it.
 
 A wizard is ephemeral by default: built for one run, saved to a scratch or `scripts/` path, deleted when the job's done. Commit it only when the user wants a repeatable setup path that should live in the repo.
 
@@ -17,7 +17,7 @@ A wizard is ephemeral by default: built for one run, saved to a scratch or `scri
 
 Work out every manual step the human must take and every value that gets captured along the way. Read the repo first, don't ask cold:
 
-- For setup: `.env`, `.env.example`, `.env.*`, `README`, `docker-compose*`, framework config, and `.github/workflows/*` (every `secrets.*` / `vars.*` reference is a value the wizard must produce).
+- For setup: `.env.example`, key names only from `.env` and `.env.*` (`awk -f env-keys.awk .env` with this skill's [env-keys.awk](env-keys.awk); never read values into context), `README`, `docker-compose*`, framework config, and `.github/workflows/*` (every `secrets.*` / `vars.*` reference is a value the wizard must produce).
 - For a migration or transition: the current state, the target state, and the irreversible actions between them.
 
 If the wizard writes `.env` (or `$ENV_FILE`) inside a git repo, check that file before writing any secret to it: `git ls-files --error-unmatch <file>` succeeding means it is tracked, so stop and tell the user; `git check-ignore -q <file>` failing means it is not ignored, so propose adding it to `.gitignore` and add it only with the user's agreement. Outside a git repo, both checks pass. The template's `write_env` repeats these checks at run time (refusing an unignored file until it is ignored) and also refuses a symlinked `ENV_FILE` and any value containing a single quote.
@@ -34,7 +34,7 @@ For each stage, write the precise path a human follows: which URL to open, what 
 
 ### 3. Author the wizard
 
-Copy `template.sh` to the target path. Replace the example stage with one `stage` per step, in dependency order, and the `banner` title with this wizard's name. Use the library helpers: `banner`, `stage`, `say`/`step`, `note`/`warn`, `open_url`, `ask`/`ask_secret`, `write_env`, `set_secret`/`set_var`, `pause`/`confirm`, `finish`. Set `TOTAL_STAGES` to the number of stages you wrote.
+Copy `template.sh` to the target path. Replace the example stage with one `stage` per step, in dependency order, and the `banner` title with this wizard's name. Use the library helpers: `banner`, `stage`, `say`/`step`, `note`/`warn`, `open_url`, `ask`/`ask_secret`, `write_env`, `set_secret`/`set_var`, `pause`/`confirm`, `finish`. Set `TOTAL_STAGES` to the number of stages you wrote; the wizard warns when the count and the stages run disagree. `confirm` returns non-zero on no, which ends the script under `set -e`, so call it as `if confirm "..."; then ...; fi` or as `confirm "..." || exit 1`.
 
 Hold the bar the template sets: open the URL before asking for its value, use `ask_secret` for anything secret, `write_env` only values destined for `.env`, `set_secret`/`set_var` alone for GitHub-only values, and `confirm` before any irreversible action. Each `stage` clears the screen so only the current step is visible: keep a stage to one focused task so nothing the human needs scrolls away.
 

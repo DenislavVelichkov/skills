@@ -23,6 +23,8 @@ Use these terms exactly: don't substitute "component," "service," "API," or "bou
 
 **Adapter**: a concrete thing that satisfies an interface at a seam. Describes *role* (what slot it fills), not substance (what's inside).
 
+**Port**: an interface defined at a seam for an injected dependency; adapters satisfy it.
+
 **Leverage**: what callers get from depth. More capability per unit of interface they learn. One implementation pays back across N call sites and M tests.
 
 **Locality**: what maintainers get from depth. Change, bugs, knowledge, and verification concentrate in one place rather than spreading across callers. Fix once, fixed everywhere.
@@ -64,7 +66,7 @@ Use these terms exactly: don't substitute "component," "service," "API," or "bou
 - **Depth is a property of a module, judged at its interface, not by implementation size.** A deep module can be internally composed of small, mockable, swappable parts; they just aren't part of the interface. A module can have **internal seams** (private to its implementation, used by its own tests) as well as the **external seam** at its interface.
 - **The deletion test.** Imagine deleting the module. If complexity vanishes, it was a pass-through. If complexity reappears across N callers, it was earning its keep.
 - **The interface is the test surface.** By default, test caller-visible behaviour through the same seam callers cross. A focused test through an internal seam is fine for implementation detail, but if you need to test *past* the interface to check caller-visible behaviour, the module is probably the wrong shape. Accept dependencies instead of creating them, return results instead of producing side effects, and keep the interface small so tests need little setup.
-- **One adapter means a hypothetical seam. Two adapters means a real one.** Don't introduce a seam unless something actually varies across it.
+- **One adapter means a hypothetical seam. Two adapters means a real one.** Don't introduce a seam or port unless something actually varies across it.
 
 ## Relationships
 

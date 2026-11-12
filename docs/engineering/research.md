@@ -67,6 +67,7 @@ No, it now fires them for you. In the unreleased changes since v1.1, a charting 
 - One new Markdown file shows up, in the folder the repo already uses for notes, and the agent tells you the path.
 - Every claim in it carries a link, and following two at random lands you on an official doc, a spec, or the source file itself, not on someone's write-up of it.
 - You can make the decision you were stuck on from the file alone, without going back to the sources yourself.
+- The note gives the question and scope, the answer, the retrieval date (with source versions where they matter) and the open gaps, and an existing note on the topic is reused instead of rewritten.
 
 ## Where it fits
 

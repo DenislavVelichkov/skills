@@ -16,6 +16,8 @@ The goal is the entire spec implemented on a single **integration branch**, with
 
 The tickets form a **task graph**. Its **frontier** contains tickets whose blockers have landed on the integration branch with their required acceptance evidence. Track those results during the run; remote issues may remain open until the final PR merges. Preserve external blockers and any approved serial acceptance order. If unfinished tickets remain but none is ready, report their blockers rather than claiming completion.
 
+This skill depends on the sibling `implement` skill's [proportionate verification](../implement/VERIFICATION.md) and [model execution verification](../implement/MODEL-EXECUTION.md). If either file is unreadable, stop and report the missing path before dispatching any ticket.
+
 Read [proportionate verification](../implement/VERIFICATION.md) before choosing
 checks. Require each implementer to apply its expensive-execution preparation
 and recurring-failure diagnosis before costly runs or retries.
@@ -69,6 +71,8 @@ states none) and queue the rest of the authorized frontier.
    - runs `tdd` (invoked as above) to build the ticket within its assigned scope, preserving other workers' changes;
    - merges the integration branch tip into its own branch and rechecks affected behavior before reporting its commits, actual checks and unresolved acceptance gates.
 
+   If an implementer fails or a merge conflict stays unresolved, start one fresh replacement worker for that ticket (or follow the repository's retry limit). When that also fails, mark the ticket blocked, preserve its branch and report it, keep its dependents not ready, and continue the rest of the frontier.
+
 5. Require the usual acceptance evidence from every implementer. For assessed tickets, also require the worker's final **model gate** receipt in its native tool output; missing access to that evidence blocks acceptance. Merge its work to the integration branch with a **merger subagent**. Run one merger at a time: each starts from the current integration tip, and the coordinator confirms the tip it reports before the next merge or any frontier update. Give the merger the integration branch, the worker branch and commits, and the ticket; it may merge only into the integration branch and resolve conflicts within the ticket's scope, then rerun the affected checks and report the merge commit, conflicts resolved and check results. A merger that changes code or resolves conflicts for an assessed ticket applies the **model gate** first; incompatible ticket settings require separate workers. A blocked worker cannot make its dependents ready.
 
 6. If this changes the **frontier**, start **implementer subagents** for tickets
@@ -80,4 +84,4 @@ states none) and queue the rest of the authorized frontier.
 
 8. Mark a draft PR ready or resolve tickets through the configured tracker only after all required checks, review fixes and acceptance gates pass. While a human response or other gate remains pending, preserve the draft and open tickets, report the implementation candidate and exact blocker, and follow the project's approval-request format.
 
-9. Finish each active successful model gate, abort unfinished bindings, and remove temporary ticket snapshots. Remove only this run's worktrees after verifying their needed work is committed and retained on the integration branch or another recovery branch. Preserve unfinished work. End with one report: tickets landed, blockers and the location of unfinished work, the PR URL or draft state, and expected vs observed model/effort with mismatches for assessed tickets (list unassessed tickets without inventing recommendations or receipts).
+9. Finish each active successful model gate, abort unfinished bindings, and remove temporary ticket snapshots. Remove only this run's worktrees after verifying their needed work is committed and retained on the integration branch or another recovery branch. Preserve unfinished work. End with one report: each ticket's status (landed, blocked with its blocker, or pending a human gate), the location of unfinished work, the integration branch, the PR URL or draft state, the checks run and their results, and expected vs observed model/effort with mismatches for assessed tickets (list unassessed tickets without inventing recommendations or receipts).

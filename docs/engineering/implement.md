@@ -211,6 +211,7 @@ be resolved unambiguously, it asks for the missing input. Pass an issue URL,
 - Once comparison evidence is ready, the validator prints the exact approval
   question and the implementation turn ends with it. Work cannot continue
   until the human explicitly approves or rejects that candidate hash.
+- An assessed ticket's model gate stays active through fixes and checks, and the run never reads "continue", a prototype pick, green tests or a clean review as visual approval.
 
 ## Where it fits
 

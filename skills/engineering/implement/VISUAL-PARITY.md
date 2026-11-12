@@ -1,6 +1,6 @@
 # Visual parity action
 
-Read this only for a visual parity action, as defined in SKILL.md.
+Read this only for a visual parity action, as defined in SKILL.md. `docs/agents/visual-acceptance.md` in the target repo is the schema authority; this file orders the steps.
 
 ## Prerequisite
 

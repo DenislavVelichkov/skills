@@ -90,6 +90,9 @@ It did. It's now model-invoked, so the agent reaches for it unprompted when it h
 - Each stage fits one screen. Nothing you still need has scrolled away.
 - Ctrl-C and re-run picks up where you left off, offering the values already saved as defaults.
 - The final screen lists what it wrote, and separately lists what it couldn't do and you have to finish by hand.
+- The agent lists the key names in your `.env` without reading their values.
+- Before the first GitHub secret or variable is written, the wizard names the repository and asks you to confirm it.
+- An empty answer is asked again, and the closing screen warns when the stage count and the stages run disagree.
 
 ## Where it fits
 

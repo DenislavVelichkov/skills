@@ -56,9 +56,10 @@ Break the work into **tracer bullet** tickets.
 
 Give each ticket its **blocking edges**: the other tickets that must complete before it can start. A ticket with no blockers can start immediately.
 
-Plan verification alongside these edges: read
-[proportionate verification](../implement/VERIFICATION.md) before selecting
-validation. If that file is missing, give each
+Plan verification alongside these edges. For desktop versus focused native
+checks, minimum extraction, and complete final proof, read
+[proportionate verification](../implement/VERIFICATION.md) before drafting
+connected batches or selecting validation. If that file is missing, give each
 ticket a focused-check note and a final-suite gate, and report the missing file.
 
 - **Validation note**: give each ticket a short note in its existing fields (no

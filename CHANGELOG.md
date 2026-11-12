@@ -1,5 +1,14 @@
 # mattpocock-skills
 
+## 1.4.8
+
+### Patch Changes
+
+- Port the remaining Codex-only skill changes from `dv8/main-codex`, written in this branch's conventions. `implement-spec` checks ticket dependencies against the sibling `implement` files, gives a failed ticket one fresh replacement worker before reporting it blocked, and closes with a fuller report. `implement` binds and verifies the model gate through fixes and checks and never infers visual approval. `research` reuses existing notes, separates facts from inferences, and records the retrieval date. `wayfinder` reconciles the *Decisions so far* pointers on load and queries the tracker before retrying a create. `handoff` uses fixed headings, a `handoff-` file name and scoped authorization. `grilling` returns its record to the invoking skill.
+- `wizard` lists `.env` key names with the new `env-keys.awk` instead of reading values, confirms the target repository before the first GitHub write, re-prompts on empty required input, cleans up its temp file on exit, and reports unfinished items. The existing `.env` safety model is unchanged.
+- `setup-matt-pocock-skills` handles an unused remote name, lists every command in its draft, and records hook-check exit statuses. Its visual manifest validator resolves real paths and rejects non-regular files, and the visual-acceptance reference gains the evidence and approval fields.
+- Smaller ports in `codebase-design` (port and adapter terms), `improve-codebase-architecture` (Windows opener, pinned Mermaid version, dependency-category tag), `tdd`, `to-tickets`, `triage`, `ask-matt`, `setup-ts-deep-modules` and `scaffold-exercises`. Keep the READMEs and public docs consistent.
+
 ## 1.4.7
 
 ### Patch Changes

@@ -5,17 +5,20 @@ argument-hint: "What will the next session be used for?"
 disable-model-invocation: true
 ---
 
-Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save to a unique file in the user's OS temporary directory, using the platform's temporary-file API or configured temp directory. Report the absolute saved path.
+Write a handoff document summarising the current conversation so a fresh agent can continue the work. Save to a unique file (name prefix `handoff-`) in the user's OS temporary directory, using the platform's temporary-file API or configured temp directory. Report the absolute saved path. If the next session may run elsewhere or after a restart, say this path is ephemeral and offer a durable location the user chooses.
 
-Include the objective, confirmed scope and authorization, key decisions and
-reasons, completed work, current state, remaining requirements, blockers, and
-next action. For repository work, record the checkout, branch, relevant commits,
-and uncommitted changes. Preserve pending approvals and external writes whose
-outcomes are uncertain so continuation can check them before retrying.
+Use these headings in this order: Objective, Authorization, Decisions (with
+reasons), Done, State, Remaining, Blockers, Next action, Suggested skills.
+Record each authorization with its exact scope and source (who gave it, and
+where). It covers only that scope; anything outside it, and any external write
+whose outcome is uncertain, needs user confirmation. For repository work, record
+the checkout, branch, relevant commits, and uncommitted changes. Preserve pending
+approvals and external writes whose outcomes are uncertain so continuation can
+check them before retrying.
 
-Include a "suggested skills" section. Name available model-invoked skills the
-next agent should call the Skill tool for. Mark user-invoked
-skills as choices for the user to invoke; reading the handoff does not invoke them.
+Under Suggested skills, name available model-invoked skills the next agent
+should call the Skill tool for. Mark user-invoked skills as choices for the
+user to invoke; reading the handoff does not invoke them.
 
 Do not duplicate content already captured in other artifacts (specs, plans, ADRs, issues, commits, diffs). Reference them by path or URL instead.
 
