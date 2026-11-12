@@ -32,7 +32,7 @@ Type `/code-review`, or the agent reaches for it automatically when you ask to r
 | The whole codebase has drifted, not one diff | [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) |
 | Something is broken and you do not know why | [diagnosing-bugs](https://aihero.dev/skills-diagnosing-bugs) |
 
-A supplied fixed point wins. Otherwise the review derives it from the recorded task-start commit, established PR base or verified upstream merge-base, in that order. It states the derivation and asks only when the evidence is missing or conflicting. It resolves refs to commit ids before capturing the scope. Requested uncommitted changes remain in scope even when the committed diff is empty. An invalid ref stops the review before any sub-agent is spawned, so a mistyped branch name fails in front of you.
+A supplied fixed point wins. Otherwise the review derives it from the recorded task-start commit, established PR base or verified upstream merge-base, in that order. It states the derivation and asks only when the evidence is missing or conflicting. It resolves refs to commit ids before capturing the scope; when the fixed point is not an ancestor of the candidate, it states the merge-base it actually compared from. Requested uncommitted changes remain in scope even when the committed diff is empty. An invalid ref stops the review before any sub-agent is spawned, so a mistyped branch name fails in front of you.
 
 ## Prerequisites
 

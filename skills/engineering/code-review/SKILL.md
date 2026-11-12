@@ -13,6 +13,8 @@ include uncommitted work when the user requests a work-in-progress review:
 Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings. Start every sub-agent with a fresh context window.
 
 Before reviewing an integrated candidate, read [proportionate verification](../implement/VERIFICATION.md), including connected delivery.
+If that file is unreadable, continue the read-only review and report the
+verification-guidance check as unavailable.
 Inspect retained results passively; identify missing proof without launching another
 live scenario. Review does not authorize runtime execution; running a visual
 manifest's validator (step 4) is the one permitted read-only check, and only
@@ -41,7 +43,9 @@ unless the user names one) to commit ids before reviewing:
 `git rev-parse --verify '<ref>^{commit}'`. Use those ids in
 `git diff --no-ext-diff --no-textconv <fixed-point>...<candidate>` and
 `git log <fixed-point>..<candidate> --oneline`; three-dot compares from their
-merge-base. Retain the command outputs as the frozen committed scope.
+merge-base. If `git merge-base --is-ancestor <fixed-point> <candidate>` fails,
+record the `git merge-base` id and state it as the effective baseline.
+Retain the command outputs as the frozen committed scope.
 
 For a work-in-progress review, also capture
 `git diff --no-ext-diff --no-textconv <candidate>` for the
@@ -76,6 +80,9 @@ Look for the originating spec, in this order:
    resolved, ask the user while continuing the Standards review. Report the
    Spec axis as unavailable until its requirements are known; do not invent a
    spec or claim a complete two-axis pass.
+
+Use lower-priority sources only to fill gaps in a higher-priority one. Report
+conflicts between sources instead of silently replacing the requested spec.
 
 ### 3. Identify the standards sources
 
@@ -127,6 +134,7 @@ Include this scope in both sub-agent prompts:
 - Which remaining requirements and gates (including ones outside this diff) still have owners?
 - For changed acceptance tooling: is there a retained successful real entry-path invocation, and actual producer output accepted by its consumer?
 - Compare claimed scenario coverage with assertions actually exercised, including named gaps.
+- Assess restoration (a retained, successful cleanup check for mutated state) and prerequisite readiness (expiry versus run duration) per "Prepare expensive execution" in the verification guidance.
 - For a requested rerun: which changed input or unresolved diagnostic question does it answer?
 - Report missing proof under its axis without launching live journeys.
 

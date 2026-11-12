@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.4.7
+
+### Patch Changes
+
+- Port four `code-review` safeguards from `dv8/main-codex`. When the fixed point is not an ancestor of the candidate, the review records the merge-base and states it as the effective baseline. An unreadable verification guide no longer stops the read-only review: the check is reported as unavailable. Lower-priority spec sources only fill gaps in a higher-priority one, and conflicts between sources are reported. Both sub-agents also assess restoration and prerequisite readiness for expensive execution. The public docs say the same.
+
 ## 1.4.6
 
 ### Patch Changes
