@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.4.13
+
+### Patch Changes
+
+- `codebase-design` drops the "Relationships" section, as decided on 2026-11-12, so both family branches match. Three of its four bullets repeated the glossary. The fourth moves into the glossary: a module has exactly one interface. The docs page vocabulary table says the same.
+
 ## 1.4.12
 
 ### Patch Changes
