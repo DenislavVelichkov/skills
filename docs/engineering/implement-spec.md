@@ -34,7 +34,7 @@ You invoke this by typing `/implement-spec`, and the agent won't reach for it on
 
 - **An issue tracker.** The skill reads the tickets from, and resolves them on, the tracker [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) configured. If none has been configured, it stops and tells you to run that first rather than guessing.
 - Approved tickets with their blocking edges, as [to-tickets](https://aihero.dev/skills-to-tickets) writes them. A flat graph does not change project concurrency or acceptance authority.
-- A host that permits subagents and supports isolated worktrees. Typing `/implement-spec` is itself the request to delegate, but the host's permission check still applies. Missing capabilities stop dispatch; the skill recommends invoking `implement` per ticket instead. Each worker preserves existing checkout changes and commits.
+- A host that permits subagents and supports isolated worktrees. Typing `/implement-spec` is itself the request to delegate, but the host's permission check still applies. The skill exists to run tickets at the same time, so on a host that runs subagents one at a time, it is only a slower `implement`. Missing capabilities stop dispatch; the skill recommends invoking `implement` per ticket instead. Each worker preserves existing checkout changes and commits.
 
 ## The integration branch
 
@@ -84,7 +84,7 @@ No, not any more. One user who liked the in-progress version had exactly this co
 
 **Its review and fix loop ran for hours, or kept "fixing" tickets that hadn't been built yet.**
 
-The full spec review runs after all ticket implementations have landed. Earlier reviews occur only when the approved acceptance order requires them, and cover the integrated ticket scope. They must not treat blocked tickets as missing implementation. Accepted fixes go back to the affected implementers, then receive checks and a delta review with affected callers. A later commit does not by itself require repeating the full review.
+The full spec review runs after all ticket implementations have landed. Earlier reviews occur only when the approved acceptance order requires them, and cover the integrated ticket scope. They must not treat blocked tickets as missing implementation. Accepted fixes go back to the affected implementers, verifying model and effort when an assessment applies, then receive checks and a delta review with affected callers. A later commit does not by itself require repeating the full review.
 
 **Does it drive tdd like implement does?**
 
@@ -114,6 +114,8 @@ A worktree holds only what git tracks. Tests that read gitignored fixtures, loca
 - Every ticket's trace shows `tdd` running, with a failing test before the code.
 - The integrated candidate passes its required checks after merges and conflict fixes.
 - Complete work ends on one branch with every ticket resolved and a PR only if your tracker wanted one. Pending gates remain visible, with unfinished work preserved.
+- A ticket whose implementer or merge fails gets one fresh replacement worker. If that fails too, the ticket is reported as blocked with its branch kept, its dependents wait, and the rest of the frontier continues.
+- The run ends with one report: each ticket's status, where unfinished work lives, the integration branch, the PR URL if there is one, the checks run, and any remaining blockers.
 - When concurrency is authorized, at most three implementers run at once unless the host states another limit. The rest of the frontier queues, and each merge starts from the confirmed integration tip.
 - Review fixes stop after two passes unless the repository defines another limit. Findings left at the limit are reported as blockers, with any PR kept in draft and the integration candidate preserved.
 

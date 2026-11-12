@@ -82,7 +82,7 @@ Yes, with a fallback. `DESIGN-IT-TWICE.md` names no [harness](https://www.aihero
 
 **Can I add my own concepts to the glossary, such as connascence, module secrets, [progressive disclosure](https://www.aihero.dev/ai-coding-dictionary/progressive-disclosure)?**
 
-People have proposed those. [Issue #180](https://github.com/mattpocock/skills/issues/180) adds Parnas's module secrets and Page-Jones's connascence as a naming layer for *what* is leaking across a seam, with a working diff attached; [issue #303](https://github.com/mattpocock/skills/issues/303) proposes progressive disclosure inside the implementation, so a module that is deep at its public interface also has structure inside it. Both are open and unmerged. The shipped glossary is small on purpose, and the skill itself gives the reason: consistent language is the whole point, and a term nobody uses consistently is worse than no term.
+People have proposed those. [Issue #180](https://github.com/mattpocock/skills/issues/180) adds Parnas's module secrets and Page-Jones's connascence as a naming layer for *what* is leaking across a seam, with a working diff attached; [issue #303](https://github.com/mattpocock/skills/issues/303) proposes progressive disclosure inside the implementation, so a module that is deep at its public interface also has structure inside it. Both are open and unmerged. The shipped glossary is small on purpose, and the skill tells agents to use its terms exactly: a term nobody uses consistently is worse than no term.
 
 ## It's working if
 
@@ -91,6 +91,7 @@ People have proposed those. [Issue #180](https://github.com/mattpocock/skills/is
 - A proposed seam comes with a second adapter named, not just the first one.
 - Discussion of an interface covers invariants, ordering and error modes, not only the type signature.
 - Asked to design one module, it returns the interface, the seam, the tests at the interface and the unresolved decisions, then stops. If the agent begins surveying the codebase or proposing refactors you did not ask for, it has mistaken the reference for a driver.
+- A dependency that crosses a seam is described as a port (the interface defined at that seam) with the adapters that satisfy it, and no port appears with fewer than two justified adapters.
 - Before an old unit test is deleted, the interface test that covers each of its assertions is named and passing, and the removed tests are listed.
 
 ## Where it fits

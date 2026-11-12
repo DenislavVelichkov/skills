@@ -13,7 +13,7 @@ comparison.
 
 The tracker file also tells agents to record implementation results in the existing issue or ticket, including verification and work still open. A commit reference alone does not update that record. Re-running setup adds missing conventions while preserving the repo's tracker choices and local guidance.
 
-It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, existing `AGENTS.md` and `CLAUDE.md`, and `GLOSSARY.md`, reuses choices and authorization already supplied, and asks only about unresolved decisions before writing the agreed setup.
+It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, existing `AGENTS.md` and `CLAUDE.md`, and `GLOSSARY.md`, reuses choices and authorization already supplied, asks only about unresolved decisions, and shows you one draft to approve before it writes anything.
 
 ## When to reach for it
 
@@ -191,6 +191,8 @@ One long-standing complaint says yes, in these words: _"having a skill to set up
 - Repositories expose the visual parity action test through the instruction
   file the active harness reads. UI work without a production-to-reference
   comparison creates no manifest.
+- You see one draft that lists every file and every command setup will run (`git init`, `git remote add`, label creation) before anything is written, and an `origin` that points at another host is left alone.
+- The hook check records the commands it ran and their exit statuses: non-zero for a blocked case, zero for a passing one.
 - The GitHub tracker doc files issues only into your own repository, and asks before the first `gh issue create` when the verified destination is not yours.
 
 ## Where it fits

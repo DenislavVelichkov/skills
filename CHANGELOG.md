@@ -1,5 +1,14 @@
 # mattpocock-skills
 
+## 1.3.2+codex.20261112docs
+
+### Patch changes
+
+- Docs only: carry the statements that only the Claude pages had, as decided one at a time on 2026-11-12. No skill changes.
+- `codebase-design` page: a cross-seam dependency is described as a port with its adapters, and no port has fewer than two justified adapters. The glossary answer no longer quotes a sentence the skill dropped; it says the skill tells agents to use its terms exactly.
+- `implement-spec` page: on a host that runs subagents one at a time the skill is only a slower `implement`, review fixes verify model and effort when an assessment applies, a failed implementer or merge gets one fresh replacement worker, and the run ends with one report.
+- `setup-matt-pocock-skills` page: setup shows one draft that lists every file and command before anything is written and leaves an `origin` on another host alone, and the hook check records its commands and exit statuses.
+
 ## 1.3.2+codex.20261112relations
 
 ### Patch changes
