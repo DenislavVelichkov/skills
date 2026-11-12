@@ -51,7 +51,8 @@ The user's `/implement-spec` request is the delegation request; the host permiss
 Keep communication with subagents sparse: pass **context pointers** to the spec, tickets, research notes and previous commits instead of duplicating their content.
 
 Run **implementer subagents** in the background where supported and concurrency
-is authorized.
+is authorized. Run at most the host's subagent limit at once (3 if the host
+states none) and queue the rest of the authorized frontier.
 
 ## Model gate
 
@@ -82,11 +83,11 @@ Read [model execution verification](../implement/MODEL-EXECUTION.md) to distingu
 
    If an implementer fails or a merge conflict stays unresolved, start one fresh replacement worker for that ticket (or follow the repository's retry limit). When that also fails, mark the ticket blocked, preserve its branch and report it, keep its dependents not ready, and continue the rest of the frontier.
 
-5. Require the usual acceptance evidence from every implementer, plus the [Model gate](#model-gate) receipt for assessed tickets. Merge its work to the integration branch with a **merger subagent**, bound per [Model gate](#model-gate) when it changes code or resolves conflicts for an assessed ticket. One merger owns the integration checkout at a time: run merges sequentially, never two at once, and record the integration head each merge verified. A blocked worker cannot make its dependents ready.
+5. Require the usual acceptance evidence from every implementer, plus the [Model gate](#model-gate) receipt for assessed tickets. Merge its work to the integration branch with a **merger subagent**, bound per [Model gate](#model-gate) when it changes code or resolves conflicts for an assessed ticket. One merger owns the integration checkout at a time: run merges sequentially, never two at once, and record the integration head each merge verified. Each merger starts from the current integration tip, and the coordinator confirms the tip it reports before the next merge or any frontier update. Give the merger the integration branch, the worker branch and commits, and the ticket. It may merge only into the integration branch and resolve conflicts within the ticket's scope, then reruns the affected checks and reports the merge commit, conflicts resolved and check results. A blocked worker cannot make its dependents ready.
 
 6. If this changes the **frontier**, start **implementer subagents** for tickets
-   whose dispatch is authorized by the project order. Continue other authorized
-   checks and integration; a pending serial gate keeps its dependents blocked.
+   whose dispatch is authorized by the project order, within the concurrency
+   cap above. Continue other authorized checks and integration; a pending serial gate keeps its dependents blocked.
 
 7. Once all ticket implementations have landed, run required checks on the integrated candidate and follow the loaded `code-review` skill against the task-start commit and full spec. Route accepted fixes to the affected ticket implementers, bound per [Model gate](#model-gate), then validate and review their delta with affected callers. Run at most two review-fix passes unless the repository defines another limit. At the limit, preserve the integration candidate and report the recurring findings or acceptance blockers instead of looping.
 

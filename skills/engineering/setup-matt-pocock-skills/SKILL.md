@@ -93,8 +93,9 @@ Show the user a draft of:
 
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
 - The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
-- The conditional visual-acceptance pointer and
-  `docs/agents/visual-acceptance.md`
+- The conditional visual-acceptance pointer, `docs/agents/visual-acceptance.md`,
+  `docs/agents/visual-acceptance.template.json` and
+  `./scripts/validate-visual-acceptance.mjs` (target repository root)
 - The local hook and check commands, `docs/agents/local-verification.md`, and
   updates to existing review, native, evidence and progress guidance where
   applicable

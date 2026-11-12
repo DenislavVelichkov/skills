@@ -121,6 +121,7 @@ It is this skill. v1.1 renamed it to `wayfinder`, and you invoke it as `/wayfind
 - The session that finishes the map points you toward a spec, not a pull request.
 - A map with a visual parity action cannot clear while its comparison target
   lacks a durable, hashed reference in the acceptance manifest.
+- After charting or resolving, it reads the tracker back (labels, links, blocking edges, the *Decisions so far* pointer) and reports writes as verified only when the readback matches.
 
 ## Where it fits
 

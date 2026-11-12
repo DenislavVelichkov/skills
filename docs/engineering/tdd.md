@@ -97,6 +97,8 @@ No. Run against one ticket, it can propose work that belongs to a sibling ticket
 - Expected values in assertions are literals you can trace to the spec, not values recomputed the way the code computes them.
 - Renaming an internal function breaks nothing in the suite.
 - Mocks appear only at external boundaries (the payment API, the clock) and never around your own modules.
+- Failures that existed before the first cycle are recorded as a baseline and are not counted as red.
+- A test that would change state in a real external service runs only against sandbox endpoints with test credentials; otherwise the boundary is mocked or the agent asks.
 
 ## Where it fits
 

@@ -13,7 +13,9 @@ If the user passes a spec, a saved or published plan, a Wayfinder map, or a `spe
 For TDD where possible at pre-agreed seams, call the Skill tool with "tdd"; at
 review checkpoints, with "code-review". Without a Skill tool, read each named
 skill through the host's supported skill-loading mechanism. Report an
-unavailable required review rather than claiming it ran.
+unavailable required review rather than claiming it ran. Use `tdd` for every
+behavior change; skip it only for changes with none, such as config- or
+docs-only edits.
 
 1. **Resolve the work.** For a ticket, read its body, comments, linked
    requirements and blocking status, following `docs/agents/issue-tracker.md`
@@ -30,7 +32,10 @@ unavailable required review rather than claiming it ran.
    Stop on mismatches or missing evidence. The gate stays active through fixes
    and checks and finishes before you report completion.
 3. **Record the start.** Record the current branch and task-start commit before
-   editing, preserving unrelated changes.
+   editing, preserving unrelated changes. If the current branch is the default
+   branch, create a feature branch named after the ticket before the first
+   commit. Ask only when project instructions name a branch convention you
+   cannot satisfy.
 4. **Plan verification.** Before planning batches or choosing checks, read
    [VERIFICATION.md](VERIFICATION.md) "Connected delivery" and "Choose the
    check". Read its other sections only when they apply: "Bound verification

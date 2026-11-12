@@ -36,3 +36,6 @@ Return recommendations grounded in the specified session. Apply them only when t
    caused a failure or repeated rework; medium: cost noticeable time or tokens;
    low: polish); an empty list is valid. Separate instruction checks from observed agent behavior
    and measured improvement on later work. Wording alone cannot prove a speedup.
+
+6. Report each candidate with: category, cited event or verified gap, owner
+   file, proposed change, success criterion and evaluation, and severity.

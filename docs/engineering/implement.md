@@ -216,6 +216,7 @@ be resolved unambiguously, it asks for the missing input. Pass an issue URL,
 - Once comparison evidence is ready, the validator prints the exact approval
   question and the implementation turn ends with it. Work cannot continue
   until the human explicitly approves or rejects that candidate hash.
+- Started on the default branch, the run creates a feature branch named after the ticket before its first commit, and every behavior change goes through `tdd`.
 
 ## Where it fits
 

@@ -154,7 +154,7 @@ const validateApproval = (approval, candidates, deviations, label, errors) => {
       `${label}.approval.candidateSetSha256 is ${approval.candidateSetSha256}; expected ${expected}`,
     );
   }
-  if (deviations.some((deviation) => deviation.approved !== true))
+  if (deviations.some((deviation) => !isRecord(deviation) || deviation.approved !== true))
     errors.push(`${label} has an unapproved deviation`);
 };
 

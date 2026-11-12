@@ -1,5 +1,13 @@
 # mattpocock-skills
 
+## 1.3.2+codex.20261112drift
+
+### Patch changes
+
+- Port the remaining Claude-only skill changes from `dv8/main-claude`, written in this branch's conventions. `implement-spec` caps concurrent implementers at the host limit (3 when none is stated) and starts each merge from the confirmed integration tip. `implement` creates a feature branch when started on the default branch and uses `tdd` for every behavior change. `wayfinder` takes the frontier order from the tracker query and reads the tracker back after charting and resolving.
+- `research` stops at about ten sources, records disagreeing sources with both citations, and never overwrites an existing note. `tdd` records pre-existing failures as a baseline and restricts state-changing external calls to sandbox endpoints. `retro` reports each recommendation with fixed fields. `code-review` asks which source governs when issue requirements conflict with a supplied spec.
+- The visual manifest validator rejects a non-object deviation entry, the architecture report escapes single quotes and attribute values, and the `setup-matt-pocock-skills` draft lists the visual template and validator. Keep the public docs consistent.
+
 ## 1.3.2+codex.20261112review
 
 ### Patch changes

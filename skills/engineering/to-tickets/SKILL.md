@@ -71,6 +71,9 @@ ticket a focused-check note and a final-suite gate, and report the missing file.
 - **Rerun ticket**: put that rerun in its own ticket
   where the approved workflow permits, instead of making feature tickets wait on it. Every
   affected acceptance claim still needs current proof before closure.
+  Example: checkpoint `03: Repair shared date contract`; rerun
+  `04: Rerun Cart visual comparison` blocked by 03; feature `05` blocked by 03,
+  not 04.
 
 If an existing serial acceptance chain prevents independent work, show the
 alternative dependency order during the approval step. Preserve that chain

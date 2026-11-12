@@ -71,6 +71,7 @@ No. Point the later session, spec or ticket at the saved file.
 - Following a factual claim's citation reaches the source that owns it.
 - Inferences are labeled and conflicting evidence remains visible.
 - An authorized worker completes its task without a second delegation.
+- The note stops at about ten sources, records disagreeing primary sources side by side with both citations, and never overwrites an existing note.
 
 ## Where it fits
 

@@ -114,6 +114,7 @@ A worktree holds only what git tracks. Tests that read gitignored fixtures, loca
 - Every ticket's trace shows `tdd` running, with a failing test before the code.
 - The integrated candidate passes its required checks after merges and conflict fixes.
 - Complete work ends on one branch with every ticket resolved and a PR only if your tracker wanted one. Pending gates remain visible, with unfinished work preserved.
+- When concurrency is authorized, at most three implementers run at once unless the host states another limit. The rest of the frontier queues, and each merge starts from the confirmed integration tip.
 
 ## Where it fits
 

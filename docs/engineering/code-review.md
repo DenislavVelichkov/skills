@@ -113,6 +113,7 @@ Yes, when you request a work-in-progress review. It captures the working-tree de
 - With a visual parity action, the report preserves the manifest's exact state
   and never converts a clean review into Member acceptance or baseline
   promotion.
+- When issue requirements conflict materially with a spec you supplied, it asks you which governs instead of switching review targets.
 
 ## Where it fits
 

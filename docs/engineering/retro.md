@@ -66,6 +66,7 @@ The input is different. [improve-codebase-architecture](https://aihero.dev/skill
 - Repeat mistakes turn into failing checks, and your `AGENTS.md` gets shorter over time, not longer.
 - If a check already existed but was not connected, the finding is to connect it, not a proposal to build a new one.
 - The next session on the same kind of task finds what it needs faster.
+- Each recommendation is reported with its category, the cited event or verified gap, the owner file, the proposed change, a success criterion with its evaluation, and a severity.
 
 ## Where it fits
 

@@ -86,7 +86,9 @@ Look for the originating spec, in this order:
    spec or claim a complete two-axis pass.
 
 Use lower-priority sources only to fill gaps in a higher-priority one. Report
-conflicts between sources instead of silently replacing the requested spec.
+conflicts between sources instead of silently replacing the requested spec. If
+issue requirements conflict materially with a user-supplied spec, ask the user
+which governs while continuing the Standards review.
 
 ### 3. Identify the standards sources
 
