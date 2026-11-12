@@ -29,7 +29,7 @@ Three of the five options at a phase boundary preserve different things: `/compa
 
 ## What travels, and what doesn't
 
-The document carries the live thread (what's in flight, why, and what's next) under fixed headings in this order: Objective, Authorization, Decisions, Done, State, Remaining, Blockers, Next action, and **Suggested skills**, which names what the next agent should reach for. The skill redacts secrets before it writes the file.
+The document carries the live thread (what's in flight, why, and what's next) under fixed headings in this order: Objective, Authorization, Decisions (with reasons), Done, State, Remaining, Blockers, Next action, and **Suggested skills**, which names what the next agent should reach for. The skill redacts secrets before it writes the file.
 
 It deliberately does not carry anything already written down. The document references specs, plans, ADRs, issues, commits and diffs by path or URL, and never copies them. That keeps the file small, and it keeps the settled detail in one place instead of two copies that drift apart.
 

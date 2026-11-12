@@ -11,7 +11,7 @@ Work in this loop: agree the goal's scope, acceptance criteria and a progress-re
 
 ## Schedules
 
-When the host supports scheduling, propose a schedule (interval and purpose) for wiki Lint and other recurring checks. Create it only after the user agrees.
+When the host supports scheduling, propose schedules (interval and purpose) for wiki Lint and a recurring goal-status review. Create each only after the user agrees.
 
 ## Subagents
 

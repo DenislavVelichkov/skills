@@ -1,5 +1,17 @@
 # mattpocock-skills
 
+## 1.3.2+codex.20261112oneside
+
+### Patch changes
+
+- Resolve the 19 one-side-only rules from the 2026-11-12 re-audit, so both family branches carry the same rules in their own conventions.
+- `codebase-design` design-it-twice: when a worker's design does not arrive, draft it locally, or compare the designs you have and name the missing one. `improve-codebase-architecture` names the deepened module's interface, its seam and the surviving tests when a shape is settled.
+- `wizard` checks that the number of stages equals `TOTAL_STAGES` and gives the exact working directory and command, plus `ENV_FILE=<path>` when `.env` is not at the root. A repeated "don't touch the library" sentence is removed.
+- `code-review` names the default candidate: HEAD, or the PR head commit for a PR, unless the user names one. `pr` drops a repeated clause about before evidence that cannot be obtained.
+- `handoff` records decisions with their reasons. `to-questionnaire` asks about a deadline only together with another question about what the user needs back. `writing-for-agents` settles a disputed leading word by test, as it does a disputed no-op. `chief-of-staff` proposes a recurring goal-status review as a schedule.
+- The `setup-matt-pocock-skills` README entries list triage labels and visual-acceptance support.
+- Keep the public docs for `codebase-design`, `improve-codebase-architecture`, `wizard`, `code-review`, `handoff`, `to-questionnaire` and `writing-for-agents` aligned with these rules. The `codebase-design` page no longer says the design-it-twice reference names a Claude Code tool.
+
 ## 1.3.2+codex.20261112reaudit
 
 ### Patch changes

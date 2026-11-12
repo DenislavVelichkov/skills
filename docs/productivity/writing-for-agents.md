@@ -41,8 +41,8 @@ Replace vague demands with concrete actions and observable completion criteria.
 A stronger word is the second choice, and alone it is not evidence of better
 behavior. State the positive action in place of a prohibition, and keep the
 prohibitions that guard scope, permissions or correctness beside it. Delete a
-no-op as a whole sentence, and settle a disputed one by running the old and new
-versions on the same prompt.
+no-op as a whole sentence, and settle a disputed no-op or leading word by
+running the old and new versions on the same prompt.
 
 ## Common questions
 

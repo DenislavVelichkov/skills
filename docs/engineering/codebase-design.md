@@ -48,7 +48,9 @@ Two supporting files go further, and the skill reads them on demand rather than 
 When you request alternative interfaces, the design-it-twice reference compares
 three distinct designs, adding a fourth only for relevant cross-seam dependencies.
 It uses authorized workers when the host supports delegation, or develops the
-same alternatives locally. Flexibility stays within the required use cases.
+same alternatives locally. When a worker's design does not arrive, the agent
+drafts it locally, or compares the designs it has and names the missing one.
+Flexibility stays within the required use cases.
 
 ## Common questions
 
@@ -74,7 +76,7 @@ It does now, but for a long time it did not. v1.0 removed the inline deep-module
 
 **Does the design-it-twice pattern work outside Claude Code?**
 
-Not cleanly. `DESIGN-IT-TWICE.md` says "spawn 3+ sub-agents in parallel using the Agent tool", and "Agent" is the name of a Claude Code [tool](https://www.aihero.dev/ai-coding-dictionary/tool). The repo ships metadata for other [harnesses](https://www.aihero.dev/ai-coding-dictionary/harness), including Codex, and those may have no tool with that name. So the parallel-design phase is less portable than the skill's metadata suggests. [Issue #564](https://github.com/mattpocock/skills/issues/564) tracks this, and it is open.
+Yes, with a fallback. `DESIGN-IT-TWICE.md` names no [harness](https://www.aihero.dev/ai-coding-dictionary/harness) [tool](https://www.aihero.dev/ai-coding-dictionary/tool). It uses authorized workers when the host supports delegation, and otherwise develops the same alternatives locally. When a worker's design does not arrive, the agent drafts it locally, or compares the designs it has and names the missing one. [Issue #564](https://github.com/mattpocock/skills/issues/564) raised the original portability problem.
 
 **Can I add my own concepts to the glossary, such as connascence, module secrets, [progressive disclosure](https://www.aihero.dev/ai-coding-dictionary/progressive-disclosure)?**
 

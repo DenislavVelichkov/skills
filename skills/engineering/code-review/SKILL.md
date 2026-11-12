@@ -46,7 +46,8 @@ commit, an established PR base, or the branch's verified upstream merge-base,
 in that order. State the derivation. Ask only when these are unavailable or
 conflicting; never choose a recent commit that omits part of the requested work.
 
-Resolve the fixed point and candidate to commit ids before reviewing:
+Resolve the fixed point and candidate (HEAD, or the PR head commit for a PR,
+unless the user names one) to commit ids before reviewing:
 `git rev-parse --verify '<ref>^{commit}'`. Use those ids in
 `git diff --no-ext-diff --no-textconv <fixed-point>...<candidate>` and
 `git log <fixed-point>..<candidate> --oneline`; three-dot compares from their

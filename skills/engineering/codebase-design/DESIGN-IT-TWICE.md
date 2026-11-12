@@ -24,7 +24,9 @@ Use available subagents in parallel when host instructions permit delegation;
 otherwise develop the alternatives locally. Produce three distinct designs,
 adding the fourth below only when cross-seam dependencies justify it. Each
 design must satisfy the same existing requirements. Workers are read-only,
-complete their assigned design directly, and do not delegate it again.
+complete their assigned design directly, and do not delegate it again. If a
+worker's design does not arrive, draft that design locally, or compare the
+designs you have and name the missing one.
 
 Use a separate technical brief for each design, locally or through a worker: file paths, coupling details, dependency category from [DEEPENING.md](DEEPENING.md), and what sits behind the seam. The brief is independent of the user-facing problem-space explanation in Step 1. Give each design a different constraint:
 

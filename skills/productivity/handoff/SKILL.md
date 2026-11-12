@@ -5,8 +5,8 @@ description: Writes a handoff document so a fresh agent can continue the work. F
 
 Summarise the current conversation so a fresh agent can continue the work. Save to a unique file (name prefix `handoff-`) in the user's OS temporary directory, using the platform's temporary-file API or configured temp directory. Report the absolute saved path. If the next session may run elsewhere or after a restart, say this path is ephemeral and offer a durable location the user chooses.
 
-Use these headings in this order: Objective, Authorization, Decisions, Done,
-State, Remaining, Blockers, Next action, Suggested skills (model-invoked skills
+Use these headings in this order: Objective, Authorization, Decisions (with
+reasons), Done, State, Remaining, Blockers, Next action, Suggested skills (model-invoked skills
 to load through the destination host's mechanism; explicit-only skills as user
 choices, since reading the handoff does not invoke them). Record each authorization with its exact scope and source (who
 gave it, and where). It covers only that scope; anything outside it, and any

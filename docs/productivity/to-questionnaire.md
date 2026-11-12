@@ -29,6 +29,9 @@ The skill establishes the recipient and the answers you need, reusing details al
 Everything after that is drafting. The skill writes the file to `to-questionnaire-<slug>.md` in the current directory. There is no setup, no workspace, and nothing to configure.
 
 It includes a deadline only when you supply one and labels any effort estimate.
+When it already has a question for you about what you need back, it also asks
+whether the recipient must answer by a deadline. It never opens an exchange for
+the deadline alone.
 
 ## The document
 

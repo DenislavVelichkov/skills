@@ -69,4 +69,4 @@ Side effects happen inline as decisions crystallize; load `domain-modeling` to k
 - **User rejects the candidate with a load-bearing reason?** Offer an ADR, framed as: _"Want me to record this as an ADR so future architecture reviews don't re-suggest it?"_ Only offer when the reason would actually be needed by a future explorer to avoid re-suggesting the same thing; skip ephemeral reasons ("not worth it right now") and self-evident ones.
 - **Want to explore alternative interfaces for the deepened module?** Load `codebase-design` and follow its design-it-twice reference, using its local fallback when delegation is unavailable.
 
-The loop ends when the user settles the deepened module's shape, rejects the candidate (after the ADR offer, if one applies), or declines to continue. Summarise the outcome and any `GLOSSARY.md` or ADR changes made.
+The loop ends when the user settles the deepened module's shape, rejects the candidate (after the ADR offer, if one applies), or declines to continue. Summarise the outcome and any `GLOSSARY.md` or ADR changes made; when a shape is settled, name the deepened module's interface, its seam, and the tests that survive.

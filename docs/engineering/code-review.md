@@ -14,8 +14,9 @@ For acceptance tooling and its dependent claims, review checks retained evidence
 ## When to reach for it
 
 The first review covers the complete requested diff on a frozen candidate.
-Diffs run with `--no-ext-diff --no-textconv` so the read-only review executes
-no configured diff tools.
+The candidate is HEAD, or the PR head commit for a PR, unless you name one; both
+ends resolve to commit ids, and diffs run with `--no-ext-diff --no-textconv` so
+the read-only review executes no configured diff tools.
 Follow-up reviews cover accepted fixes and their affected behavior, retaining
 the original review coverage. Once both axes and required checks pass, an
 unchanged scope does not need another review round.

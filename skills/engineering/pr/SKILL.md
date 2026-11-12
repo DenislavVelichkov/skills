@@ -44,7 +44,7 @@ Pick the smallest view that makes the key point clear: pseudocode for logic, a c
 
 Cite only results that were supplied or that you observed: screenshots, test results, console output. Name the exact test that failed before and passes after. Prefer screenshots when the change is visual and the environment can capture them; otherwise use execution output. Redact credentials, tokens, private URLs and personal data from quoted output and screenshots; keep check names, outcomes and needed failure evidence.
 
-Label each item `observed`, `static` (read from code, not run), or `proposed` (a check the reviewer could run, or pseudocode that explains a test); never present a `proposed` item as a run. Write "Not captured: <reason>" for a screenshot, baseline or run that did not happen. When before evidence needs a run on the base, propose the command labelled `proposed`, or run it in a separate worktree only with the user's agreement; when it cannot be obtained, add one line stating that limitation. With no evidence at all, write "No evidence available: <reason>".
+Label each item `observed`, `static` (read from code, not run), or `proposed` (a check the reviewer could run, or pseudocode that explains a test); never present a `proposed` item as a run. Write "Not captured: <reason>" for a screenshot, baseline or run that did not happen. When before evidence needs a run on the base, propose the command labelled `proposed`, or run it in a separate worktree only with the user's agreement. With no evidence at all, write "No evidence available: <reason>".
 
 ### Merge Danger
 

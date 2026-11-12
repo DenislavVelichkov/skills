@@ -9,7 +9,7 @@ Turn something the user can't answer alone into a **questionnaire**: a Markdown 
 
 1. **Who is it going to?** Reuse the supplied recipient's role, expertise and relationship to the user; ask only for missing details that affect the questionnaire. Done when you know who the recipient is and what they know that the user doesn't.
 
-2. **What do you need back?** Use the stated decisions or facts the user needs from this person, asking only about unresolved goals. Done when you have a concrete list of what the user must walk away able to do or decide.
+2. **What do you need back?** Use the stated decisions or facts the user needs from this person, asking only about unresolved goals. When you do ask and the user gave no deadline, also ask whether the recipient must answer by one; don't open an exchange for the deadline alone. Done when you have a concrete list of what the user must walk away able to do or decide.
 
 3. **Write the questionnaire.** Draft questions aimed at the gap from steps 1–2, following the Document structure below. Write it to `to-questionnaire-<slug>.md` in the current directory, with the slug taken from the decision named in step 2 or from the invocation arguments. Check the path first: revise an existing file only when the request identifies it; otherwise pick an unused filename. Report the path. Then make one pass: every step-2 item covered, one idea per question, an answer stub under each, no template placeholders left, a deadline only if supplied. Correct failures once, reread those sections, report any gap. Done when the user confirms or edits the question headings you list.
 
