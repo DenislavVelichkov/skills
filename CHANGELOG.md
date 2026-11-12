@@ -1,5 +1,16 @@
 # mattpocock-skills
 
+## 1.4.15
+
+### Patch Changes
+
+- Carry the rules that only the Codex copies of `codebase-design` and `implement-spec` had, as decided one at a time on 2026-11-12. `setup-matt-pocock-skills` needed no change.
+- `codebase-design` design-it-twice: three sub-agents, with the ports-and-adapters design added only when cross-seam dependencies justify it. Every design satisfies the same existing requirements. Sub-agents are read-only and do not delegate their design again. Without a GLOSSARY.md, the brief uses the domain terms found in the code and the user's request.
+- `codebase-design`: a test at an internal seam is only for a focused check of a part the interface tests can't reach cheaply. `SKILL.md` and `DEEPENING.md` say the same.
+- `implement-spec` model gate: a mixed graph does not require every ticket to be assessed, an unassessed ticket gets no model-choice request, and every handoff identifies it as unassessed.
+- `implement-spec`: the coordinator records the integration head each merge verified, and the closing report lists remaining blockers.
+- Keep the `codebase-design` and `implement-spec` docs pages aligned with these rules.
+
 ## 1.4.14
 
 ### Patch Changes

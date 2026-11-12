@@ -20,7 +20,7 @@ Show this to the user, then immediately proceed to Step 2. The user reads and th
 
 First check that this host can run sub-agents. If it cannot, tell the user and, with their agreement, draft the designs yourself one after another; if the user declines, report that the comparison was not run. If a sub-agent result does not arrive, compare the designs you have and name the missing one.
 
-Spawn 3+ sub-agents in parallel, each with a fresh context window. Each must produce a **radically different** interface for the deepened module.
+Spawn three sub-agents in parallel, each with a fresh context window, and add the fourth below only when cross-seam dependencies justify it. Each must produce a **radically different** interface for the deepened module that satisfies the same existing requirements. Sub-agents are read-only: each completes its assigned design directly and does not delegate it again.
 
 Prompt each sub-agent with a separate technical brief (file paths, coupling details, dependency category from [DEEPENING.md](DEEPENING.md), what sits behind the seam). The brief is independent of the user-facing problem-space explanation in Step 1. Give each agent a different design constraint:
 
@@ -29,7 +29,7 @@ Prompt each sub-agent with a separate technical brief (file paths, coupling deta
 - Agent 3: "Optimise for the most common caller: make the default case trivial."
 - Agent 4 (if applicable): "Design around ports & adapters for cross-seam dependencies."
 
-Include [SKILL.md](SKILL.md) vocabulary, and GLOSSARY.md vocabulary if GLOSSARY.md exists, in the brief so each sub-agent names things consistently with the architecture language and the project's domain language.
+Include [SKILL.md](SKILL.md) vocabulary, and GLOSSARY.md vocabulary if GLOSSARY.md exists, in the brief so each sub-agent names things consistently with the architecture language and the project's domain language. If there is no GLOSSARY.md, use the domain terms found in the code and the user's request.
 
 Each sub-agent outputs:
 

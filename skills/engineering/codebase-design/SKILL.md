@@ -65,7 +65,7 @@ Use these terms exactly for the design concepts they define: don't substitute "c
 
 - **Depth is a property of a module, judged at its interface, not by implementation size.** A deep module can be internally composed of small, mockable, swappable parts; they just aren't part of the interface. A module can have **internal seams** (private to its implementation, used by its own tests) as well as the **external seam** at its interface.
 - **The deletion test.** Imagine deleting the module. If complexity vanishes, it was a pass-through. If complexity reappears across N callers, it was earning its keep.
-- **The interface is the test surface.** By default, test caller-visible behaviour through the same seam callers cross. A focused test through an internal seam is fine for implementation detail, but if you need to test *past* the interface to check caller-visible behaviour, the module is probably the wrong shape.
+- **The interface is the test surface.** By default, test caller-visible behaviour through the same seam callers cross. Use a test at an internal seam only for a focused check of a part the interface tests can't reach cheaply. If you need to test *past* the interface to check caller-visible behaviour, the module is probably the wrong shape.
 - **One adapter means a hypothetical seam. Two adapters means a real one.** Don't introduce a seam or port unless at least two adapters are justified (typically production + test). A single-adapter seam is just indirection.
 
 ## Designing for testability
