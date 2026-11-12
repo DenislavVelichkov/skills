@@ -1,5 +1,14 @@
 # mattpocock-skills
 
+## 1.4.14
+
+### Patch Changes
+
+- Docs only: carry the statements that only the Codex pages had, as decided one at a time on 2026-11-12. No skill changes.
+- `codebase-design` page: a ports-and-adapters design joins the design-it-twice comparison only when dependencies cross the seam, and the flexibility design stays within the required use cases.
+- `implement-spec` page: at most three implementers run at once unless the host states another limit, the rest of the frontier queues, and each merge starts from the confirmed integration tip.
+- `setup-matt-pocock-skills` page: setup reuses approval already supplied, and the GitHub tracker doc files issues only into your own repository.
+
 ## 1.4.13
 
 ### Patch Changes
