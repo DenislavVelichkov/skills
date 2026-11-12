@@ -1,5 +1,14 @@
 # mattpocock-skills
 
+## 1.3.2+codex.20261112rcitems
+
+### Patch changes
+
+- Resolve the last three items that differed between the family branches, as decided one at a time on 2026-11-12.
+- `codebase-design` gains the five-step "Designing one module" process, which ends by returning the interface, seam, tests and unresolved decisions. It replaces the three "When designing an interface, ask" questions, which step 3 now carries. The description says the skill designs one module at a time. The docs page describes the process, lists the three testability rules, and no longer says the skill never reads files.
+- `implement-spec` says why the draft PR waits for the first merge: a branch with no commits ahead of its base cannot open one.
+- `setup-matt-pocock-skills` opens with the list of the five areas it scaffolds: issue tracker, triage labels, domain docs, visual acceptance and local verification.
+
 ## 1.3.2+codex.20261112oneside
 
 ### Patch changes

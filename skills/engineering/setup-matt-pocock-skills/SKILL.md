@@ -5,8 +5,17 @@ description: "Configures a repository's issue tracking, triage labels, domain do
 
 # Setup Matt Pocock's Skills
 
-Scaffold the per-repo configuration that the engineering skills assume. Reuse
-choices already supplied by the user or recorded in the repository's
+Scaffold the per-repo configuration that the engineering skills assume:
+
+- **Issue tracker**: where issues live (GitHub by default; local markdown is also supported out of the box)
+- **Triage labels**: the strings used for two category roles and five state roles
+- **Domain docs**: where `GLOSSARY.md` and ADRs live, and the consumer rules for reading them
+- **Visual acceptance**: the fail-closed creation and approval rules used
+  only for a visual parity action
+- **Local verification**: repository-owned lint and link checks, review criteria,
+  and proportionate evidence and progress recording
+
+Reuse choices already supplied by the user or recorded in the repository's
 configuration, and ask only about unresolved ones.
 
 ## Process

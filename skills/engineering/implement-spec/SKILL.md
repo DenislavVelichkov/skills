@@ -73,7 +73,7 @@ Read [model execution verification](../implement/MODEL-EXECUTION.md) to distingu
 
 2. (optional) Use an **exploration subagent** for exploration the tickets need (codebase files or external docs), so implementers can focus on implementation. It must be able to save its markdown notes in a directory outside the repo that all later subagents can read. Done when the notes path is in each implementer brief.
 
-3. Record the task-start commit and create the integration branch from the agreed base. On resume, verify and reuse this effort's existing branch and PR. If the issue tracker closes work through PRs, or the user asks for one, open a draft PR after the first merge in step 5, marked as closing the spec and tickets. Check for an existing PR before retrying an uncertain creation.
+3. Record the task-start commit and create the integration branch from the agreed base. On resume, verify and reuse this effort's existing branch and PR. If the issue tracker closes work through PRs, or the user asks for one, open a draft PR after the first merge in step 5 (a branch with no commits ahead of its base can't open one), marked as closing the spec and tickets. Check for an existing PR before retrying an uncertain creation.
 
 4. Use a fresh **implementer subagent** for each ticket, each in its own worktree on its own branch, with model settings and gate duties per [Model gate](#model-gate). Each implementer subagent:
    - for an assessed ticket, binds its recommendation and returns the receipt before implementation;

@@ -1,6 +1,6 @@
 ---
 name: codebase-design
-description: Provides shared vocabulary for designing deep modules. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when another skill needs the deep-module vocabulary. Not for a repo-wide architecture review report (use improve-codebase-architecture).
+description: Provides shared vocabulary for designing deep modules and designs one module at a time. Use when the user wants to design or improve a module's interface, find deepening opportunities, decide where a seam goes, make code more testable or AI-navigable, or when another skill needs the deep-module vocabulary. Not for a repo-wide architecture review report (use improve-codebase-architecture).
 ---
 
 # Codebase Design
@@ -44,11 +44,13 @@ Deep                       Shallow (avoid)
 └─────────────────┘
 ```
 
-When designing an interface, ask:
+## Designing one module
 
-- Can I reduce the number of methods?
-- Can I simplify the parameters?
-- Can I hide more complexity inside?
+1. Read the callers and constraints, and classify the dependencies ([DEEPENING.md](DEEPENING.md)).
+2. Place the seam.
+3. Write the interface: fewest methods, simplest parameters, invariants and error modes, with more complexity hidden inside.
+4. Check it against representative callers and list the tests at the interface.
+5. Return the interface, seam, tests, and unresolved decisions. Optionally design it twice (below).
 
 ## Principles
 
