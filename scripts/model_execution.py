@@ -146,8 +146,7 @@ def check(event, client, data_dir):
         state_path.unlink(missing_ok=True)
         return rewrite(event, {"status": "aborted", "instruction": "Stop implementation now"})
     if action and action[0] == "bind":
-        state = {"ticket": action[1], "model": None, "effort": None,
-                 "cwd": str(Path(event["cwd"]).resolve())}
+        state = {"ticket": action[1], "model": None, "effort": None}
         try:
             pair = recommendation(action[1], client)
         except Exception:
@@ -162,8 +161,6 @@ def check(event, client, data_dir):
     state = json.loads(state_path.read_text()) if state_path.exists() else None
     model, effort, agent = runtime(event, client)
     if state:
-        if str(Path(event["cwd"]).resolve()) != state["cwd"]:
-            raise ValueError("Working directory changed; rebind the ticket before implementation")
         if recommendation(state["ticket"], client) != (state["model"], state["effort"]):
             raise ValueError("Ticket recommendation changed; reassess and rebind")
         if (model, effort) != (state["model"], state["effort"]):

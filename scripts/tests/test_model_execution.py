@@ -246,15 +246,24 @@ class ModelGateTests(unittest.TestCase):
                                "- Recommended reasoning level: max\n")
         self.run_gate(self.event())
 
-    def test_actor_isolation_and_directory_change(self):
+    def test_actor_isolation(self):
         self.run_gate(self.event())
         other = self.event(model="other", agent="worker")
         other["tool_name"] = "Write"
         self.assertEqual(self.run_gate(other), {})
-        event = self.event(action="probe")
-        event["cwd"] = str(self.root / "other")
-        with self.assertRaisesRegex(ValueError, "directory changed"):
-            self.run_gate(event)
+
+    def test_directory_change_keeps_the_binding_and_its_model_check(self):
+        self.run_gate(self.event())
+        moved = self.event(action="probe")
+        moved["tool_input"] = {"command": "ls"}
+        moved["cwd"] = str(self.root / "other")
+        receipt = json.loads(self.run_gate(moved)["hookSpecificOutput"]["additionalContext"]
+                             .removeprefix("Model gate: "))
+        self.assertEqual(receipt["status"], "verified")
+        mismatch = self.event(effort="low", action="probe")
+        mismatch["cwd"] = str(self.root / "other")
+        with self.assertRaisesRegex(ValueError, "mismatch"):
+            self.run_gate(mismatch)
 
     def test_finish_verifies_and_cleans_binding(self):
         self.run_gate(self.event())

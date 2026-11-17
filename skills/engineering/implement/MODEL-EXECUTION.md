@@ -85,7 +85,8 @@ the transcript catches up, never reuse an older turn's result.
 After compaction, resume, model changes, worker replacement, or a changed ticket,
 refresh the ticket and bind again before implementation continues. A mismatch
 blocks all tools for that bound actor until corrected or aborted. Other workers
-have separate bindings. Do not disable the hook, delete its state, or use a
+have separate bindings. A binding follows the actor, not its working directory:
+changing directories needs no rebind. Do not disable the hook, delete its state, or use a
 different tool to get around a denial. Already-started processes cannot be
 undone by this hook; avoid background mutations across a model switch.
 

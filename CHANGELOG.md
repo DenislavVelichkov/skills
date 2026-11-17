@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.3.2+codex.20261117gatecwd
+
+### Patch changes
+
+- `implement` and `implement-spec` model gate: changing the working directory no longer blocks a bound actor. The gate used to store the directory at bind time and deny every later tool call from any other directory, even a subdirectory of the same repository. It now checks only what it exists for: the ticket's recommendation against the runtime model and reasoning effort. `MODEL-EXECUTION.md` says a binding follows the actor, not its directory.
+
 ## 1.3.2+codex.20261112skillrules
 
 ### Patch changes
