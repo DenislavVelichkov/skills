@@ -30,7 +30,8 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `git remote -v` and `.git/config`: is this a GitHub repo? Which one?
 - `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Is there already an `## Agent skills` section in either?
 - `GLOSSARY.md` and `GLOSSARY-MAP.md` at the repo root, and the legacy `CONTEXT.md` / `CONTEXT-MAP.md`. If a legacy file exists, offer to `git mv` it to its `GLOSSARY` name and rewrite those names in `docs/agents/domain.md`.
-- `docs/adr/` and any `src/*/docs/adr/` directories
+- Glossaries and ADR directories at configured paths and within the discovered
+  application/package roots, including layouts outside `src/`
 - `docs/agents/`: does this skill's prior output already exist?
 - `.scratch/`: a sign that a local-markdown issue tracker convention is already in use
 - `docs/visual-acceptance/`: does this repo already carry a visual contract?
@@ -39,7 +40,13 @@ Look at the current repo to understand its starting state. Read whatever exists;
   progress records and their history. Read their configuration before proposing
   another tool or duplicating guidance.
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
-- Monorepo signals: a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. Offer multi-context only when one of these exists; otherwise use single-context.
+- Repository structure: inspect workspace declarations and application/package
+  roots at any depth, including sibling frontend/backend directories with their
+  own manifests, source trees or build/deployment configuration. Exclude vendored,
+  generated and example projects. Multiple applications do not require workspace
+  tooling or a `packages/` directory. Inspect existing domain docs for distinct
+  contexts even within one application; package boundaries alone do not establish
+  separate domain vocabularies.
 
 ### 2. Present findings and ask
 
@@ -50,7 +57,6 @@ choices that remain unresolved, and continue independent preparation.
 Lead each section with the recommended answer so the user can accept it in a word. Give a one-line explainer only when the choice genuinely branches; skip what exploration already settled:
 
 - No `triage` installed: skip all of Section B.
-- No monorepo: skip only the Section C question; still prepare the single-context `docs/agents/domain.md`.
 
 **Section A: Issue tracker.**
 
@@ -87,9 +93,28 @@ choice. Otherwise ask exactly one question:
 
 The defaults map category roles `bug` and `enhancement`, and state roles `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, and `wontfix`, each to its own name. On **yes**, write them as-is. Only if the user says no, usually because their tracker already uses other names (e.g. `bug:triage` for `needs-triage`), collect the overrides so `triage` applies existing labels instead of creating duplicates.
 
-**Section C: Domain docs.** Default to **single-context** (one `GLOSSARY.md` + `docs/adr/` at the repo root). This fits almost every repo; write it without asking.
+**Section C: Domain docs.** Reuse the configured layout and paths unless the
+user asks to change them. A previously generated default that the user disputes
+is an unresolved choice.
 
-Offer **multi-context** (a root `GLOSSARY-MAP.md` pointing to per-context `GLOSSARY.md` files) only when exploration found monorepo signals. Then confirm which layout they want.
+When exploration finds multiple application/package roots or distinct domain
+contexts and the layout is unresolved, ask which layout the user wants.
+Recommend **multi-context**: a root `GLOSSARY-MAP.md` pointing to the proposed
+per-context `GLOSSARY.md` files. Offer **single-context** as the alternative when
+the applications share one vocabulary. Show the exact repo-relative paths in the
+question, including the root map and glossary/ADR locations, so the user can
+correct the proposed grouping and paths. Use the actual application directories;
+do not assume every context lives under `src/`.
+
+For one application with no distinct contexts or contrary user preference,
+propose one root `GLOSSARY.md` and shared `docs/adr/` in the draft without a
+separate layout question. Missing workspace tooling is never enough to skip the
+multi-context choice.
+
+Record the resolved layout and every glossary, map and ADR path in
+`docs/agents/domain.md`. Keep `GLOSSARY-MAP.md` at the root as the consumers'
+entry point for a mapped layout. Setup configures these locations; domain
+modeling creates the files when terms or decisions are resolved.
 
 **Section D: Local verification.** Reuse the repository's existing tools and
 the user's recorded choices. Recommend fast, offline staged lint and local
@@ -105,6 +130,8 @@ Show the user a draft of:
 
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
 - The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
+- The resolved domain layout and exact repo-relative glossary, map and ADR paths,
+  distinguishing configured locations from files this setup will create or move
 - The conditional visual-acceptance pointer, `docs/agents/visual-acceptance.md`,
   `docs/agents/visual-acceptance.template.json` and
   `./scripts/validate-visual-acceptance.mjs` (target repository root)

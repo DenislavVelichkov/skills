@@ -48,7 +48,7 @@ It starts each section with the recommended answer, and skips any question its e
 | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | **Issue tracker**      | the one matching your `git remote`                                                                                                                    | when existing configuration or your request has not already settled it                  |
 | **Triage labels**      | keep category names `bug` and `enhancement` plus the five state names (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) | only if the `triage` skill is installed                                                 |
-| **Domain docs**        | single-context: one `GLOSSARY.md` plus `docs/adr/` at the root                                                                                        | only if it spots monorepo signals, and then it offers a multi-context `GLOSSARY-MAP.md` |
+| **Domain docs** | a root `GLOSSARY-MAP.md` with per-context glossaries, or one shared root `GLOSSARY.md` | when multiple applications/packages or distinct contexts leave the layout unresolved; the question includes exact paths |
 | **Local verification** | fast, offline lint and local documentation link checks that block a bad staged commit                                                                 | when check coverage or failure behavior has not already been settled                    |
 
 The tracker options:
@@ -139,6 +139,16 @@ workflow and preserve its acceptance and human approval requirements.
 
 No. GitHub, GitLab and local markdown under `.scratch/` all ship as ready-made templates, and anything else works through the "other" path. This is the most-repeated question, in roughly these words: _"hard locked to github"_, _"can I use GitLab / Jira"_, _"what about Azure DevOps"_. The answer is always the same: setup chooses the tracker, not the skill.
 
+**My frontend and backend have separate folders. Should setup offer a glossary map?**
+
+Yes. Separate application roots count even without workspace tooling or a
+`packages/` directory. Setup offers a root `GLOSSARY-MAP.md` with proposed
+per-context glossary and ADR paths, and asks whether you prefer that layout or
+one shared glossary. Separate applications can still share one vocabulary.
+Existing choices are reused unless you ask to change them; a default you dispute
+is reopened. Setup records the locations, while domain modeling creates the
+files when terms or decisions are resolved.
+
 **Can commits be checked locally without GitHub Actions?**
 
 Yes. Choose a blocking local hook for lint and documentation links. Setup reuses
@@ -179,6 +189,8 @@ One long-standing complaint says yes, in these words: _"having a skill to set up
 
 ## It's working if
 
+- A repository with multiple applications gets a glossary-layout choice when
+  unresolved, and the draft names the exact glossary, map and ADR paths.
 - `docs/agents/issue-tracker.md` and `docs/agents/domain.md` exist, plus `triage-labels.md` if `triage` is installed.
 - An `## Agent skills` section appears in the instruction file your harness reads, with a one-line summary pointing at each of those files.
 - The tracker it proposed matches the remote you use, and the label strings match labels that exist in your tracker.
