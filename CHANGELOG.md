@@ -1,5 +1,12 @@
 # mattpocock-skills
 
+## 1.3.2+codex.20261117domainlayout
+
+### Patch changes
+
+- `setup-matt-pocock-skills` recognizes separate application/package roots without requiring workspace tooling. When the domain layout is unresolved, it offers a root `GLOSSARY-MAP.md` with per-context glossaries or one shared glossary, showing exact glossary and ADR paths before writing.
+- Preserve configured layouts, reopen a default the user disputes, and adapt the domain guide to actual application directories instead of assuming `src/<context>/`. Setup records locations; domain modeling still creates domain files lazily.
+
 ## 1.3.2+codex.20261117gatecwd
 
 ### Patch changes
