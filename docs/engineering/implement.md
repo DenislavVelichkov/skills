@@ -26,6 +26,9 @@ failure and invalidation, reconciles uncertain effects and never replays a
 committed mutation. Recurring failures require a bounded reproducer and checked
 repair, or an explicit diagnostic reason for the next run. Device restoration
 does not establish fixture cleanup. Routine edits need no separate preparation record.
+Before more than 100 repeated actions, it times the first 10. When verification
+takes over half of that time, it reports the projected total duration and
+proposes one bounded repair before continuing.
 
 ## When to reach for it
 

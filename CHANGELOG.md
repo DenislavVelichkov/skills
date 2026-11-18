@@ -1,5 +1,11 @@
 # mattpocock-skills
 
+## 1.4.18
+
+### Patch Changes
+
+- `implement` times the first 10 actions before a run of more than 100 repeated actions. When verification around the actions takes more than half of the measured time, it reports the projected total duration and proposes one bounded repair before continuing. A multi-day run whose wrapper checks took about 95% of each action prompted the rule.
+
 ## 1.4.17
 
 ### Patch Changes
