@@ -26,8 +26,8 @@ failure and invalidation, reconciles uncertain effects and never replays a
 committed mutation. Recurring failures require a bounded reproducer and checked
 repair, or an explicit diagnostic reason for the next run. Device restoration
 does not establish fixture cleanup. Routine edits need no separate preparation record.
-Before a long repeated run, it samples a few actions and reports the projected
-duration and one repair when overhead dominates.
+Before a long repeated run, it times a sample of actions and, when overhead
+dominates, reports the projected duration and proposes one repair.
 
 ## When to reach for it
 
