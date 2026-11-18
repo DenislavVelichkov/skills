@@ -145,6 +145,11 @@ record or new tooling.
 - Exercise the real invocation with the smallest supported input, including
   its installed entry point, working directory and path resolution. An import
   test or `--help` alone does not prove the execution path works.
+- Before a run of more than 100 repeated actions, time the first 10 through
+  the real invocation. Split each timing into the operation itself and the
+  verification around it (checks, hashing, wrappers, launch). If verification
+  takes more than half of the measured time, report the projected total
+  duration and propose one bounded repair before continuing.
 - Pass actual producer output through the real consumer and check its required
   fields, format and successful result. Check source, contract, receipt and
   observer compatibility. Reject incomplete or incompatible
@@ -288,6 +293,8 @@ timeout. Concurrent work requires authorization and isolated mutable resources.
 ## Examples to check adoption
 
 - Documentation-only edit outside proof inputs: no native recapture.
+- 2,000 repeated live actions whose checks take 41 of every 42 s: time 10,
+  report the multi-day projection and one bounded repair before continuing.
 - Extra unrelated test: run the test; retain valid visual evidence.
 - Shared font change: recapture each affected profile once after the fix batch.
 - Incomplete dependency inventory: revalidate the uncertain affected scope.
