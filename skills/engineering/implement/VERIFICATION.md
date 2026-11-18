@@ -147,10 +147,11 @@ record or new tooling.
   test or `--help` alone does not prove the execution path works.
 - Before a run of more than 100 repeated actions, time 10 consecutive actions
   through the real invocation, start to start, so the gaps between actions
-  count. Split that time into the operation itself and its overhead (checks,
-  hashing, wrappers, launch, waits). If overhead takes more than half, report
-  the projected total duration and one bounded repair to the user before
-  continuing, then proceed under the project's existing approval rules.
+  count. Split that time into the work itself and its overhead (checks,
+  hashing, wrappers, launch, waits). Add waits that recur less often than the
+  sample, such as lease or session renewals, to the projection. If overhead
+  takes more than half, report the projected total duration to the user and
+  propose one bounded repair before continuing.
 - Pass actual producer output through the real consumer and check its required
   fields, format and successful result. Check source, contract, receipt and
   observer compatibility. Reject incomplete or incompatible
@@ -291,8 +292,8 @@ timeout. Concurrent work requires authorization and isolated mutable resources.
 
 - Documentation-only edit outside proof inputs: no native recapture.
 - 3,300 repeated live actions starting 49 s apart, each spending 0.45 s in
-  the operation: time 10, report the projected 45 h and one bounded repair
-  before continuing.
+  the work itself: time 10, report the projected 45 h and propose one bounded
+  repair before continuing.
 - Extra unrelated test: run the test; retain valid visual evidence.
 - Shared font change: recapture each affected profile once after the fix batch.
 - Incomplete dependency inventory: revalidate the uncertain affected scope.

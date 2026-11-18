@@ -170,6 +170,16 @@ for (const [situation, file, actions] of [
     ],
   ],
   [
+    "long repeated run dominated by overhead",
+    "implement/VERIFICATION.md",
+    [
+      "Before a run of more than 100 repeated actions, time 10 consecutive actions",
+      "start to start, so the gaps between actions count",
+      "Add waits that recur less often than the sample",
+      "report the projected total duration to the user and propose one bounded repair before continuing",
+    ],
+  ],
+  [
     "malformed generated proof",
     "tdd/SKILL.md",
     [
