@@ -4,7 +4,7 @@
 
 ### Patch Changes
 
-- `implement` times the first 10 actions before a run of more than 100 repeated actions. When verification around the actions takes more than half of the measured time, it reports the projected total duration and proposes one bounded repair before continuing. A multi-day run whose wrapper checks took about 95% of each action prompted the rule.
+- `implement` times 10 consecutive actions before a run of more than 100 repeated actions. When overhead around the operation (checks, wrappers, launch, waits) takes more than half of that time, it reports the projected total duration and one bounded repair before continuing. The rule comes from a multi-day run whose actions spent about 41 of every 42 s outside a 0.45 s command.
 
 ## 1.4.17
 

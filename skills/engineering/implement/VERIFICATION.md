@@ -145,11 +145,12 @@ record or new tooling.
 - Exercise the real invocation with the smallest supported input, including
   its installed entry point, working directory and path resolution. An import
   test or `--help` alone does not prove the execution path works.
-- Before a run of more than 100 repeated actions, time the first 10 through
-  the real invocation. Split each timing into the operation itself and the
-  verification around it (checks, hashing, wrappers, launch). If verification
-  takes more than half of the measured time, report the projected total
-  duration and propose one bounded repair before continuing.
+- Before a run of more than 100 repeated actions, time 10 consecutive actions
+  through the real invocation, start to start, so the gaps between actions
+  count. Split that time into the operation itself and its overhead (checks,
+  hashing, wrappers, launch, waits). If overhead takes more than half, report
+  the projected total duration and one bounded repair to the user before
+  continuing, then proceed under the project's existing approval rules.
 - Pass actual producer output through the real consumer and check its required
   fields, format and successful result. Check source, contract, receipt and
   observer compatibility. Reject incomplete or incompatible
@@ -289,8 +290,9 @@ timeout. Concurrent work requires authorization and isolated mutable resources.
 ## Examples to check adoption
 
 - Documentation-only edit outside proof inputs: no native recapture.
-- 2,000 repeated live actions whose checks take 41 of every 42 s: time 10,
-  report the multi-day projection and one bounded repair before continuing.
+- 3,300 repeated live actions starting 49 s apart, each spending 0.45 s in
+  the operation: time 10, report the projected 45 h and one bounded repair
+  before continuing.
 - Extra unrelated test: run the test; retain valid visual evidence.
 - Shared font change: recapture each affected profile once after the fix batch.
 - Incomplete dependency inventory: revalidate the uncertain affected scope.
