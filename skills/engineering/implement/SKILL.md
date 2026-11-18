@@ -40,11 +40,12 @@ docs-only edits.
    [VERIFICATION.md](VERIFICATION.md) "Connected delivery" and "Choose the
    check". Read its other sections only when they apply: "Bound verification
    tooling work" before changing verification tooling; "Prepare expensive
-   execution" and "Diagnose before repeating expensive work" before costly runs
-   or retries; "Reuse evidence safely" before reusing evidence; "Separate
-   reports from execution" and "Schedule without repeated work" before live
-   validation. Its native UI and capture rules apply only to native UI or visual
-   captures. Done when each batch's entry, behavior and checks are recorded.
+   execution" and "Diagnose before repeating expensive work" before costly runs,
+   runs of more than 100 repeated actions, or retries; "Reuse evidence safely"
+   before reusing evidence; "Separate reports from execution" and "Schedule
+   without repeated work" before live validation. Its native UI and capture
+   rules apply only to native UI or visual captures. Done when each batch's
+   entry, behavior and checks are recorded.
 5. **Decide the visual path.** A visual parity action exists only when the
    ticket or parent spec requires a named production surface to be compared
    against a visual reference, requires selecting and freezing that reference,
