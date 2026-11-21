@@ -16,8 +16,9 @@ sequence for early rendered comparisons, related fixes, final review and
 capture. Integration rechecks evidence applicability and candidate hashes.
 Comparisons use the existing project producer with numbered difference pointers
 and explanations bound to the inspected pairs; presentation grants no approval.
-Pending exact human approval keeps the serial chain blocked; passing checks
-and reviews grant no approval.
+Pending exact human approval keeps that surface unmerged and the tickets it
+blocks waiting, along with any approved serial order; passing checks and
+reviews grant no approval.
 
 ## When to reach for it
 

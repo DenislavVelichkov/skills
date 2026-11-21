@@ -76,9 +76,14 @@ annotated HTML with numbered difference pointers before exact human acceptance.
 - Native parity retains its required native evidence.
 - Ordinary UI without a named comparison obligation needs no parity manifest.
 
-For a visual parity action, the manifest defines one extra edge the tracker must show:
-the next surface stays blocked until the current one has been compared,
-explicitly accepted by a human, and promoted to regression baselines. The
+For a visual parity action, each manifest surface is one ticket that stays open
+until it has been compared, explicitly accepted by a human, and promoted to
+regression baselines. A surface ticket is blocked only by a technical
+prerequisite: another ticket's behavior, data or shared component. Manifest
+position creates no edge, so independent surfaces can be worked at once, up to
+the number of capture lanes the project can run. A change to a component
+several surfaces render gets its own checkpoint ticket ahead of them. A serial
+acceptance chain exists only when you ask for one. The
 surface remains one tracer-bullet ticket through that whole path; splitting
 “build”, “review”, and “accept” into separate layer tickets would recreate the
 same integration gap tracer bullets are meant to prevent.
@@ -153,8 +158,8 @@ The skill stops at the artifact, and there is no auto-dispatch mode. Dispatch is
 - Each ticket keeps required policy and immutable contract links, manifest and surface identities, evidence paths and mandatory own-body text. Avoid other file paths and line numbers unless a prototype snippet requires them.
 - Each ticket reads like something a fresh session could finish without you in the room.
 - Prefactoring, where it found any, is at the front of the order rather than mixed into feature tickets.
-- Every visual surface names its manifest row, and its successor remains
-  blocked until the accepted candidate bytes become the baselines.
+- Every visual surface names its manifest row and capture lane type, and is
+  blocked only by tickets whose behavior, data or shared component it needs.
 - When a visual parity action exists, its manifest validates before the
   proposed ticket breakdown appears.
 

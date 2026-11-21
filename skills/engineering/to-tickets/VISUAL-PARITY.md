@@ -35,12 +35,24 @@ Never invent references, hashes, state transitions, or approval.
 - Create one implementation-and-acceptance ticket per manifest surface. Keep
   the surface ticket open through candidate comparison, explicit human
   approval, and baseline promotion.
-- Default to a linear chain in manifest order so the next surface stays blocked
-  until the previous one is `baseline_promoted`. Use another order only when
-  the human explicitly approves it.
+- Block a surface ticket only on a technical prerequisite: another ticket's
+  behavior, data or shared component, named in the edge. Manifest position
+  creates no edge. Chain surfaces serially only when the human asks for a
+  serial acceptance order.
+- Put a change to a component several surfaces render in its own checkpoint
+  ticket ahead of them, so each surface is captured once after it lands.
+- Name each surface ticket's capture lane type, such as device or browser.
+  In the approval step, show how many surfaces the project's lanes can
+  capture at once and the longest blocked path; surfaces on different lane
+  types never queue behind each other.
+- Add a lane-preflight slice when the project has no off-lane check of the
+  registrations a new capture case needs.
 - Put the manifest path and surface id in the ticket. Acceptance criteria must
-  require exact reference/candidate comparison, explicit approval bound to the
-  candidate-set hash, and promoted baselines that match the accepted bytes.
+  require exact reference/candidate comparison, a recorded pre-request review
+  with no open finding, explicit approval bound to the candidate-set hash, and
+  promoted baselines that match the accepted bytes.
+- State that approval requests and manual human passes are collected and
+  presented in batches of ready surfaces.
 - Require early rendered comparisons on the affected platform, feasible shared
   corrections before final review/capture, and annotated comparison HTML with
   numbered difference pointers. Follow the existing

@@ -170,6 +170,11 @@ const validateApprovalRequest = (request, candidates, label, errors) => {
   }
   if (!isIsoTimestamp(request.requestedAt))
     errors.push(`${label}.approvalRequest.requestedAt must be an ISO timestamp`);
+  if (
+    request.attempt !== undefined &&
+    !(Number.isInteger(request.attempt) && request.attempt >= 1)
+  )
+    errors.push(`${label}.approvalRequest.attempt must be a positive integer`);
   const expected = candidateSetSha256(candidates);
   if (request.candidateSetSha256 !== expected) {
     errors.push(
@@ -178,7 +183,49 @@ const validateApprovalRequest = (request, candidates, label, errors) => {
   }
 };
 
-const validateSurface = (root, surface, index, errors) => {
+const validatePreRequestReview = (review, candidates, label, errors) => {
+  if (!isRecord(review)) {
+    errors.push(`${label}.preRequestReview must be an object`);
+    return;
+  }
+  for (const field of ["reviewer", "reviewedAt", "source"]) {
+    if (typeof review[field] !== "string" || review[field].length === 0)
+      errors.push(`${label}.preRequestReview.${field} must be non-empty`);
+  }
+  if (!isIsoTimestamp(review.reviewedAt))
+    errors.push(`${label}.preRequestReview.reviewedAt must be an ISO timestamp`);
+  if (!Number.isInteger(review.findings) || review.findings < 0)
+    errors.push(
+      `${label}.preRequestReview.findings must be a non-negative integer`,
+    );
+  if (review.open !== 0)
+    errors.push(`${label}.preRequestReview.open must be 0`);
+  const expected = candidateSetSha256(candidates);
+  if (review.candidateSetSha256 !== expected) {
+    errors.push(
+      `${label}.preRequestReview.candidateSetSha256 is ${review.candidateSetSha256}; expected ${expected}`,
+    );
+  }
+};
+
+// The policy covers every surface whose approval was requested, in whatever
+// state it is now, so a row cannot skip the review by moving on. Only a
+// request made before policy.preRequestReviewFrom is exempt.
+const reviewRequired = (policy, surface, stateIndex) => {
+  if (
+    policy.preRequestReview !== "required" ||
+    stateIndex < states.indexOf("approval_requested")
+  )
+    return false;
+  const requestedAt = surface.approvalRequest?.requestedAt;
+  return !(
+    isIsoTimestamp(policy.preRequestReviewFrom) &&
+    isIsoTimestamp(requestedAt) &&
+    Date.parse(requestedAt) < Date.parse(policy.preRequestReviewFrom)
+  );
+};
+
+const validateSurface = (root, surface, index, errors, policy = {}) => {
   const label = `surfaces[${index}]`;
   if (!isRecord(surface)) {
     errors.push(`${label} must be an object`);
@@ -243,6 +290,31 @@ const validateSurface = (root, surface, index, errors) => {
     });
   }
 
+  if (surface.preRequestReview != null) {
+    if (stateIndex < states.indexOf("compared"))
+      errors.push(`${label}.preRequestReview must be absent before compared`);
+    else
+      validatePreRequestReview(
+        surface.preRequestReview,
+        [...candidates.values()],
+        label,
+        errors,
+      );
+  } else if (reviewRequired(policy, surface, stateIndex)) {
+    errors.push(
+      `${label}.preRequestReview is required by policy before approval is requested`,
+    );
+  }
+  if (
+    reviewRequired(policy, surface, stateIndex) &&
+    isRecord(surface.approvalRequest) &&
+    surface.approvalRequest.attempt === undefined
+  ) {
+    errors.push(
+      `${label}.approvalRequest.attempt is required by policy when approval is requested`,
+    );
+  }
+
   if (stateIndex >= states.indexOf("approval_requested")) {
     validateApprovalRequest(
       surface.approvalRequest,
@@ -294,9 +366,27 @@ export function validateManifest(
     return { errors };
   }
 
+  const policy = manifest.policy ?? {};
+  if (
+    !isRecord(policy) ||
+    (policy.preRequestReview !== undefined &&
+      policy.preRequestReview !== "required")
+  ) {
+    errors.push('policy.preRequestReview must be "required" when set');
+  }
+  if (
+    isRecord(policy) &&
+    policy.preRequestReviewFrom !== undefined &&
+    !isIsoTimestamp(policy.preRequestReviewFrom)
+  ) {
+    errors.push("policy.preRequestReviewFrom must be an ISO timestamp when set");
+  }
+
   const seenIds = new Set();
   const validated = manifest.surfaces
-    .map((surface, index) => validateSurface(root, surface, index, errors))
+    .map((surface, index) =>
+      validateSurface(root, surface, index, errors, isRecord(policy) ? policy : {}),
+    )
     .filter(Boolean);
   for (const surface of validated) {
     if (seenIds.has(surface.id)) errors.push(`surface id is duplicated: ${surface.id}`);
@@ -337,20 +427,99 @@ const formatProgress = ({
     `Baseline promoted: ${baselinePromoted}/${total}`,
   ].join("\n");
 
-export const formatApprovalRequest = (surface, { root = process.cwd() } = {}) => {
+const requestLines = (surface, root) => {
   const comparison = resolve(root, surface.comparison.path);
   const deviations = surface.deviations.length
     ? surface.deviations.map(({ description }) => description).join("; ")
     : "None";
-  return [
+  const lines = [
     `Approval required: ${surface.id}: ${surface.selection}`,
     `Comparison: [Open comparison](<${comparison}>)`,
     `Candidate set: ${surface.approvalRequest.candidateSetSha256}`,
     `Deviations: ${deviations}`,
+  ];
+  const review = surface.preRequestReview;
+  if (review)
+    lines.push(
+      `Pre-request review: ${review.reviewer}, ${review.findings} ${review.findings === 1 ? "finding" : "findings"}, 0 open`,
+    );
+  if (surface.approvalRequest.attempt > 1)
+    lines.push(`Attempt: ${surface.approvalRequest.attempt}`);
+  return lines;
+};
+
+export const formatApprovalRequest = (surface, { root = process.cwd() } = {}) =>
+  [
+    ...requestLines(surface, root),
     "",
     "Do you approve this exact production candidate?",
     'Reply "Approve" or "Reject".',
   ].join("\n");
+
+export const formatApprovalRequests = (surfaces, { root = process.cwd() } = {}) => {
+  if (surfaces.length === 0)
+    throw new TypeError("An approval request needs at least one surface");
+  return surfaces.length === 1
+    ? formatApprovalRequest(surfaces[0], { root })
+    : [
+        `Approval required for ${surfaces.length} surfaces`,
+        "",
+        ...surfaces.flatMap((surface) => [...requestLines(surface, root), ""]),
+        "Do you approve these exact production candidates?",
+        'Reply "Approve all", or answer each surface: "Approve <surface id>" or "Reject <surface id>" with every finding.',
+      ].join("\n");
+};
+
+// Compares recorded digests only, so it needs neither evidence files nor a
+// manifest that passes validation.
+const candidateDigests = (surface) =>
+  new Map(
+    (Array.isArray(surface.candidates) ? surface.candidates : [])
+      .filter(isRecord)
+      .map((candidate) => [evidenceKey(candidate), candidate.sha256]),
+  );
+
+const recordedSurfaces = (manifest) =>
+  (Array.isArray(manifest?.surfaces) ? manifest.surfaces : []).filter(isRecord);
+
+export const changedCandidates = (manifest, previous) => {
+  const prior = new Map(
+    recordedSurfaces(previous).map((surface) => [
+      surface.id,
+      candidateDigests(surface),
+    ]),
+  );
+  return recordedSurfaces(manifest).map((surface) => {
+    const before = prior.get(surface.id) ?? new Map();
+    const current = candidateDigests(surface);
+    const keys = [...current.keys()].sort();
+    return {
+      id: surface.id,
+      added: keys.filter((key) => !before.has(key)),
+      changed: keys.filter(
+        (key) => before.has(key) && before.get(key) !== current.get(key),
+      ),
+      removed: [...before.keys()].filter((key) => !current.has(key)).sort(),
+      unchanged: keys.filter((key) => before.get(key) === current.get(key))
+        .length,
+    };
+  });
+};
+
+export const formatChangedCandidates = (surfaces) => {
+  const moved = surfaces.filter(
+    ({ added, changed, removed }) =>
+      added.length + changed.length + removed.length > 0,
+  );
+  if (moved.length === 0) return "No candidate frame changed.";
+  return moved
+    .flatMap(({ added, changed, id, removed, unchanged }) => [
+      `${id}: ${changed.length} changed, ${added.length} added, ${removed.length} removed, ${unchanged} unchanged`,
+      ...changed.map((key) => `  changed ${key}`),
+      ...added.map((key) => `  added ${key}`),
+      ...removed.map((key) => `  removed ${key}`),
+    ])
+    .join("\n");
 };
 
 async function main() {
@@ -360,15 +529,34 @@ async function main() {
     argument.startsWith("--print-request="),
   );
   const printRequest = printRequestArgument?.slice("--print-request=".length);
+  const changedSinceArgument = args.find((argument) =>
+    argument.startsWith("--changed-since="),
+  );
+  const changedSince = changedSinceArgument?.slice("--changed-since=".length);
   const manifestPath = args.find((argument) => !argument.startsWith("--"));
   if (!manifestPath) {
     console.error(
-      "Usage: validate-visual-acceptance.mjs <manifest.json> [--require-complete] [--print-request=SURFACE_ID]",
+      "Usage: validate-visual-acceptance.mjs <manifest.json> [--require-complete] [--print-request=SURFACE_ID[,SURFACE_ID...]] [--changed-since=PREVIOUS_MANIFEST]",
     );
     process.exitCode = 2;
     return;
   }
   const manifest = JSON.parse(readFileSync(resolve(manifestPath), "utf8"));
+  if (changedSinceArgument !== undefined) {
+    if (!changedSince) {
+      console.error("- --changed-since requires a previous manifest path");
+      process.exitCode = 2;
+      return;
+    }
+    const previous = JSON.parse(readFileSync(resolve(changedSince), "utf8"));
+    if (!Array.isArray(manifest?.surfaces) || !Array.isArray(previous?.surfaces)) {
+      console.error("- --changed-since needs two manifests with a surfaces array");
+      process.exitCode = 1;
+      return;
+    }
+    console.log(formatChangedCandidates(changedCandidates(manifest, previous)));
+    return;
+  }
   const result = validateManifest(manifest, { requireComplete });
   if (result.errors.length > 0) {
     for (const error of result.errors) console.error(`- ${error}`);
@@ -381,13 +569,18 @@ async function main() {
       process.exitCode = 2;
       return;
     }
-    const surface = manifest.surfaces.find(({ id }) => id === printRequest);
-    if (!surface || surface.state !== "approval_requested") {
-      console.error(`- ${printRequest} is not awaiting approval`);
-      process.exitCode = 1;
-      return;
+    const requested = [...new Set(printRequest.split(","))];
+    const surfaces = [];
+    for (const requestedId of requested) {
+      const surface = manifest.surfaces.find(({ id }) => id === requestedId);
+      if (!surface || surface.state !== "approval_requested") {
+        console.error(`- ${requestedId} is not awaiting approval`);
+        process.exitCode = 1;
+        return;
+      }
+      surfaces.push(surface);
     }
-    console.log(formatApprovalRequest(surface));
+    console.log(formatApprovalRequests(surfaces));
     return;
   }
   if (result.progress) console.log(formatProgress(result.progress));

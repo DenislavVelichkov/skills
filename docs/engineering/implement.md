@@ -96,15 +96,28 @@ without identified differences say so. The page preserves original bytes, binds
 annotations to the exact pair, and works directly from disk at narrow widths and
 with image zoom. These presentation checks grant no approval.
 
-The run then supplies every required candidate, the side-by-side comparison and
-candidate-set hash, and asks for exact human approval. No snapshot baseline moves.
+Before any approval request, the surface converges in a draft loop. Draft
+captures go to a reviewer with a fresh context window who is not the
+implementer; it inspects every reference and candidate pair and returns one
+complete list of differences. Each finding is repaired, recorded as a
+deliberate adaptation or answered, and only the frames a repair can move are
+captured again. Repairs are committed and reviewed before the proof run. A
+loop still open after its third review stops and reports the open findings to
+you as a blocker. Drafts add no manifest state. A lane preflight runs before
+a capture lane is taken. The lane is taken for each capture batch and
+released when the batch ends, so review, repair and your decision hold no
+lane another surface waits for.
+
+The run then makes one proof run: every required candidate, the side-by-side
+comparison, the recorded pre-request review and the candidate-set hash. It asks
+for exact human approval. No snapshot baseline moves.
 An immediate `Approve` reply binds to the displayed surface and hash without
 requiring you to repeat the digest. Later invocations resume from validated state:
 
 | Surface state        | What happens next                                                                                      |
 | -------------------- | ------------------------------------------------------------------------------------------------------ |
 | `approval_requested` | A bound approval or rejection is handled first; otherwise the exact request is shown again.            |
-| `member_accepted`    | The approved candidate bytes are verified and promoted, then visual checks run.                        |
+| `member_accepted`    | A proof staled by a merge is rerun first. The approved candidate bytes are verified and promoted, then visual checks run. |
 | `baseline_promoted`  | Retained evidence and completion gates are checked without rebuilding or asking for the same approval. |
 
 That pause is not unfinished automation; it is the point at which automation

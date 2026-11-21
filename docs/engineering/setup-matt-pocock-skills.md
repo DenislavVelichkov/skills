@@ -110,10 +110,21 @@ Triage follows the configured tracker rules:
 Configured roles, mandatory notices and each runtime's verification and approval
 rules still apply.
 
-The installed visual sequence inspects early rendered comparisons, batches
-related shared fixes before final review and captures, then presents numbered
-difference pointers in disk-openable comparison HTML. Diagnostic images grant
-no acceptance.
+The installed visual sequence inspects early rendered comparisons and batches
+related shared fixes before final review and captures. Each surface then
+converges in a draft loop: a reviewer with a fresh context window returns
+every difference in one list, and only the frames a repair moves are captured
+again. One proof run per approval request follows, with numbered difference
+pointers in disk-openable comparison HTML. Surfaces wait for each other only
+on a technical prerequisite. A capture lane is taken for a capture batch and
+released when the batch ends, so review and repair hold none. A merge that
+stales another surface's pending proof costs that surface one more proof run;
+surfaces approved in one sitting are integrated, proven and merged together, and a rerun that changes a frame sends the surface back for approval. The validator prints one approval request for several ready
+surfaces and lists the frames that changed since an earlier manifest.
+A manifest policy can require the review record and the request's attempt
+number on every surface whose approval was requested; an older manifest
+records the time it adopted the policy, and earlier requests stay valid.
+Diagnostic images and draft captures grant no acceptance.
 
 | Work                                              | Applicable gates                                                                           |
 | ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
@@ -128,8 +139,8 @@ leaves files unchanged and uses installed tools. Builds, service startup,
 emulators, full tests and acceptance journeys run at their explicit workflow
 steps. Setup preserves existing hooks and a recorded local-only choice.
 
-Where applicable, setup also places visual fidelity in review guidance, short
-native checks before long journeys, read-only evidence verification and a
+Where applicable, setup also places the pre-request visual review in review
+guidance, short native checks before long journeys, read-only evidence verification and a
 compact current checkpoint with linked history. These extend the existing
 workflow and preserve its acceptance and human approval requirements.
 
