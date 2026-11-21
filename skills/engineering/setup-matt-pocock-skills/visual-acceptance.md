@@ -137,9 +137,11 @@ bytes. Timestamps are UTC ISO strings in `toISOString()` form
   `open` (always `0`). It records the last
   [pre-request review](#pre-request-review) of the exact candidate set.
 - `approvalRequest` (from `approval_requested`): `requestedAt`, `source`,
-  `candidateSetSha256`, and `attempt` (1 for the first request of a surface,
-  one higher after each rejection). `attempt` is optional unless the manifest
-  policy below requires the review.
+  `candidateSetSha256`, and `attempt` (1 for the first request of a surface
+  in a ticket, one higher after each rejection). Step 7 clears the record, so
+  read the previous value from the manifest's history; a later ticket that
+  reopens a promoted surface starts again at 1. `attempt` is optional unless
+  the manifest policy below requires the review.
 - `approval` (from `member_accepted`): `approvedBy`, `approvedAt`, `source`,
   `candidateSetSha256`.
 
@@ -228,26 +230,30 @@ Each surface runs a **draft loop**, which is cheap and repeats, and one
 3. Batch feasible related shared fixes before final review and affected captures.
    Set the surface to `implemented`, commit it, and complete code review and
    accepted fixes before the proof run.
-4. Draft loop: capture draft candidates through the proof run's capture path,
-   using the same locale, viewport, scenario, and deterministic data as each
-   reference. Drafts add no manifest state and replace no final coverage. Run
-   the [pre-request review](#pre-request-review) on them, give every finding
-   a disposition, and recapture the frames a repair can move. Commit each
-   repair and pass the code review of that change before the proof run, so
-   the proof run captures a committed, reviewed candidate. Repeat until the
-   review returns no open finding. If the third review of a surface still
-   returns one, stop: release the lane and report the open findings to the
-   human as a blocker, with what each repair changed. The human chooses more
-   repair, a recorded deviation or a changed scope.
-5. Proof run: capture the full candidate set from the committed candidate.
-   Record candidate hashes and a side-by-side comparison artifact following
+4. Draft loop: take a [capture lane](#capture-lanes) for each capture batch
+   and release it when the batch ends. Capture draft candidates through the
+   proof run's capture path, using the same locale, viewport, scenario, and
+   deterministic data as each reference. Drafts add no manifest state and
+   replace no final coverage. With the lane released, run the
+   [pre-request review](#pre-request-review) on them, give every finding a
+   disposition and repair. Take a lane again only to recapture the frames a
+   repair can move. Commit each repair and pass the code review of that
+   change before the proof run, so the proof run captures a committed,
+   reviewed candidate. Repeat until the review returns no open finding. If
+   the third review of a surface still returns one, stop and report the open
+   findings to the human as a blocker, with what each repair changed. The
+   human chooses more repair, a recorded deviation or a changed scope.
+5. Proof run: take a lane, capture the full candidate set from the committed
+   candidate and release the lane. Record candidate hashes and a side-by-side comparison artifact following
    [Comparison presentation](#comparison-presentation). The reviewer inspects
-   every frame whose bytes differ from the last reviewed draft; record the
-   result as `preRequestReview`, set the surface to `compared` and validate
-   the manifest.
+   every frame that changed since the last reviewed draft, by the
+   unchanged-frame rule under "Pre-request review"; record the result as
+   `preRequestReview`, set the surface to `compared` and validate the
+   manifest.
 6. Record an approval request bound to that candidate-set hash, set
-   `approval_requested`, validate again, release the capture lane, and end the
-   turn with the mandatory request printed by the validator below.
+   `approval_requested`, validate again, confirm the surface holds no lane,
+   and end the turn with the mandatory request printed by the validator
+   below.
 7. On rejection or any candidate-changing edit, clear `approvalRequest`,
    `preRequestReview`, `approval` and `baselines`, and return to `compared`.
    Repair every finding in the rejection, rerun the draft loop for the frames
@@ -267,8 +273,12 @@ browser with the services and data it needs. The number of lanes the project
 can run at once limits concurrent capture. Implementation, desktop checks
 and code review need no lane.
 
-- Hold a lane only while capturing or proving. A recorded approval request is
-  bound to candidate hashes, so the lane is free while the human decides.
+- Hold a lane only while capturing or proving: take it for a capture batch
+  and release it when the batch ends. Review, repair, code review and the
+  human's decision need no lane; a recorded approval request is bound to
+  candidate hashes. A surface may keep a lane through a review only while no
+  other surface waits for one. Where taking a lane has a setup cost, measure
+  it and report it with the lane holds.
 - Pass the project's lane preflight before taking a lane: an off-lane check
   that every registration a new capture case needs is present (case lists,
   fixtures, fonts, observers, recipes). A registration found missing on the
@@ -284,6 +294,11 @@ and code review need no lane.
   widely, integrate the target branch first and prove once at the end.
 - Merge a surface when it is promoted. A finished branch held back to keep
   another surface's proof valid is a binding defect; report it.
+- A merge that changes an input another surface's pending proof binds stales
+  that proof, and the surface proves again on the merge result before
+  promotion. Count that proof run in the plan. To keep it to one lane hold,
+  integrate the surfaces approved in one sitting on one tree, rerun each
+  stale proof there, then promote and merge them together.
 - Batch the gates only a human can pass (approval, manual accessibility or
   device passes) into one sitting per group of ready surfaces.
 
@@ -373,8 +388,9 @@ node scripts/validate-visual-acceptance.mjs \
 
 Several surfaces at `approval_requested` share one request: pass their ids
 comma-separated (`--print-request=<id>,<id>`). The human answers
-`Approve all`, or names each surface. Each approval is still recorded on its
-own surface, bound to its own candidate-set hash.
+`Approve all`, or names each surface. A bare `Approve` to a request for
+several surfaces approves nothing: show the request again. Each approval is
+still recorded on its own surface, bound to its own candidate-set hash.
 
 A rejection is complete. It lists every finding for the surface in one pass,
 copies every reviewer finding including those judged minor, and states for

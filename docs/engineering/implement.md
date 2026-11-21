@@ -104,8 +104,9 @@ deliberate adaptation or answered, and only the frames a repair can move are
 captured again. Repairs are committed and reviewed before the proof run. A
 loop still open after its third review stops and reports the open findings to
 you as a blocker. Drafts add no manifest state. A lane preflight runs before
-the capture lane is taken, and the lane is released once the request is
-recorded.
+a capture lane is taken. The lane is taken for each capture batch and
+released when the batch ends, so review, repair and your decision hold no
+lane another surface waits for.
 
 The run then makes one proof run: every required candidate, the side-by-side
 comparison, the recorded pre-request review and the candidate-set hash. It asks

@@ -116,8 +116,10 @@ converges in a draft loop: a reviewer with a fresh context window returns
 every difference in one list, and only the frames a repair moves are captured
 again. One proof run per approval request follows, with numbered difference
 pointers in disk-openable comparison HTML. Surfaces wait for each other only
-on a technical prerequisite, and a capture lane is held only while capturing
-or proving. The validator prints one approval request for several ready
+on a technical prerequisite. A capture lane is taken for a capture batch and
+released when the batch ends, so review and repair hold none. A merge that
+stales another surface's pending proof costs that surface one more proof run;
+surfaces approved in one sitting are integrated, proven and merged together. The validator prints one approval request for several ready
 surfaces and lists the frames that changed since an earlier manifest.
 A manifest policy can require the review record and the request's attempt
 number on every surface whose approval was requested; an older manifest

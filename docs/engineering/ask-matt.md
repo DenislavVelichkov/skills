@@ -15,7 +15,7 @@ Both implementation routes select the next authorized action after each batch
 and use early rendered comparisons for visual parity. Workers and integration
 follow the same visual sequence, including numbered difference pointers in the
 existing comparison output. A ticket graph does not grant parallel
-implementation permission or waive serial human approval.
+implementation permission or override an approved serial acceptance order.
 
 ## When to reach for it
 

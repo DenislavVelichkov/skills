@@ -92,6 +92,9 @@ test("visual parity converges before the human gate and orders surfaces by techn
     "It returns one complete list",
     "The review is done when the reviewer returns no open finding for the exact candidate set",
     "Hold a lane only while capturing or proving",
+    "take it for a capture batch and release it when the batch ends",
+    "the surface proves again on the merge result before promotion",
+    "A bare `Approve` to a request for several surfaces approves nothing",
     "Pass the project's lane preflight before taking a lane",
     "A rejection is complete",
     "Each approval is still recorded on its own surface, bound to its own candidate-set hash",
@@ -104,6 +107,7 @@ test("visual parity converges before the human gate and orders surfaces by techn
     "The loop is done when the reviewer returns no open finding",
     "Make one proof run",
     "release the capture lane",
+    "Take a capture lane for each capture batch and release it when the batch ends",
   ])
     assert.ok(implement.includes(action), action);
   const tickets = flat("skills/engineering/to-tickets/VISUAL-PARITY.md");
