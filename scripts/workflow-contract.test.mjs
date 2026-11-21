@@ -70,14 +70,51 @@ test("pending human approval and candidate changes retain exact hash authority",
     " ",
   );
   for (const action of [
-    "Do no other work until the human replies",
+    "Do no other work on this surface until the human replies",
     "verify the candidate files and hashes are unchanged",
     'Never infer approval from "continue", prototype selection, green tests, or a clean review',
-    "clear the surface's `approvalRequest`, `approval`, and `baselines` entries",
+    "clear the surface's `approvalRequest`, `preRequestReview`, `approval`, and `baselines` entries",
     "Preserve existing baseline files until new approval",
     "promote the accepted bytes",
   ])
     assert.ok(visual.includes(action), action);
+});
+
+test("visual parity converges before the human gate and orders surfaces by technical prerequisites", () => {
+  const flat = (path) => read(path).replace(/\s+/gu, " ");
+  const protocol = flat(
+    "skills/engineering/setup-matt-pocock-skills/visual-acceptance.md",
+  );
+  for (const action of [
+    "Position in the manifest is not a prerequisite",
+    "Drafts add no manifest state and replace no final coverage",
+    "The reviewer is not the surface's author and starts from a fresh context window",
+    "It returns one complete list",
+    "The review is done when the reviewer returns no open finding for the exact candidate set",
+    "Hold a lane only while capturing or proving",
+    "Pass the project's lane preflight before taking a lane",
+    "A rejection is complete",
+    "Each approval is still recorded on its own surface, bound to its own candidate-set hash",
+    "Only a human can accept a candidate",
+  ])
+    assert.ok(protocol.includes(action), action);
+  const implement = flat("skills/engineering/implement/VISUAL-PARITY.md");
+  for (const action of [
+    "a reviewer with a fresh context window who is not this implementer",
+    "The loop is done when the reviewer returns no open finding",
+    "Make one proof run",
+    "release the capture lane",
+  ])
+    assert.ok(implement.includes(action), action);
+  const tickets = flat("skills/engineering/to-tickets/VISUAL-PARITY.md");
+  for (const action of [
+    "Block a surface ticket only on a technical prerequisite",
+    "Manifest position creates no edge",
+    "Chain surfaces serially only when the human asks for a serial acceptance order",
+    "a recorded pre-request review with no open finding",
+  ])
+    assert.ok(tickets.includes(action), action);
+  assert.doesNotMatch(tickets, /Default to a linear chain/u);
 });
 
 test("delegated visual work and integration use the same sequence without granting parallelism", () => {

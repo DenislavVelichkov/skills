@@ -7,7 +7,10 @@ import assert from "node:assert/strict";
 
 import {
   candidateSetSha256,
+  changedCandidates,
   formatApprovalRequest,
+  formatApprovalRequests,
+  formatChangedCandidates,
   validateManifest,
 } from "../skills/engineering/setup-matt-pocock-skills/validate-visual-acceptance.mjs";
 
@@ -324,5 +327,190 @@ test("formats the exact human approval prompt", () => {
       "Do you approve this exact production candidate?",
       'Reply "Approve" or "Reject".',
     ].join("\n"),
+  );
+});
+
+function requested() {
+  const { root, surface, write } = fixture();
+  const candidate = {
+    ...surface.references[0],
+    path: "docs/visual-acceptance/redesign/candidates/overview.png",
+    sha256: write(
+      "docs/visual-acceptance/redesign/candidates/overview.png",
+      "candidate",
+    ),
+  };
+  surface.state = "approval_requested";
+  surface.candidates = [candidate];
+  surface.comparison = {
+    path: "docs/visual-acceptance/redesign/comparisons/overview.md",
+    sha256: write(
+      "docs/visual-acceptance/redesign/comparisons/overview.md",
+      "comparison",
+    ),
+  };
+  surface.approvalRequest = {
+    requestedAt: "2026-08-09T11:59:00.000Z",
+    source: "conversation:example",
+    candidateSetSha256: candidateSetSha256([candidate]),
+  };
+  return { candidate, root, surface };
+}
+
+const review = (candidate, overrides = {}) => ({
+  reviewer: "reviewer:fresh-context",
+  reviewedAt: "2026-08-09T11:50:00.000Z",
+  source: "conversation:review",
+  candidateSetSha256: candidateSetSha256([candidate]),
+  findings: 3,
+  open: 0,
+  ...overrides,
+});
+
+test("requires a bound pre-request review only where the policy asks for it", () => {
+  const { candidate, root, surface } = requested();
+  const manifest = (policy) => ({
+    version: 1,
+    initiative: "redesign",
+    ...(policy ? { policy } : {}),
+    surfaces: [surface],
+  });
+  assert.deepEqual(validateManifest(manifest(), { root }).errors, []);
+  assert.deepEqual(
+    validateManifest(manifest({ preRequestReview: "required" }), { root }).errors,
+    [
+      "surfaces[0].preRequestReview is required by policy before approval is requested",
+    ],
+  );
+  surface.preRequestReview = review(candidate);
+  assert.deepEqual(
+    validateManifest(manifest({ preRequestReview: "required" }), { root }).errors,
+    [],
+  );
+  assert.deepEqual(
+    validateManifest(manifest({ preRequestReview: "optional" }), { root }).errors,
+    ['policy.preRequestReview must be "required" when set'],
+  );
+});
+
+test("rejects a pre-request review that is stale, open or malformed", () => {
+  const { candidate, root, surface } = requested();
+  surface.preRequestReview = review(candidate, {
+    candidateSetSha256: `sha256:${"b".repeat(64)}`,
+    findings: -1,
+    open: 2,
+    reviewer: "",
+  });
+  const { errors } = validateManifest(
+    { version: 1, initiative: "redesign", surfaces: [surface] },
+    { root },
+  );
+  assert.deepEqual(errors, [
+    "surfaces[0].preRequestReview.reviewer must be non-empty",
+    "surfaces[0].preRequestReview.findings must be a non-negative integer",
+    "surfaces[0].preRequestReview.open must be 0",
+    `surfaces[0].preRequestReview.candidateSetSha256 is sha256:${"b".repeat(64)}; expected ${candidateSetSha256([candidate])}`,
+  ]);
+});
+
+test("rejects a pre-request review recorded before candidates are compared", () => {
+  const { root, surface } = fixture();
+  surface.preRequestReview = review(surface.references[0]);
+  const { errors } = validateManifest(
+    { version: 1, initiative: "redesign", surfaces: [surface] },
+    { root },
+  );
+  assert.deepEqual(errors, [
+    "surfaces[0].preRequestReview must be absent before compared",
+  ]);
+});
+
+test("rejects an approval attempt that is not a positive integer", () => {
+  const { root, surface } = requested();
+  surface.approvalRequest.attempt = 0;
+  const { errors } = validateManifest(
+    { version: 1, initiative: "redesign", surfaces: [surface] },
+    { root },
+  );
+  assert.deepEqual(errors, [
+    "surfaces[0].approvalRequest.attempt must be a positive integer",
+  ]);
+});
+
+test("formats one request for several surfaces and shows review and attempt", () => {
+  const first = requested();
+  first.surface.preRequestReview = review(first.candidate);
+  first.surface.approvalRequest.attempt = 2;
+  const second = { ...first.surface, id: "detail", selection: "B" };
+  delete second.preRequestReview;
+  second.approvalRequest = { ...first.surface.approvalRequest, attempt: 1 };
+  const comparison = `${first.root}/docs/visual-acceptance/redesign/comparisons/overview.md`;
+  const hash = first.surface.approvalRequest.candidateSetSha256;
+  assert.equal(
+    formatApprovalRequests([first.surface, second], { root: first.root }),
+    [
+      "Approval required for 2 surfaces",
+      "",
+      "Approval required: overview: A",
+      `Comparison: [Open comparison](<${comparison}>)`,
+      `Candidate set: ${hash}`,
+      "Deviations: None",
+      "Pre-request review: reviewer:fresh-context, 3 findings, 0 open",
+      "Attempt: 2",
+      "",
+      "Approval required: detail: B",
+      `Comparison: [Open comparison](<${comparison}>)`,
+      `Candidate set: ${hash}`,
+      "Deviations: None",
+      "",
+      "Do you approve these exact production candidates?",
+      'Reply "Approve all", or answer each surface: "Approve <surface id>" or "Reject <surface id>" with every finding.',
+    ].join("\n"),
+  );
+  assert.equal(
+    formatApprovalRequests([second], { root: first.root }),
+    formatApprovalRequest(second, { root: first.root }),
+  );
+});
+
+test("lists the candidate frames that changed since an earlier manifest", () => {
+  const frame = (scenario, digest) => ({
+    locale: "en",
+    viewport: "360x800",
+    scenario,
+    sha256: `sha256:${digest.repeat(64)}`,
+  });
+  const previous = {
+    surfaces: [
+      { id: "overview", candidates: [frame("ready", "a"), frame("empty", "b"), frame("gone", "c")] },
+      { id: "detail", candidates: [frame("ready", "d")] },
+    ],
+  };
+  const manifest = {
+    surfaces: [
+      { id: "overview", candidates: [frame("ready", "a"), frame("empty", "e"), frame("new", "f")] },
+      { id: "detail", candidates: [frame("ready", "d")] },
+    ],
+  };
+  const changed = changedCandidates(manifest, previous);
+  assert.deepEqual(changed[1], {
+    id: "detail",
+    added: [],
+    changed: [],
+    removed: [],
+    unchanged: 1,
+  });
+  assert.equal(
+    formatChangedCandidates(changed),
+    [
+      "overview: 1 changed, 1 added, 1 removed, 1 unchanged",
+      "  changed en|360x800|empty",
+      "  added en|360x800|new",
+      "  removed en|360x800|gone",
+    ].join("\n"),
+  );
+  assert.equal(
+    formatChangedCandidates(changedCandidates(manifest, manifest)),
+    "No candidate frame changed.",
   );
 });

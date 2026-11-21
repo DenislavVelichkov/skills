@@ -38,7 +38,7 @@ checks. Preserve a local-only choice; hosted CI/CD needs its own authorization.
 ## Review before visual approval
 
 For an applicable visual parity action, follow the
-[visual fidelity review](visual-acceptance.md#visual-fidelity-review) before
+[pre-request review](visual-acceptance.md#pre-request-review) before
 requesting approval. Link these judgement criteria from the existing review
 guidance. Keep mechanical layout regressions in focused checks. Existing
 visual acceptance and exact human approval remain required; automated checks

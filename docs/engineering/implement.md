@@ -96,8 +96,18 @@ without identified differences say so. The page preserves original bytes, binds
 annotations to the exact pair, and works directly from disk at narrow widths and
 with image zoom. These presentation checks grant no approval.
 
-The run then supplies every required candidate, the side-by-side comparison and
-candidate-set hash, and asks for exact human approval. No snapshot baseline moves.
+Before any approval request, the surface converges in a draft loop. Draft
+captures go to a reviewer with a fresh context window who is not the
+implementer; it inspects every reference and candidate pair and returns one
+complete list of differences. Each finding is repaired, recorded as a
+deliberate adaptation or answered, and only the frames a repair can move are
+captured again. Drafts add no manifest state. A lane preflight runs before
+the capture lane is taken, and the lane is released once the request is
+recorded.
+
+The run then makes one proof run: every required candidate, the side-by-side
+comparison, the recorded pre-request review and the candidate-set hash. It asks
+for exact human approval. No snapshot baseline moves.
 An immediate `Approve` reply binds to the displayed surface and hash without
 requiring you to repeat the digest. Later invocations resume from validated state:
 
