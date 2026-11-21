@@ -101,7 +101,9 @@ captures go to a reviewer with a fresh context window who is not the
 implementer; it inspects every reference and candidate pair and returns one
 complete list of differences. Each finding is repaired, recorded as a
 deliberate adaptation or answered, and only the frames a repair can move are
-captured again. Drafts add no manifest state. A lane preflight runs before
+captured again. Repairs are committed and reviewed before the proof run. A
+loop still open after its third review stops and reports the open findings to
+you as a blocker. Drafts add no manifest state. A lane preflight runs before
 the capture lane is taken, and the lane is released once the request is
 recorded.
 

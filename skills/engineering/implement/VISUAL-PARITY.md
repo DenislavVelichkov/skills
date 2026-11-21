@@ -42,14 +42,16 @@ approval from "continue", prototype selection, green tests, or a clean review.
 
 For `member_accepted`, verify the recorded approval and candidate hashes,
 promote the accepted bytes to the regression baselines, rerun the visual suite,
-and set `baseline_promoted`. For an unchanged `baseline_promoted` surface,
+and set `baseline_promoted`. Record the protocol's closing measurements for
+the surface (approval cycles, draft-loop reviews, lane holds, elapsed time)
+in the ticket's closing record. For an unchanged `baseline_promoted` surface,
 validate the retained evidence and completion gates without rebuilding or
 requesting approval again.
 
 If `approval_requested` remains unresolved, verify its candidates and request
 hash, report all five progress counters, and end the response with the verbatim
-stdout of the validator's `--print-request=<surface-id>` command and no text
-after it. Do no other work on this surface until the human replies `Approve`
+stdout of the validator's `--print-request=<surface-id>` command (ids
+comma-separated when several surfaces await approval) and no text after it. Do no other work on this surface until the human replies `Approve`
 or `Reject`; its capture lane stays released meanwhile.
 
 For a surface below `approval_requested`, resume at the first unfinished or
@@ -71,9 +73,11 @@ their evidence applies to the current candidate:
    Obtain the protocol's "Pre-request review" from a reviewer with a fresh
    context window who is not this implementer: start one where the host
    allows, otherwise request it from the invoking workflow. Give every
-   finding a disposition and recapture the frames a repair can move. The loop
-   is done when the reviewer returns no open finding. Drafts add no manifest
-   state.
+   finding a disposition and recapture the frames a repair can move. Commit
+   each repair and pass step 2's review of that change before the proof run.
+   The loop is done when the reviewer returns no open finding. If the third
+   review still returns one, release the lane, report the open findings as a
+   blocker and stop. Drafts add no manifest state.
 4. Make one proof run. Supply every required candidate and side-by-side comparison. Apply the
    repository protocol's "Comparison presentation" through the existing producer
    and consumer, including numbered difference pointers and pair-bound inspection.
@@ -89,4 +93,5 @@ their evidence applies to the current candidate:
    `approval_requested`, validate again, and release the capture lane.
 6. Report all five progress counters. End the final response with the
    verbatim output of the validator's `--print-request=<surface-id>` command
-   and no text after it.
+   (ids comma-separated when several surfaces await approval) and no text
+   after it.

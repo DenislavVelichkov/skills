@@ -64,8 +64,11 @@ selecting that reference for the later comparison, or link an existing manifest
 that records either obligation. UI work without that obligation stays on the
 normal flow. For an applicable action, the manifest
 travels through spec, tickets, implementation, and review.
-The flow pauses after each production comparison; only your approval of the
-exact candidate hash unlocks baseline promotion and the next surface.
+Each surface pauses after its production comparison; only your approval of
+the exact candidate hash unlocks its baseline promotion and the tickets it
+blocks. Surfaces with no technical prerequisite between them can be worked at
+once where the project authorizes it, and their approval requests can reach
+you as one batch.
 The implementation turn must ask you directly with the validator-generated
 `Approve` or `Reject` prompt; an unasked approval is a blocked delivery gate.
 

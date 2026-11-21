@@ -1,7 +1,9 @@
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { mkdtempSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterEach, test } from "node:test";
 import assert from "node:assert/strict";
 
@@ -354,7 +356,7 @@ function requested() {
     source: "conversation:example",
     candidateSetSha256: candidateSetSha256([candidate]),
   };
-  return { candidate, root, surface };
+  return { candidate, root, surface, write };
 }
 
 const review = (candidate, overrides = {}) => ({
@@ -380,13 +382,56 @@ test("requires a bound pre-request review only where the policy asks for it", ()
     validateManifest(manifest({ preRequestReview: "required" }), { root }).errors,
     [
       "surfaces[0].preRequestReview is required by policy before approval is requested",
+      "surfaces[0].approvalRequest.attempt is required by policy when approval is requested",
     ],
   );
   surface.preRequestReview = review(candidate);
+  surface.approvalRequest.attempt = 1;
   assert.deepEqual(
     validateManifest(manifest({ preRequestReview: "required" }), { root }).errors,
     [],
   );
+  surface.state = "member_accepted";
+  surface.approval = {
+    approvedBy: "member",
+    approvedAt: "2026-08-09T12:05:00.000Z",
+    source: "conversation:example",
+    candidateSetSha256: candidateSetSha256([candidate]),
+  };
+  assert.deepEqual(
+    validateManifest(manifest({ preRequestReview: "required" }), { root }).errors,
+    [],
+  );
+  delete surface.preRequestReview;
+  delete surface.approvalRequest.attempt;
+  const skipped = [
+    "surfaces[0].preRequestReview is required by policy before approval is requested",
+    "surfaces[0].approvalRequest.attempt is required by policy when approval is requested",
+  ];
+  assert.deepEqual(
+    validateManifest(manifest({ preRequestReview: "required" }), { root }).errors,
+    skipped,
+    "an accepted row cannot have skipped the review",
+  );
+  const from = (preRequestReviewFrom) =>
+    validateManifest(
+      manifest({ preRequestReview: "required", preRequestReviewFrom }),
+      { root },
+    ).errors;
+  assert.deepEqual(
+    from("2026-08-09T11:59:00.001Z"),
+    [],
+    "a request made before the policy took effect stays valid",
+  );
+  assert.deepEqual(
+    from("2026-08-09T11:59:00.000Z"),
+    skipped,
+    "a request made when the policy took effect needs the review",
+  );
+  assert.deepEqual(from("2026-08-09"), [
+    "policy.preRequestReviewFrom must be an ISO timestamp when set",
+    ...skipped,
+  ]);
   assert.deepEqual(
     validateManifest(manifest({ preRequestReview: "optional" }), { root }).errors,
     ['policy.preRequestReview must be "required" when set'],
@@ -471,6 +516,88 @@ test("formats one request for several surfaces and shows review and attempt", ()
     formatApprovalRequests([second], { root: first.root }),
     formatApprovalRequest(second, { root: first.root }),
   );
+  first.surface.preRequestReview.findings = 1;
+  assert.match(
+    formatApprovalRequest(first.surface, { root: first.root }),
+    /^Pre-request review: reviewer:fresh-context, 1 finding, 0 open$/mu,
+  );
+  assert.throws(() => formatApprovalRequests([], { root: first.root }), TypeError);
+});
+
+const validatorPath = fileURLToPath(
+  new URL(
+    "../skills/engineering/setup-matt-pocock-skills/validate-visual-acceptance.mjs",
+    import.meta.url,
+  ),
+);
+const cli = (root, ...args) => {
+  const { status, stderr, stdout } = spawnSync(
+    process.execPath,
+    [validatorPath, ...args],
+    { cwd: root, encoding: "utf8" },
+  );
+  return { status, stderr, stdout };
+};
+
+test("prints one request for several surfaces from the command line", () => {
+  const { candidate, root, surface, write } = requested();
+  surface.preRequestReview = review(candidate);
+  surface.approvalRequest.attempt = 1;
+  const detail = { ...surface, id: "detail", selection: "B" };
+  write(
+    "manifest.json",
+    JSON.stringify({
+      version: 1,
+      initiative: "redesign",
+      policy: { preRequestReview: "required" },
+      surfaces: [surface, detail],
+    }),
+  );
+  const both = cli(root, "manifest.json", "--print-request=overview,detail");
+  assert.equal(both.status, 0, both.stderr);
+  assert.equal(
+    both.stdout,
+    `${formatApprovalRequests([surface, detail], { root })}\n`,
+  );
+  const one = cli(root, "manifest.json", "--print-request=detail");
+  assert.equal(one.stdout, `${formatApprovalRequest(detail, { root })}\n`);
+
+  const unknown = cli(root, "manifest.json", "--print-request=overview,missing");
+  assert.equal(unknown.status, 1);
+  assert.equal(unknown.stdout, "");
+  assert.match(unknown.stderr, /missing is not awaiting approval/u);
+  const empty = cli(root, "manifest.json", "--print-request=");
+  assert.equal(empty.status, 2);
+  assert.match(empty.stderr, /--print-request requires a surface id/u);
+});
+
+test("lists changed frames from the command line without reading evidence", () => {
+  const { candidate, root, surface, write } = requested();
+  const manifest = { version: 1, initiative: "redesign", surfaces: [surface] };
+  write("previous.json", JSON.stringify(manifest));
+  surface.candidates = [{ ...candidate, sha256: `sha256:${"e".repeat(64)}` }];
+  write("manifest.json", JSON.stringify(manifest));
+
+  const plain = cli(root, "manifest.json");
+  assert.equal(plain.status, 1, "the edited digest no longer matches its file");
+  const changed = cli(root, "manifest.json", "--changed-since=previous.json");
+  assert.equal(changed.status, 0, changed.stderr);
+  assert.equal(
+    changed.stdout,
+    "overview: 1 changed, 0 added, 0 removed, 0 unchanged\n  changed en|1440x1000|ready\n",
+  );
+  assert.equal(
+    cli(root, "previous.json", "--changed-since=previous.json").stdout,
+    "No candidate frame changed.\n",
+  );
+
+  const empty = cli(root, "manifest.json", "--changed-since=");
+  assert.equal(empty.status, 2);
+  assert.match(empty.stderr, /--changed-since requires a previous manifest path/u);
+  write("not-a-manifest.json", JSON.stringify({ surfaces: "none" }));
+  const malformed = cli(root, "manifest.json", "--changed-since=not-a-manifest.json");
+  assert.equal(malformed.status, 1);
+  assert.match(malformed.stderr, /needs two manifests with a surfaces array/u);
 });
 
 test("lists the candidate frames that changed since an earlier manifest", () => {

@@ -208,6 +208,23 @@ const validatePreRequestReview = (review, candidates, label, errors) => {
   }
 };
 
+// The policy covers every surface whose approval was requested, in whatever
+// state it is now, so a row cannot skip the review by moving on. Only a
+// request made before policy.preRequestReviewFrom is exempt.
+const reviewRequired = (policy, surface, stateIndex) => {
+  if (
+    policy.preRequestReview !== "required" ||
+    stateIndex < states.indexOf("approval_requested")
+  )
+    return false;
+  const requestedAt = surface.approvalRequest?.requestedAt;
+  return !(
+    isIsoTimestamp(policy.preRequestReviewFrom) &&
+    isIsoTimestamp(requestedAt) &&
+    Date.parse(requestedAt) < Date.parse(policy.preRequestReviewFrom)
+  );
+};
+
 const validateSurface = (root, surface, index, errors, policy = {}) => {
   const label = `surfaces[${index}]`;
   if (!isRecord(surface)) {
@@ -283,12 +300,18 @@ const validateSurface = (root, surface, index, errors, policy = {}) => {
         label,
         errors,
       );
-  } else if (
-    policy.preRequestReview === "required" &&
-    surface.state === "approval_requested"
-  ) {
+  } else if (reviewRequired(policy, surface, stateIndex)) {
     errors.push(
       `${label}.preRequestReview is required by policy before approval is requested`,
+    );
+  }
+  if (
+    reviewRequired(policy, surface, stateIndex) &&
+    isRecord(surface.approvalRequest) &&
+    surface.approvalRequest.attempt === undefined
+  ) {
+    errors.push(
+      `${label}.approvalRequest.attempt is required by policy when approval is requested`,
     );
   }
 
@@ -351,6 +374,13 @@ export function validateManifest(
   ) {
     errors.push('policy.preRequestReview must be "required" when set');
   }
+  if (
+    isRecord(policy) &&
+    policy.preRequestReviewFrom !== undefined &&
+    !isIsoTimestamp(policy.preRequestReviewFrom)
+  ) {
+    errors.push("policy.preRequestReviewFrom must be an ISO timestamp when set");
+  }
 
   const seenIds = new Set();
   const validated = manifest.surfaces
@@ -411,7 +441,7 @@ const requestLines = (surface, root) => {
   const review = surface.preRequestReview;
   if (review)
     lines.push(
-      `Pre-request review: ${review.reviewer}, ${review.findings} findings, 0 open`,
+      `Pre-request review: ${review.reviewer}, ${review.findings} ${review.findings === 1 ? "finding" : "findings"}, 0 open`,
     );
   if (surface.approvalRequest.attempt > 1)
     lines.push(`Attempt: ${surface.approvalRequest.attempt}`);
@@ -426,8 +456,10 @@ export const formatApprovalRequest = (surface, { root = process.cwd() } = {}) =>
     'Reply "Approve" or "Reject".',
   ].join("\n");
 
-export const formatApprovalRequests = (surfaces, { root = process.cwd() } = {}) =>
-  surfaces.length === 1
+export const formatApprovalRequests = (surfaces, { root = process.cwd() } = {}) => {
+  if (surfaces.length === 0)
+    throw new TypeError("An approval request needs at least one surface");
+  return surfaces.length === 1
     ? formatApprovalRequest(surfaces[0], { root })
     : [
         `Approval required for ${surfaces.length} surfaces`,
@@ -436,28 +468,30 @@ export const formatApprovalRequests = (surfaces, { root = process.cwd() } = {}) 
         "Do you approve these exact production candidates?",
         'Reply "Approve all", or answer each surface: "Approve <surface id>" or "Reject <surface id>" with every finding.',
       ].join("\n");
+};
+
+// Compares recorded digests only, so it needs neither evidence files nor a
+// manifest that passes validation.
+const candidateDigests = (surface) =>
+  new Map(
+    (Array.isArray(surface.candidates) ? surface.candidates : [])
+      .filter(isRecord)
+      .map((candidate) => [evidenceKey(candidate), candidate.sha256]),
+  );
+
+const recordedSurfaces = (manifest) =>
+  (Array.isArray(manifest?.surfaces) ? manifest.surfaces : []).filter(isRecord);
 
 export const changedCandidates = (manifest, previous) => {
   const prior = new Map(
-    (Array.isArray(previous?.surfaces) ? previous.surfaces : [])
-      .filter(isRecord)
-      .map((surface) => [
-        surface.id,
-        new Map(
-          (Array.isArray(surface.candidates) ? surface.candidates : []).map(
-            (candidate) => [evidenceKey(candidate), candidate.sha256],
-          ),
-        ),
-      ]),
+    recordedSurfaces(previous).map((surface) => [
+      surface.id,
+      candidateDigests(surface),
+    ]),
   );
-  return manifest.surfaces.map((surface) => {
+  return recordedSurfaces(manifest).map((surface) => {
     const before = prior.get(surface.id) ?? new Map();
-    const current = new Map(
-      surface.candidates.map((candidate) => [
-        evidenceKey(candidate),
-        candidate.sha256,
-      ]),
-    );
+    const current = candidateDigests(surface);
     const keys = [...current.keys()].sort();
     return {
       id: surface.id,
@@ -508,6 +542,21 @@ async function main() {
     return;
   }
   const manifest = JSON.parse(readFileSync(resolve(manifestPath), "utf8"));
+  if (changedSinceArgument !== undefined) {
+    if (!changedSince) {
+      console.error("- --changed-since requires a previous manifest path");
+      process.exitCode = 2;
+      return;
+    }
+    const previous = JSON.parse(readFileSync(resolve(changedSince), "utf8"));
+    if (!Array.isArray(manifest?.surfaces) || !Array.isArray(previous?.surfaces)) {
+      console.error("- --changed-since needs two manifests with a surfaces array");
+      process.exitCode = 1;
+      return;
+    }
+    console.log(formatChangedCandidates(changedCandidates(manifest, previous)));
+    return;
+  }
   const result = validateManifest(manifest, { requireComplete });
   if (result.errors.length > 0) {
     for (const error of result.errors) console.error(`- ${error}`);
@@ -532,16 +581,6 @@ async function main() {
       surfaces.push(surface);
     }
     console.log(formatApprovalRequests(surfaces));
-    return;
-  }
-  if (changedSinceArgument !== undefined) {
-    if (!changedSince) {
-      console.error("- --changed-since requires a previous manifest path");
-      process.exitCode = 2;
-      return;
-    }
-    const previous = JSON.parse(readFileSync(resolve(changedSince), "utf8"));
-    console.log(formatChangedCandidates(changedCandidates(manifest, previous)));
     return;
   }
   if (result.progress) console.log(formatProgress(result.progress));

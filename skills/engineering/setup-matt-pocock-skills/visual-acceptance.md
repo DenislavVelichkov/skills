@@ -137,15 +137,19 @@ bytes. Timestamps are UTC ISO strings in `toISOString()` form
   `open` (always `0`). It records the last
   [pre-request review](#pre-request-review) of the exact candidate set.
 - `approvalRequest` (from `approval_requested`): `requestedAt`, `source`,
-  `candidateSetSha256`, and optionally `attempt` (1 for the first request of
-  a surface, one higher after each rejection).
+  `candidateSetSha256`, and `attempt` (1 for the first request of a surface,
+  one higher after each rejection). `attempt` is optional unless the manifest
+  policy below requires the review.
 - `approval` (from `member_accepted`): `approvedBy`, `approvedAt`, `source`,
   `candidateSetSha256`.
 
 A manifest may set the top-level `"policy": { "preRequestReview":
-"required" }`. A surface at `approval_requested` then needs a
-`preRequestReview`. New manifests set it; an older manifest adopts it when its
-project is ready, and rows already past `approval_requested` stay valid.
+"required" }`. Every surface at `approval_requested` or later then needs a
+`preRequestReview` and an `approvalRequest.attempt`, so a surface cannot skip
+the review by moving to a later state. New manifests set it. An older
+manifest adopts it with `"preRequestReviewFrom": "<UTC ISO timestamp>"` in
+the same policy: surfaces whose `approvalRequest.requestedAt` is earlier
+stay valid without the two records, and every later request needs them.
 
 `candidateSetSha256` is the digest the validator's exported
 `candidateSetSha256(candidates)` computes over the candidate entries. A
@@ -228,8 +232,13 @@ Each surface runs a **draft loop**, which is cheap and repeats, and one
    using the same locale, viewport, scenario, and deterministic data as each
    reference. Drafts add no manifest state and replace no final coverage. Run
    the [pre-request review](#pre-request-review) on them, give every finding
-   a disposition, and recapture the frames a repair can move. Repeat until
-   the review returns no open finding.
+   a disposition, and recapture the frames a repair can move. Commit each
+   repair and pass the code review of that change before the proof run, so
+   the proof run captures a committed, reviewed candidate. Repeat until the
+   review returns no open finding. If the third review of a surface still
+   returns one, stop: release the lane and report the open findings to the
+   human as a blocker, with what each repair changed. The human chooses more
+   repair, a recorded deviation or a changed scope.
 5. Proof run: capture the full candidate set from the committed candidate.
    Record candidate hashes and a side-by-side comparison artifact following
    [Comparison presentation](#comparison-presentation). The reviewer inspects
@@ -300,7 +309,16 @@ fault.
   reason. Keep repairs scoped to the finding; fixing an arrow's alignment
   preserves the surrounding link unless a broader change is requested.
 - After a repair, the reviewer inspects the frames that changed and confirms
-  the rest by hash. List them with the validator's `--changed-since`.
+  the rest as unchanged. Hashes confirm that only where the capture path is
+  proven byte-stable; elsewhere use the project's unchanged-frame test from
+  [capture lanes](#capture-lanes), and until the project has either, inspect
+  every frame again. Between drafts, compare the two draft sets; drafts are
+  not in the manifest. Between approval requests, the validator's
+  `--changed-since` lists the frames whose recorded digest differs from two
+  copies of the manifest.
+- A surface with more frames than one reviewer can inspect with care is
+  split by scenario group across several reviewers. Each returns a complete
+  list for its group; the record's `findings` is their sum.
 - The review is done when the reviewer returns no open finding for the exact
   candidate set. Record it as `preRequestReview`.
 
@@ -399,9 +417,24 @@ Member accepted: <n>/<total>
 Baseline promoted: <n>/<total>
 ```
 
-Report each surface's approval cycles (its highest `attempt`) at closure and
-name any surface above two: repeated rejection means the pre-request review
-missed findings.
+Report these measurements for each surface when it closes, in the ticket's
+closing record:
+
+- approval cycles: its highest `attempt`. Name any surface above two;
+  repeated rejection means the pre-request review missed findings.
+- draft-loop reviews: how many pre-request reviews ran before the proof run.
+- lane holds: the UTC time each capture lane was taken and released.
+- proof runs: how many times the bound proof ran.
+- elapsed time from `implemented` to `baseline_promoted`.
+
+Use one table row per lane hold so a project can total them:
+
+```markdown
+| Surface | Attempts | Draft-loop reviews | Lane | Taken (UTC) | Released (UTC) | Proof runs | Implemented (UTC) | Promoted (UTC) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+```
+
+A project compares the rows across surfaces to find its slowest step.
 
 Use `implementation candidate` while any applicable surface is below
 `member_accepted`. Use `complete` only when every applicable surface is
@@ -420,9 +453,11 @@ node scripts/validate-visual-acceptance.mjs \
 valid and every named surface is exactly `approval_requested`.
 
 `--changed-since=<previous-manifest.json>` lists, per surface, the candidate
-frames whose digest differs from that earlier copy of the manifest (for
-example `git show <rev>:<manifest path>` saved to a temporary file). Use it
-to scope a re-review after a repair.
+frames whose recorded digest differs from that earlier copy of the manifest
+(for example `git show <rev>:<manifest path>` saved to a temporary file). It
+compares the two manifests' records and reads no evidence file, so it also
+runs where the evidence is absent. Use it to scope the re-review after a
+rejection. It cannot see drafts, which add no manifest state.
 
 Use `--require-complete` only at the final completion gate. Setup installs the
 validator in the repository. Run it locally before each state change and
