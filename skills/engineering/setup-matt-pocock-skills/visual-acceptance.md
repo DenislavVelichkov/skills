@@ -278,7 +278,9 @@ and code review need no lane.
   human's decision need no lane; a recorded approval request is bound to
   candidate hashes. A surface may keep a lane through a review only while no
   other surface waits for one. Where taking a lane has a setup cost, measure
-  it and report it with the lane holds.
+  it and report it with the lane holds; once it is known, release the lane
+  for a review only when the review is expected to take longer than taking
+  the lane again.
 - Pass the project's lane preflight before taking a lane: an off-lane check
   that every registration a new capture case needs is present (case lists,
   fixtures, fonts, observers, recipes). A registration found missing on the
@@ -298,7 +300,11 @@ and code review need no lane.
   that proof, and the surface proves again on the merge result before
   promotion. Count that proof run in the plan. To keep it to one lane hold,
   integrate the surfaces approved in one sitting on one tree, rerun each
-  stale proof there, then promote and merge them together.
+  stale proof there, then promote and merge them together. A surface whose
+  rerun fails leaves the group and the rest merge. Where the rerun captures
+  candidates again and any frame changed by the unchanged-frame rule, the
+  approval no longer covers the candidate: follow step 7 of the
+  implementation loop. Otherwise promote the approved bytes.
 - Batch the gates only a human can pass (approval, manual accessibility or
   device passes) into one sitting per group of ready surfaces.
 
@@ -439,15 +445,16 @@ closing record:
 - approval cycles: its highest `attempt`. Name any surface above two;
   repeated rejection means the pre-request review missed findings.
 - draft-loop reviews: how many pre-request reviews ran before the proof run.
-- lane holds: the UTC time each capture lane was taken and released.
+- lane holds: the UTC time each capture lane was taken, was ready to capture
+  and was released. Taken to ready is the setup cost of the hold.
 - proof runs: how many times the bound proof ran.
 - elapsed time from `implemented` to `baseline_promoted`.
 
 Use one table row per lane hold so a project can total them:
 
 ```markdown
-| Surface | Attempts | Draft-loop reviews | Lane | Taken (UTC) | Released (UTC) | Proof runs | Implemented (UTC) | Promoted (UTC) |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Surface | Attempts | Draft-loop reviews | Lane | Taken (UTC) | Ready (UTC) | Released (UTC) | Proof runs | Implemented (UTC) | Promoted (UTC) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ```
 
 A project compares the rows across surfaces to find its slowest step.

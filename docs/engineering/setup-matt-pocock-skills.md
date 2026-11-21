@@ -119,7 +119,7 @@ pointers in disk-openable comparison HTML. Surfaces wait for each other only
 on a technical prerequisite. A capture lane is taken for a capture batch and
 released when the batch ends, so review and repair hold none. A merge that
 stales another surface's pending proof costs that surface one more proof run;
-surfaces approved in one sitting are integrated, proven and merged together. The validator prints one approval request for several ready
+surfaces approved in one sitting are integrated, proven and merged together, and a rerun that changes a frame sends the surface back for approval. The validator prints one approval request for several ready
 surfaces and lists the frames that changed since an earlier manifest.
 A manifest policy can require the review record and the request's attempt
 number on every surface whose approval was requested; an older manifest

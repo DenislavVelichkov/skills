@@ -117,7 +117,7 @@ requiring you to repeat the digest. Later invocations resume from validated stat
 | Surface state        | What happens next                                                                                      |
 | -------------------- | ------------------------------------------------------------------------------------------------------ |
 | `approval_requested` | A bound approval or rejection is handled first; otherwise the exact request is shown again.            |
-| `member_accepted`    | The approved candidate bytes are verified and promoted, then visual checks run.                        |
+| `member_accepted`    | A proof staled by a merge is rerun first. The approved candidate bytes are verified and promoted, then visual checks run. |
 | `baseline_promoted`  | Retained evidence and completion gates are checked without rebuilding or asking for the same approval. |
 
 That pause is not unfinished automation; it is the point at which automation

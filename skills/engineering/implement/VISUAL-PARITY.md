@@ -42,10 +42,12 @@ lists, then resume at the draft loop below. Preserve existing baseline files
 until new approval. Never infer
 approval from "continue", prototype selection, green tests, or a clean review.
 
-For `member_accepted`, verify the recorded approval and candidate hashes,
-promote the accepted bytes to the regression baselines, rerun the visual suite,
+For `member_accepted`, verify the recorded approval and candidate hashes.
+If a merge has staled the surface's proof, rerun the proof on the merge result first,
+with the other surfaces approved in the same sitting as the protocol's capture lanes describe.
+Then promote the accepted bytes to the regression baselines, rerun the visual suite,
 and set `baseline_promoted`. Record the protocol's closing measurements for
-the surface (approval cycles, draft-loop reviews, lane holds, elapsed time)
+the surface (approval cycles, draft-loop reviews, lane holds, proof runs, elapsed time)
 in the ticket's closing record. For an unchanged `baseline_promoted` surface,
 validate the retained evidence and completion gates without rebuilding or
 requesting approval again.
